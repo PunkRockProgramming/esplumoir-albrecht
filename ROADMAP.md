@@ -6,6 +6,14 @@
 
 ## Shipped
 
+### v7 — Content Depth + Tunings
+- Tunings expanded 4 → 8: open-d (Open D), open-g (Open G), c-standard (C Standard), bfbefb (BFBEFB / Modal B — DADGAD down 3 semitones)
+- Mood profiles expanded 75 → 90: +15 profiles covering summer/heat, infatuation, jealousy/envy, depression/numbness, rain/storm, absurdism/dark humor, speed/velocity, homesickness, corruption/moral compromise, impermanence, altered state/intoxication, ennui/boredom, existential dread, hellish/infernal, hope
+
+### v6 — Forge: Chord Suggestions + Text Export
+- Forge: diatonic chord suggestions — key selector in forge controls; when key + chord are both set, 7 diatonic chips appear below chord identification; current chord root highlighted in amber; clicking another chip adds that chord name (empty voicing) to progression
+- Forge: text file download — `⬇ TXT` button downloads progression as `[name].txt` using same ASCII tab format as clipboard export; enabled/disabled alongside Export tab button
+
 ### v5 — Content Depth + Slash Chords
 - Instruments expanded 20 → 25: alchemy-piano (Steinway Grand), alchemy-mellotron (Mellotron Mk II), retro-synth-poly (Poly Analog Pad), sculpture-upright-bass (Upright Bass), ultrabeat-world-perc (World Percussion)
 - Mood profiles expanded 64 → 75: +11 profiles covering claustrophobia, spring/rebirth, shame/guilt, surveillance, exhaustion/burnout, isolation in a crowd, transformation, science fiction, recklessness/youth, predator/hunting, home/returning home
@@ -45,12 +53,12 @@
 ## Next
 
 ### Content
-- [ ] Continue expanding mood profiles (75 → 90+)
-- [ ] Add more tunings (open D, open G, C standard)
+- [ ] Continue expanding mood profiles (90 → 105+)
+- [ ] Add more keys / modes as needed (all 12 pentatonic minor, chromatic-adjacent modes)
 
 ### The Forge
-- [ ] Chord suggestions — given current voicing, suggest diatonic next chords in a key
-- [ ] Named progression export to text file (not just clipboard)
+- [ ] Diatonic suggestion chips: clicking a chip could auto-generate a voicing suggestion (first-position shape) rather than adding an empty slot
+- [ ] Progression playback sketch — single strum ordering hint (text-based, no audio)
 
 ---
 

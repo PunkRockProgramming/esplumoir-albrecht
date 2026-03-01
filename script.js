@@ -294,6 +294,7 @@ let vizFirstPosition = false
 // Forge state
 let forgePositions = new Map()  // "str,fret" → true
 let forgeTuningId  = 'e-standard'
+let forgeKeyId     = null
 let forgeProgression = []       // [{ name, voicing: Map }]
 const FORGE_KEY   = 'esplumoir-forge'
 const SESSION_KEY = 'esplumoir-session'
@@ -980,6 +981,7 @@ function updateForge() {
 
   const notes     = getForgeNotes()
   const chordName = notes.length >= 2 ? identifyChord(notes) : null
+  const chordRoot = chordName ? chordName.replace(/[^A-G#b].*/, '') : null
   const resultEl  = document.getElementById('forge-chord-result')
   const hintEl    = document.getElementById('forge-chord-hint')
 
@@ -998,8 +1000,7 @@ function updateForge() {
       }
     })
 
-    const bassNote  = chordName ? getForgeBassNote() : null
-    const chordRoot = chordName ? chordName.replace(/[^A-G#b].*/, '') : null
+    const bassNote = chordName ? getForgeBassNote() : null
     const slashSuffix = (bassNote && chordRoot && bassNote !== chordRoot) ? `/${bassNote}` : ''
     const displayName = (chordName || '?') + slashSuffix + (barreLabel ? ` (barre ${barreLabel})` : '')
     document.getElementById('forge-chord-name').textContent  = displayName
@@ -1009,6 +1010,34 @@ function updateForge() {
   } else {
     resultEl.classList.add('hidden')
     hintEl.style.display = ''
+  }
+
+  const suggestEl = document.getElementById('forge-suggestions')
+  if (forgeKeyId && chordName) {
+    const key = KEYS.find(k => k.id === forgeKeyId)
+    if (key) {
+      const diatonic = computeDiatonicChords(key.root, key.mode)
+      suggestEl.innerHTML = ''
+      diatonic.forEach(dc => {
+        const chip = document.createElement('span')
+        chip.className = 'suggestion-chip' + (dc.root === chordRoot ? ' current' : '')
+        chip.textContent = `${dc.degree} ${dc.name}`
+        if (dc.root !== chordRoot) {
+          chip.addEventListener('click', () => {
+            forgeProgression.push({ name: dc.name, voicing: new Map() })
+            renderForgeProgression()
+          })
+        }
+        suggestEl.appendChild(chip)
+      })
+      suggestEl.classList.remove('hidden')
+    } else {
+      suggestEl.innerHTML = ''
+      suggestEl.classList.add('hidden')
+    }
+  } else {
+    suggestEl.innerHTML = ''
+    suggestEl.classList.add('hidden')
   }
 }
 
@@ -1028,6 +1057,8 @@ function renderForgeProgression() {
   const row = document.getElementById('forge-progression-row')
   const exportBtn = document.getElementById('forge-export-tab')
   if (exportBtn) exportBtn.disabled = !forgeProgression.length
+  const downloadBtn = document.getElementById('forge-download-tab')
+  if (downloadBtn) downloadBtn.disabled = !forgeProgression.length
   if (!forgeProgression.length) {
     row.innerHTML = '<span class="forge-prog-empty">no chords yet — add from the fretboard above</span>'
     renderForgeProgTabs()
@@ -1159,9 +1190,7 @@ function renderSavedProgressions() {
   })
 }
 
-function exportForgeTab() {
-  if (!forgeProgression.length) return
-
+function buildForgeTabText() {
   const tuning = allTunings.find(t => t.id === forgeTuningId) || allTunings[0]
   const displayStrings = [...tuning.openNotes].reverse()
   const stringLabels = displayStrings.map((n, i) => {
@@ -1199,13 +1228,15 @@ function exportForgeTab() {
   })
 
   // Chord name row — each name centered under its column
-  const nameRow = forgeProgression.map((chord, ci) => {
-    return chord.name.padEnd(colWidths[ci])
-  })
+  const nameRow = forgeProgression.map((chord, ci) => chord.name.padEnd(colWidths[ci]))
   lines.push(`  |  ${nameRow.join('   ')}`)
 
-  const text = lines.join('\n')
+  return lines.join('\n')
+}
 
+function exportForgeTab() {
+  if (!forgeProgression.length) return
+  const text = buildForgeTabText()
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById('forge-export-tab')
     btn.textContent = 'copied!'
@@ -1226,6 +1257,19 @@ function exportForgeTab() {
   })
 }
 
+function downloadForgeTab() {
+  if (!forgeProgression.length) return
+  const text = buildForgeTabText()
+  const name = (document.getElementById('forge-prog-name').value.trim() || 'progression')
+  const blob = new Blob([text], { type: 'text/plain' })
+  const url  = URL.createObjectURL(blob)
+  const a    = document.createElement('a')
+  a.href = url
+  a.download = name + '.txt'
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 function buildForge() {
   const forgeSelect = document.getElementById('forge-tuning')
   allTunings.forEach(t => {
@@ -1240,6 +1284,16 @@ function buildForge() {
     updateForge()
   })
 
+  const keySelect = document.getElementById('forge-key')
+  keySelect.innerHTML = '<option value="">— no key —</option>'
+  KEYS.forEach(k => {
+    const opt = document.createElement('option')
+    opt.value = k.id
+    opt.textContent = k.name
+    keySelect.appendChild(opt)
+  })
+  keySelect.addEventListener('change', () => { forgeKeyId = keySelect.value || null; updateForge() })
+
   document.getElementById('forge-clear').addEventListener('click', () => {
     forgePositions.clear()
     updateForge()
@@ -1253,6 +1307,7 @@ function buildForge() {
   })
 
   document.getElementById('forge-export-tab').addEventListener('click', exportForgeTab)
+  document.getElementById('forge-download-tab').addEventListener('click', downloadForgeTab)
 
   document.getElementById('forge-save-prog').addEventListener('click', () => {
     if (!forgeProgression.length) return

@@ -994,8 +994,9 @@ select:focus, textarea:focus { border-color: var(--accent); }
 
 .forge-chord-panel {
   display: flex;
-  align-items: center;
-  gap: 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
   margin-bottom: 24px;
   padding: 14px 18px;
   background: var(--surface);
@@ -1038,6 +1039,34 @@ select:focus, textarea:focus { border-color: var(--accent); }
   font-size: 0.83rem;
   color: var(--muted);
   font-style: italic;
+}
+
+.forge-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.suggestion-chip {
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.suggestion-chip:hover {
+  border-color: var(--accent-dim);
+  color: var(--text);
+}
+
+.suggestion-chip.current {
+  border-color: var(--accent);
+  color: var(--accent);
+  cursor: default;
 }
 
 .forge-progression-section {

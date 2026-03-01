@@ -527,5 +527,110 @@ export const MOOD_MAP = [
     tones: ['acoustic-sim', 'clean-fender'],
     instruments: ['alchemy-piano', 'alchemy-folk-strings', 'alchemy-pad-lush'],
     startingPoint: 'G or C major with familiar, open chord shapes — nothing clever. Piano for the warmth of a lit room. Folk strings doubling the melody at a distance, like something half-remembered. Play at a tempo that feels like walking. The song should feel like it was always there.'
+  },
+  {
+    keywords: ['summer', 'hot', 'heat', 'humid', 'languid', 'lazy', 'sun-drenched', 'baking', 'sweltering', 'afternoon heat', 'july', 'august', 'hazy summer', 'sunbaked'],
+    keys: ['d-mixolydian', 'g-major', 'a-dorian'],
+    tones: ['crunch-marshall', 'clean-fender'],
+    instruments: ['vintage-clav', 'retro-synth-arp', 'alchemy-organ'],
+    startingPoint: 'D Mixolydian at a tempo that moves like the heat does — unhurried but not still. Organ underneath at low volume. Clav for the surface rhythm: loose, slightly behind the beat, rolling rather than locking. The flatted 7 makes it feel unresolved and entirely okay with that.'
+  },
+  {
+    keywords: ['infatuation', 'crush', 'butterflies', 'smitten', 'giddy', 'new love', 'can\'t stop thinking', 'obsessed with', 'captivated', 'falling for', 'intoxicated by someone', 'fixated on'],
+    keys: ['g-major', 'ab-major', 'd-mixolydian'],
+    tones: ['clean-fender', 'edge-of-breakup'],
+    instruments: ['vintage-keys-rhodes', 'alchemy-pad-lush', 'retro-synth-arp'],
+    startingPoint: 'G or Ab major, mid-tempo, slightly off the beat — the imprecision is deliberate. Rhodes underneath for the warmth of early attachment. Let the melody circle back to the same note: the mind doing what the mind does when it can\'t let go of something new.'
+  },
+  {
+    keywords: ['jealous', 'jealousy', 'envy', 'envious', 'covet', 'coveting', 'resentment', 'bitter', 'bitterness', 'what they have', 'not fair', 'wanting what\'s not mine', 'possessive'],
+    keys: ['c-sharp-minor', 'd-minor', 'f-sharp-minor'],
+    tones: ['crunch-marshall', 'post-punk-chorus'],
+    instruments: ['es2-lead', 'retro-synth-dark-lead', 'es2-texture'],
+    startingPoint: 'C# or D minor with something tight and coiled — not explosively angry, but compressed. Cold lead synth on the melodic line: something that knows exactly what it wants and can\'t have it. Texture underneath is the noise of trying to be okay with it. The tension never resolves because jealousy never lets it.'
+  },
+  {
+    keywords: ['depression', 'depressed', 'numb', 'numbness', 'anhedonia', 'flat', 'nothing moves me', 'apathy', 'hollow', 'blank', 'going through the motions', 'can\'t feel anything', 'grey inside'],
+    keys: ['d-minor', 'a-minor', 'g-dorian'],
+    tones: ['lo-fi-tape', 'jazz-clean'],
+    instruments: ['alchemy-piano', 'alchemy-breath', 'alchemy-dark-pad'],
+    startingPoint: 'D minor or A minor at the slowest possible tempo that isn\'t stopped. Piano plays the chord and holds — no melodic movement, nothing to say. Tape saturation makes it feel like everything is at a slight remove. Do not build. Do not resolve. This music has given up on the ending.'
+  },
+  {
+    keywords: ['rain', 'raining', 'rainy', 'storm', 'stormy', 'downpour', 'thunder', 'grey sky', 'drizzle', 'puddles', 'heavy rain', 'weather', 'wet', 'persistent rain'],
+    keys: ['d-dorian', 'g-dorian', 'd-minor'],
+    tones: ['ambient-reverb', 'edge-of-breakup'],
+    instruments: ['alchemy-shimmer', 'alchemy-pad-lush', 'sculpture-glass'],
+    startingPoint: 'D Dorian or G Dorian with long reverb — let notes tail into each other like rain into standing water. Shimmer pad for the specific grey brightness of an overcast day. Sparse melody: a few notes per phrase, enough space to hear the weather between them.'
+  },
+  {
+    keywords: ['absurd', 'absurdism', 'dark humor', 'gallows humor', 'ridiculous', 'Camus', 'Beckett', 'comic despair', 'bitter laugh', 'ironic', 'sardonic', 'nothing matters but it\'s funny', 'tragic comedy'],
+    keys: ['d-dorian', 'a-dorian', 'd-minor'],
+    tones: ['jazz-clean', 'crunch-marshall'],
+    instruments: ['vintage-clav', 'vintage-keys-rhodes', 'sculpture-mallet'],
+    startingPoint: 'D Dorian — modal enough to feel like it could go tragic, but don\'t let it. Clav for a rhythm that\'s more sardonic than serious. Rhodes underneath adds warmth the situation doesn\'t deserve. Glass mallet for melodic moments that are beautiful despite themselves — the joke is that it\'s actually kind of moving.'
+  },
+  {
+    keywords: ['speed', 'fast', 'velocity', 'kinetic', 'racing', 'rushing', 'driving', 'urgent', 'acceleration', 'momentum', 'running', 'full speed', 'no brakes', 'forward'],
+    keys: ['e-minor', 'd-mixolydian', 'c-sharp-minor'],
+    tones: ['high-gain-modern', 'crunch-marshall'],
+    instruments: ['retro-synth-arp', 'percussion-industrial', 'es2-lead'],
+    startingPoint: 'Fast, locked tempo in E minor. Guitar enters on top of a precise industrial percussion pattern — the machine keeps time so the guitar can move. Arpeggiator at 16ths: the pulse never wavers. This is music for something that cannot slow down.'
+  },
+  {
+    keywords: ['homesick', 'homesickness', 'missing home', 'can\'t go back', 'far from home', 'somewhere else', 'distance from home', 'away from home', 'foreignness', 'longing for place', 'diaspora', 'not where I belong'],
+    keys: ['g-major', 'g-dorian', 'c-major'],
+    tones: ['acoustic-sim', 'lo-fi-tape'],
+    instruments: ['alchemy-folk-strings', 'alchemy-piano', 'alchemy-mellotron'],
+    startingPoint: 'G major or G Dorian, fingerpicked. Something that uses open strings — the instrument remembering its own body. Folk strings doubling the melody: familiar but at a distance. Piano for the warmth of a specific place at a specific time. Tape saturation because the memory is inexact but emotionally overwhelming.'
+  },
+  {
+    keywords: ['corruption', 'corrupted', 'compromise', 'sell out', 'sold out', 'wrong choice', 'doing wrong', 'moral failure', 'betrayed myself', 'gave in', 'complicit', 'dirt on my hands', 'not who I was', 'compromised'],
+    keys: ['d-minor', 'b-minor', 'a-harmonic-minor'],
+    tones: ['edge-of-breakup', 'post-punk-chorus'],
+    instruments: ['alchemy-dark-pad', 'alchemy-piano', 'string-ensemble'],
+    startingPoint: 'D minor or A harmonic minor, unhurried. Piano plays the melody — something formal, even noble — while the dark pad underneath tells a different story. The augmented second is the interval that sounds like something that can\'t quite justify itself. Let the strings carry the weight of what was lost.'
+  },
+  {
+    keywords: ['impermanence', 'fleeting', 'this will end', 'passing', 'temporary', 'everything ends', 'precious', 'ephemeral', 'finite', 'last time', 'won\'t last', 'beautiful because brief', 'transience', 'holding on'],
+    keys: ['g-major', 'c-major', 'ab-major'],
+    tones: ['clean-fender', 'acoustic-sim'],
+    instruments: ['alchemy-shimmer', 'alchemy-piano', 'alchemy-folk-strings'],
+    startingPoint: 'G or C major with open, ringing voicings. Play it like it\'s the last time — not dramatically, just with full attention. Shimmer pad that fades in and then away. Piano for moments of clarity. Let some notes decay completely before the next one arrives. The ending is built into the beginning.'
+  },
+  {
+    keywords: ['drunk', 'high', 'intoxicated', 'altered state', 'substances', 'floating pleasantly', 'hazy pleasure', 'woozy', 'loose', 'everything is fine', 'foggy', 'blissfully impaired', 'pleasantly numb'],
+    keys: ['d-mixolydian', 'a-dorian', 'g-major'],
+    tones: ['psych-fuzz', 'lo-fi-tape'],
+    instruments: ['alchemy-pad-lush', 'retro-synth-poly', 'vintage-keys-rhodes'],
+    startingPoint: 'Mixolydian or Dorian — pleasant and unresolved. Psych fuzz tone with the volume rolled back to 6. Poly synth pad for warm, slightly unfocused harmony. Tape saturation on the guitar. Play slightly behind the beat, let notes blur at the edges. This music doesn\'t know exactly where it is, and that\'s fine.'
+  },
+  {
+    keywords: ['bored', 'boredom', 'ennui', 'listless', 'nothing to do', 'going nowhere', 'stagnant', 'stasis', 'monotonous', 'dull', 'tedium', 'can\'t be bothered', 'indifferent', 'uninspired'],
+    keys: ['d-dorian', 'a-minor', 'g-dorian'],
+    tones: ['edge-of-breakup', 'jazz-clean'],
+    instruments: ['vintage-keys-rhodes', 'alchemy-breath', 'retro-synth-bass'],
+    startingPoint: 'D Dorian at medium-slow tempo with a progression that doesn\'t commit to going anywhere. Rhodes for warmth that can\'t be bothered. Breath pad very low — present but not engaged. Bass synth on the root: still here, just doesn\'t care. The key is never trying harder than the subject warrants.'
+  },
+  {
+    keywords: ['dread', 'existential dread', 'impending', 'something wrong', 'existential crisis', 'finitude', 'the void', 'something coming', 'can\'t name it', 'creeping doom', 'low-level horror', 'nameless fear'],
+    keys: ['c-sharp-minor', 'e-phrygian', 'b-minor'],
+    tones: ['ambient-reverb', 'doom-fuzz'],
+    instruments: ['es2-sub-drone', 'alchemy-dark-pad', 'alchemy-breath'],
+    startingPoint: 'C# minor or E Phrygian. Don\'t move fast — the dread is in the sitting. Sub drone underneath: constant, low, felt before heard. Dark pad fills the space without naming what it is. Breath pad because you\'re still breathing even though you don\'t know why. Melody, if any: sparse, unresolved, minor.'
+  },
+  {
+    keywords: ['hell', 'infernal', 'hellfire', 'demonic', 'brimstone', 'diabolical', 'punishing', 'relentless punishment', 'burning forever', 'trapped in fire', 'damned', 'diabolic', 'satanic', 'hellish'],
+    keys: ['b-phrygian-dominant', 'e-phrygian', 'a-harmonic-minor'],
+    tones: ['heavy-metal', 'doom-fuzz'],
+    instruments: ['percussion-industrial', 'es2-sub-drone', 'alchemy-choir'],
+    startingPoint: 'Phrygian Dominant at high tempo — the augmented second is the sound of something ancient and correct about punishment. Industrial percussion for the machine rhythm of damnation: precise, without mercy. Choir at medium volume, dissonant with the guitar. Sub drone on the tonic. No release. No light at the end.'
+  },
+  {
+    keywords: ['hope', 'hopeful', 'optimistic', 'optimism', 'looking forward', 'better future', 'things will be better', 'light at the end', 'perseverance', 'not giving up', 'belief', 'possible', 'can do this', 'tomorrow'],
+    keys: ['g-major', 'eb-major', 'c-major'],
+    tones: ['clean-fender', 'crunch-marshall'],
+    instruments: ['alchemy-shimmer', 'alchemy-mellotron', 'alchemy-organ'],
+    startingPoint: 'G or Eb major, moderate tempo. Open chord voicings with sustained ringing. Mellotron strings for the warmth of something that\'s been through it but is still here. Shimmer pad builds slowly underneath. Don\'t resolve too quickly — hope is living with uncertainty. Let the chords sit in their own light before moving.'
   }
 ]

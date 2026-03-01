@@ -137,6 +137,10 @@
         <span class="output-label" style="white-space:nowrap">Tuning</span>
         <select id="forge-tuning"></select>
       </div>
+      <div class="control-group" style="flex-direction:row;align-items:center;gap:8px">
+        <span class="output-label" style="white-space:nowrap">Key</span>
+        <select id="forge-key"></select>
+      </div>
       <button id="forge-clear" class="secondary-btn">Clear</button>
     </div>
 
@@ -152,6 +156,7 @@
         <div id="forge-chord-notes" class="forge-chord-notes"></div>
       </div>
       <div id="forge-chord-hint" class="forge-chord-hint">select 2 or more notes to identify a chord</div>
+      <div id="forge-suggestions" class="forge-suggestions hidden"></div>
     </div>
 
     <div class="forge-progression-section">
@@ -161,6 +166,7 @@
           <input type="text" id="forge-prog-name" class="forge-name-input" placeholder="name this progression..." />
           <button id="forge-save-prog" class="secondary-btn">Save</button>
           <button id="forge-export-tab" class="secondary-btn" disabled>Export tab</button>
+          <button id="forge-download-tab" class="secondary-btn" disabled>⬇ TXT</button>
         </div>
       </div>
       <div id="forge-progression-row" class="forge-progression-row">
