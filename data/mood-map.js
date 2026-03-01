@@ -632,5 +632,110 @@ export const MOOD_MAP = [
     tones: ['clean-fender', 'crunch-marshall'],
     instruments: ['alchemy-shimmer', 'alchemy-mellotron', 'alchemy-organ'],
     startingPoint: 'G or Eb major, moderate tempo. Open chord voicings with sustained ringing. Mellotron strings for the warmth of something that\'s been through it but is still here. Shimmer pad builds slowly underneath. Don\'t resolve too quickly — hope is living with uncertainty. Let the chords sit in their own light before moving.'
+  },
+  {
+    keywords: ['coming of age', 'initiation', 'growing up', 'becoming', 'leaving behind', 'no longer a child', 'rite of passage', 'first time understanding', 'maturity', 'threshold', 'not who I was', 'just became'],
+    keys: ['a-dorian', 'g-major', 'd-mixolydian'],
+    tones: ['acoustic-sim', 'clean-fender'],
+    instruments: ['alchemy-folk-strings', 'alchemy-piano', 'alchemy-shimmer'],
+    startingPoint: 'A Dorian or G major — something that sounds like the world opening up rather than closing down. Folk strings underneath, simple but not naive. Piano for the specific weight of understanding something for the first time. Acoustic sim for the directness of a moment you know you\'ll remember.'
+  },
+  {
+    keywords: ['uncanny', 'something wrong', 'not quite right', 'familiar but off', 'doppelganger', 'almost human', 'too still', 'slightly wrong', 'off by one', 'eerie calm', 'wrong face', 'the uncanny valley'],
+    keys: ['c-lydian', 'a-dorian', 'eb-major'],
+    tones: ['post-punk-chorus', 'lo-fi-tape'],
+    instruments: ['sculpture-glass', 'es2-texture', 'alchemy-breath'],
+    startingPoint: 'Lydian — something that sounds major but has that one wrong note. Chorused and slightly tape-saturated, just degraded enough. Glass resonator for melodic material that\'s pleasant and wrong at once. Breath pad very quiet: the sense of something breathing that shouldn\'t be.'
+  },
+  {
+    keywords: ['midnight confession', 'things only said late', 'dark honesty', 'drunk truth', 'secrets told', '3am truth', 'admitting', 'confessing', 'what I couldn\'t say', 'too tired to lie', 'honesty at night', 'late night bare'],
+    keys: ['d-minor', 'a-minor', 'b-minor'],
+    tones: ['jazz-clean', 'lo-fi-tape'],
+    instruments: ['alchemy-piano', 'alchemy-breath', 'sculpture-glass'],
+    startingPoint: 'D or A minor at slow tempo. Piano with the sustain pedal down — notes blurring together like thoughts at 3am. Breath pad just barely audible, something human in the quiet. Jazz clean tone for an intimacy that doesn\'t try to be dramatic. This music tells the truth because it\'s too tired to lie.'
+  },
+  {
+    keywords: ['anticipation', 'waiting for', 'about to', 'pleasurable tension', 'building toward', 'can\'t wait', 'suspended before', 'the moment before', 'about to begin', 'excitement building', 'held breath', 'threshold of something good'],
+    keys: ['d-mixolydian', 'eb-major', 'g-major'],
+    tones: ['clean-fender', 'edge-of-breakup'],
+    instruments: ['retro-synth-arp', 'alchemy-shimmer', 'alchemy-pad-lush'],
+    startingPoint: 'Mixolydian or major with a rising figure that doesn\'t resolve — the melodic equivalent of leaning forward. Arpeggiator building momentum. Shimmer pad growing underneath. The key is not resolving too early: the anticipation is the music, not the arrival.'
+  },
+  {
+    keywords: ['self-hatred', 'hate myself', 'anger at self', 'self-directed rage', 'my fault', 'I ruined it', 'I should have', 'punishing myself', 'turned inward', 'self-sabotage', 'self-destructive', 'rage inward'],
+    keys: ['f-sharp-minor', 'd-minor', 'c-sharp-minor'],
+    tones: ['heavy-metal', 'high-gain-modern'],
+    instruments: ['alchemy-dark-pad', 'es2-lead', 'percussion-industrial'],
+    startingPoint: 'F# or D minor at high intensity, but without the outward momentum of straight anger. The riff turns back on itself — circles rather than escapes. Dark pad makes it claustrophobic. Lead synth for melodic lines that sound accusatory rather than cathartic. The percussion is relentless because you won\'t let yourself go.'
+  },
+  {
+    keywords: ['beautiful decay', 'ruin beautiful', 'crumbling beauty', 'overgrown', 'abandoned but beautiful', 'moss on stone', 'aesthetic decay', 'wabi-sabi', 'fading grandeur', 'nature reclaims', 'lovely ruin', 'beauty in ending'],
+    keys: ['d-minor', 'g-dorian', 'a-harmonic-minor'],
+    tones: ['acoustic-sim', 'lo-fi-tape'],
+    instruments: ['alchemy-folk-strings', 'sculpture-glass', 'alchemy-choir'],
+    startingPoint: 'D minor or G Dorian with light fingerpicking. Tape saturation that sounds weathered. Glass resonator for melodic lines that are delicate but still present, like a flower through concrete. Choir at barely audible volume — the beauty that survives. This music mourns and admires in the same breath.'
+  },
+  {
+    keywords: ['estranged', 'estrangement', 'grown apart', 'used to be close', 'stranger now', 'formal where it was warm', 'losing someone slowly', 'can\'t get back', 'once close', 'distant now', 'not what we were', 'the space between'],
+    keys: ['b-minor', 'f-sharp-minor', 'd-minor'],
+    tones: ['edge-of-breakup', 'ambient-reverb'],
+    instruments: ['alchemy-pad-lush', 'string-ensemble', 'alchemy-piano'],
+    startingPoint: 'B or F# minor, slow. Piano melody that moves with restraint — not reaching, not pulling back. String ensemble underneath at low volume, the ghost of something that was warm. Long reverb: the distance the sound has to travel. Nothing resolves because estrangement doesn\'t resolve; it just becomes background.'
+  },
+  {
+    keywords: ['small wonders', 'ordinary beautiful', 'noticing', 'dust in light', 'dewdrop', 'sidewalk crack', 'present moment', 'micro beauty', 'mundane sublime', 'found sacred', 'ordinary sublime', 'paying attention', 'unexpected beauty'],
+    keys: ['g-major', 'f-major', 'c-major'],
+    tones: ['clean-fender', 'acoustic-sim'],
+    instruments: ['sculpture-glass', 'alchemy-shimmer', 'vintage-keys-rhodes'],
+    startingPoint: 'G or C major, sparse and unhurried. Clean tone for presence without comment. Glass resonator for single notes that carry more than they should. Rhodes for warmth that doesn\'t announce itself. This music does not try to be important — it just pays attention. The beauty is in the noticing.'
+  },
+  {
+    keywords: ['morning after', 'after the party', 'post-celebration', 'beautiful thing ended', 'happiness ending', 'post-joy melancholy', 'yesterday was perfect', 'it\'s over now', 'the night is over', 'bittersweet ending', 'aftermath of something wonderful'],
+    keys: ['g-major', 'g-dorian', 'd-mixolydian'],
+    tones: ['lo-fi-tape', 'edge-of-breakup'],
+    instruments: ['vintage-keys-rhodes', 'alchemy-folk-strings', 'alchemy-breath'],
+    startingPoint: 'G major or G Dorian, slow, played like the energy has gone out of it. Rhodes for warmth mixed with absence. Tape saturation — slightly faded, like the morning. Folk strings for the melody that\'s still there but quieter. This isn\'t grief; it\'s the specific beauty of having had something worth missing.'
+  },
+  {
+    keywords: ['missing someone', 'miss you', 'specific person', 'your absence', 'thinking of you', 'wishing you were here', 'your face', 'your voice', 'you are gone', 'the shape of you', 'you specifically', 'not anyone, you'],
+    keys: ['b-minor', 'a-minor', 'f-major'],
+    tones: ['acoustic-sim', 'edge-of-breakup'],
+    instruments: ['alchemy-piano', 'alchemy-pad-lush', 'alchemy-folk-strings'],
+    startingPoint: 'B minor or A minor, intimate tempo. Piano on the melody — something that sounds like it\'s trying to remember the right notes. Lush pad for the feeling that the room is still full of someone who isn\'t there. Acoustic sim for the physicality of it: this is a body missing a specific body.'
+  },
+  {
+    keywords: ['vertigo', 'dizzy', 'disoriented', 'lost', 'spinning', 'ground shifting', 'can\'t get bearings', 'uncertain direction', 'nothing is where it was', 'confused', 'turned around', 'dislocation', 'which way is up'],
+    keys: ['c-sharp-minor', 'e-phrygian', 'c-lydian'],
+    tones: ['ambient-reverb', 'post-punk-chorus'],
+    instruments: ['es2-texture', 'alchemy-breath', 'sculpture-glass'],
+    startingPoint: 'C# minor or Lydian — something that starts familiar and slips. Long reverb so notes are uncertain in space. Breath pad for the reminder of a body still standing. Glass resonator for melody fragments that almost resolve. Avoid a steady beat: let the rhythm breathe and shift. The ground isn\'t where you left it.'
+  },
+  {
+    keywords: ['fever', 'sick', 'feverish', 'delirious', 'burning up', 'ill', 'illness', 'hot', 'sweating', 'delirium', 'flu', 'not well', 'body temperature', 'fevered mind'],
+    keys: ['a-harmonic-minor', 'b-phrygian-dominant', 'd-minor'],
+    tones: ['psych-fuzz', 'lo-fi-tape'],
+    instruments: ['alchemy-breath', 'alchemy-pad-lush', 'sculpture-glass'],
+    startingPoint: 'Harmonic minor with psych fuzz — the augmented second sounds like something not quite rational. Tape saturation heavy enough to make everything blur. Breath pad foregrounded: the body under duress. Glass resonator for melody that goes in and out of focus. No hard rhythmic grid. The tempo should feel like a heartbeat that can\'t be trusted.'
+  },
+  {
+    keywords: ['horizon', 'departure', 'setting out', 'leaving', 'open future', 'the road ahead', 'voyage', 'everything possible', 'threshold of the journey', 'heading out', 'what\'s ahead', 'on the way', 'just left'],
+    keys: ['d-mixolydian', 'eb-major', 'g-major'],
+    tones: ['clean-fender', 'crunch-marshall'],
+    instruments: ['alchemy-shimmer', 'string-ensemble', 'alchemy-organ'],
+    startingPoint: 'Mixolydian or major, tempo that moves. Something that sounds like motion — a chord progression that pushes forward without anxiety. Strings build as the guitar settles. Organ for the sense that departure is also ceremonial. The unresolved flatted 7 in Mixolydian is right for a journey that hasn\'t arrived yet.'
+  },
+  {
+    keywords: ['swamp', 'bayou', 'humid', 'muggy', 'murky', 'overgrown', 'hot wilderness', 'tangled', 'low country', 'Louisiana', 'dense nature', 'thick air', 'reptilian', 'slow heat', 'southern gothic'],
+    keys: ['g-dorian', 'a-dorian', 'd-dorian'],
+    tones: ['psych-fuzz', 'crunch-marshall'],
+    instruments: ['sculpture-upright-bass', 'vintage-clav', 'ultrabeat-world-perc'],
+    startingPoint: 'Dorian groove at mid tempo, thick and low. Upright bass on the root: something that sounds like it comes from the ground. World percussion for organic rhythm that breathes rather than locks. Clav for the surface texture — something that belongs in a room with a ceiling fan. The fuzz makes it dangerous. Let it simmer.'
+  },
+  {
+    keywords: ['criminal', 'transgression', 'stealing', 'theft', 'outlaw', 'lawless', 'forbidden act', 'breaking rules', 'trespass', 'dark thrill', 'doing what you shouldn\'t', 'elegant crime', 'cool wrongdoing', 'against the law'],
+    keys: ['d-dorian', 'a-minor', 'f-sharp-minor'],
+    tones: ['edge-of-breakup', 'jazz-clean'],
+    instruments: ['vintage-clav', 'retro-synth-bass', 'sculpture-upright-bass'],
+    startingPoint: 'D Dorian or A minor with a cool, economical groove. Jazz clean tone for the elegance of it — transgression as craft. Clav for rhythmic precision: every move is intentional. Bass on a walking line that knows exactly where it\'s going. This music doesn\'t apologize and doesn\'t rush. The crime is in the groove, not the noise.'
   }
 ]

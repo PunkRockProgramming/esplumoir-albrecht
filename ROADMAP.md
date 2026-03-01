@@ -6,6 +6,11 @@
 
 ## Shipped
 
+### v8 — Forge Voicing Generator + Content Depth
+- Forge: diatonic suggestion chips now generate a first-position voicing — `generateFirstPositionVoicing()` finds the lowest fret 0–4 per string that plays a chord tone, tuning-aware, algorithmic (no hardcoded shapes)
+- Grimoire: 7th degree color changed from warm tan (#b88a3a) to steel blue (#6a8a9a) — no longer confused with the amber root
+- Mood profiles expanded 90 → 105: +15 profiles covering coming-of-age, the uncanny, midnight confession, anticipation, self-directed anger, beautiful decay, estrangement, small wonders, post-joy melancholy, missing a specific person, vertigo/disorientation, fever, horizon/departure, swamp/humid wilderness, transgression
+
 ### v7 — Content Depth + Tunings
 - Tunings expanded 4 → 8: open-d (Open D), open-g (Open G), c-standard (C Standard), bfbefb (BFBEFB / Modal B — DADGAD down 3 semitones)
 - Mood profiles expanded 75 → 90: +15 profiles covering summer/heat, infatuation, jealousy/envy, depression/numbness, rain/storm, absurdism/dark humor, speed/velocity, homesickness, corruption/moral compromise, impermanence, altered state/intoxication, ennui/boredom, existential dread, hellish/infernal, hope
@@ -56,9 +61,12 @@
 - [ ] Continue expanding mood profiles (90 → 105+)
 - [ ] Add more keys / modes as needed (all 12 pentatonic minor, chromatic-adjacent modes)
 
+### Content
+- [ ] Continue expanding mood profiles (105 → 120+)
+
 ### The Forge
-- [ ] Diatonic suggestion chips: clicking a chip could auto-generate a voicing suggestion (first-position shape) rather than adding an empty slot
 - [ ] Progression playback sketch — single strum ordering hint (text-based, no audio)
+- [ ] Voicing quality improvements — generated shapes sometimes include low strings that guitarists would mute; could score by playability
 
 ---
 

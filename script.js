@@ -38,7 +38,7 @@ const DEGREE_COLORS = [
   '#8a5aaa', // 4 — purple
   '#b85a5a', // 5 — red
   '#3a9a8a', // 6 — teal
-  '#b88a3a', // 7 — warm tan
+  '#6a8a9a', // 7 — steel blue
 ]
 
 const DEGREE_NAMES_SHORT = ['1', '2', '3', '4', '5', '6', '7']
@@ -839,6 +839,39 @@ function identifyChord(notes) {
   return `${best.root}${best.suffix}`
 }
 
+// Given a chord name and tuning, return a first-position voicing Map.
+// For each string (high → low), find the lowest fret 0–4 that plays a chord tone.
+function generateFirstPositionVoicing(chordName, tuningId) {
+  const tuning = allTunings.find(t => t.id === tuningId) || allTunings[0]
+  if (!tuning) return new Map()
+
+  // Strip slash bass note and barre annotation before parsing
+  const cleanName = chordName.replace(/\/.*/, '').replace(/\s*\(.*\)/, '').trim()
+  const rootMatch = cleanName.match(/^[A-G][#b]?/)
+  if (!rootMatch) return new Map()
+
+  const root   = normalizeNote(rootMatch[0])
+  const suffix = cleanName.slice(rootMatch[0].length)
+  const tmpl   = CHORD_TEMPLATES.find(t => t.suffix === suffix)
+  if (!tmpl) return new Map()
+
+  const rootIdx  = CHROMATIC.indexOf(root)
+  if (rootIdx === -1) return new Map()
+  const chordNotes = new Set(tmpl.intervals.map(i => CHROMATIC[(rootIdx + i) % 12]))
+
+  const displayStrings = [...tuning.openNotes].reverse()
+  const voicing = new Map()
+  for (let s = 0; s < 6; s++) {
+    const openNote = normalizeNote(displayStrings[s])
+    const openIdx  = CHROMATIC.indexOf(openNote)
+    for (let f = 0; f <= 4; f++) {
+      const note = f === 0 ? openNote : CHROMATIC[(openIdx + f) % 12]
+      if (chordNotes.has(note)) { voicing.set(`${s},${f}`, true); break }
+    }
+  }
+  return voicing
+}
+
 function renderForgeFretboardSVG() {
   const tuning = allTunings.find(t => t.id === forgeTuningId) || allTunings[0]
   if (!tuning) return ''
@@ -1024,7 +1057,8 @@ function updateForge() {
         chip.textContent = `${dc.degree} ${dc.name}`
         if (dc.root !== chordRoot) {
           chip.addEventListener('click', () => {
-            forgeProgression.push({ name: dc.name, voicing: new Map() })
+            const voicing = generateFirstPositionVoicing(dc.name, forgeTuningId)
+            forgeProgression.push({ name: dc.name, voicing })
             renderForgeProgression()
           })
         }
