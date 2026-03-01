@@ -7,39 +7,41 @@
 ## Shipped
 
 ### v1 — Core Tool
-- Data files: keys (20+), tunings (4), tones (9), instruments (13), strategies (15)
-- **Grimoire** — key/mode reference with emotional profiles; root + mode free selectors; fretboard (SVG, 0–12) + piano visualizer; diatonic chord tabs (Scale / I–VII) that filter the fretboard to chord notes; scale degree color legend
-- **Suggestions panel** — Analog (Helix tone presets) / Digital (Logic instruments) toggle, filtered by key mood tags
-- **Mood search** — client-side keyword scoring against 45 pre-researched mood profiles; returns key, tone, instrument, and starting point suggestions instantly with no API call
+- Data files: keys (20+), tunings (4), tones (9), instruments (13), strategies (15), mood profiles (45)
+- **Grimoire** — key/mode reference with emotional profiles; root + mode free selectors; SVG fretboard (0–12) + piano visualizer; diatonic chord tabs (Scale / I–VII) that filter fretboard to chord notes; scale degree color legend; tuning selector
+- **Suggestions panel** — Analog (Helix tones) / Digital (Logic instruments) toggle, filtered by key mood tags
+- **Mood search** — client-side keyword scoring against 45 pre-researched profiles; returns key, tone, instrument, and starting point suggestions with no API call
 - **Esoteric Strategies** — 15-card deck with reversed state (~30% draw chance), flip animation, category badge
-- **The Forge** — interactive fretboard (click to select notes); chord identification (16 templates: power through 9ths); chord chips with tab diagrams showing fret/string layout; progression builder; localStorage save and recall of named progressions
-- Static site — no server, no build step; deployed on GitHub Pages
+- **The Forge** — interactive SVG fretboard (click to select notes); chord identification (16 templates: power → 9ths); chord chips + tab frames showing voicing; progression builder; localStorage save and recall of named progressions
+- Static site — no server, no build step, no dependencies; deployed on GitHub Pages
 
 ---
 
 ## Next
 
-### Content Depth
-- [ ] Expand strategies deck: 15 → 30 cards
-- [ ] Add more keys: fill out all 12 roots × major/minor + remaining modes (~30 total)
+### Sprint 2 (active)
+- [in-sprint] Expand strategies deck: 15 → 30 cards
+- [in-sprint] Fill all 12 major + 12 minor keys (complete root × mode coverage)
+- [in-sprint] Forge: mute / open string indicators above fretboard (× / O)
+- [in-sprint] Forge: reorder chords in progression (← → on chips)
+- [in-sprint] Grimoire: first-position mode toggle (frets 0–4 only)
+
+### Content
 - [ ] More Helix tones (9 → 15) — broader genre coverage
-- [ ] More Logic instruments (13 → 25) — heavier ambient/industrial/folk representation
-- [ ] Pentatonic and blues scale support in the Grimoire visualizer
+- [ ] More Logic instruments (13 → 25) — heavier ambient / industrial / folk
+- [ ] Expand mood profiles (45 → 60+)
 
-### The Forge — Enhancements
-- [ ] Mute/open string markers (× and O) above the fretboard
-- [ ] Barre chord detection — if all selected frets share a minimum, suggest it's a barre
-- [ ] Export progression as plain-text tab block
-- [ ] Reorder chords in progression (drag or arrow buttons)
+### The Forge
+- [ ] Export progression as plain-text tab block (copy to clipboard)
+- [ ] Barre chord detection — if all selected frets share a minimum fret, label it a barre
 
-### Grimoire — Enhancements
-- [ ] First-position mode toggle (frets 0–4 only) for the visualizer
+### Grimoire
 - [ ] Relative key links on each key card (e.g. "relative major: G")
-- [ ] Notable uses expanded — more entries, linked to Esoteric cards thematically
+- [ ] Pentatonic and blues scale support
 
 ### Session / Export
 - [ ] Save current key + tuning selection to localStorage (restore on reload)
-- [ ] Export current Grimoire view (key + fretboard) as SVG or PNG
+- [ ] Export current Grimoire view (key + fretboard) as SVG download
 
 ---
 
