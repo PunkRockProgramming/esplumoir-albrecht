@@ -927,6 +927,37 @@ select:focus, textarea:focus { border-color: var(--accent); }
   margin-bottom: 16px;
 }
 
+.forge-string-indicators {
+  display: flex;
+  gap: 0;
+  padding: 0 8px 6px;
+}
+
+.forge-string-ind {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+
+.forge-str-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
+.forge-string-marker {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.forge-string-marker.active {
+  color: var(--accent);
+  font-weight: 700;
+}
+
 .forge-fretboard-container {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -1126,6 +1157,21 @@ select:focus, textarea:focus { border-color: var(--accent); }
 }
 
 .chord-chip-name:hover { background: var(--surface); }
+
+.chord-chip-move {
+  background: none;
+  border: none;
+  border-left: 1px solid var(--border);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 5px 6px;
+  transition: color 0.1s, background 0.1s;
+}
+
+.chord-chip-move:first-child { border-left: none; border-right: 1px solid var(--border); }
+.chord-chip-move:hover { color: var(--text); background: var(--surface); }
 
 .chord-chip-remove {
   background: none;

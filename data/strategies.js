@@ -88,5 +88,95 @@ export const STRATEGIES = [
     text: 'The best part is the part you keep thinking about cutting.',
     reversed: 'The part you keep thinking about cutting should be cut. You already know this.',
     category: 'inversion'
+  },
+  {
+    id: 16,
+    text: 'Cut the loudest part. What remains is the song.',
+    reversed: 'What remains after cutting is not the song. The cut was the song.',
+    category: 'subtraction'
+  },
+  {
+    id: 17,
+    text: 'Play it like you mean none of it.',
+    reversed: 'Play it like it is the last thing you will ever mean.',
+    category: 'process'
+  },
+  {
+    id: 18,
+    text: 'You may only use notes you have already played.',
+    reversed: 'Every note you play must be one you have never played before.',
+    category: 'constraint'
+  },
+  {
+    id: 19,
+    text: 'Introduce an instrument the genre forbids.',
+    reversed: 'Remove the instrument the genre requires. Build around its absence.',
+    category: 'sabotage'
+  },
+  {
+    id: 20,
+    text: 'What were you avoiding when you wrote this?',
+    reversed: 'You were not avoiding anything. You were heading straight for it.',
+    category: 'oracle'
+  },
+  {
+    id: 21,
+    text: 'The song is too long. Make it twice as long.',
+    reversed: 'The song is exactly the right length. You are the one who is too short.',
+    category: 'inversion'
+  },
+  {
+    id: 22,
+    text: 'Record it in a space that frightens you.',
+    reversed: 'The space does not frighten you enough. Find a worse one.',
+    category: 'process'
+  },
+  {
+    id: 23,
+    text: 'One chord. The whole song. No exceptions.',
+    reversed: 'No chords. The whole song. No exceptions.',
+    category: 'constraint'
+  },
+  {
+    id: 24,
+    text: 'Who is this for? Answer honestly.',
+    reversed: 'It is not for anyone. That is either its strength or its flaw.',
+    category: 'oracle'
+  },
+  {
+    id: 25,
+    text: 'The intro is the outro. Reverse the order.',
+    reversed: 'There is no correct order. You invented the sequence. Invent another.',
+    category: 'inversion'
+  },
+  {
+    id: 26,
+    text: 'Record over something you love.',
+    reversed: 'Do not record over it. Play alongside it forever, unable to commit.',
+    category: 'sabotage'
+  },
+  {
+    id: 27,
+    text: 'Walk away. Return when you have forgotten what you intended.',
+    reversed: 'Do not walk away. You already know too little. Leaving will finish you.',
+    category: 'process'
+  },
+  {
+    id: 28,
+    text: 'Finish it today. It does not have to be good.',
+    reversed: 'Take as long as it needs. It does not have to be finished.',
+    category: 'constraint'
+  },
+  {
+    id: 29,
+    text: 'Strip everything back to the first idea you had.',
+    reversed: 'The first idea was the wrong one. That is why you left it.',
+    category: 'subtraction'
+  },
+  {
+    id: 30,
+    text: 'It must be playable by someone who has never played before.',
+    reversed: 'It must be unplayable by anyone. Including you.',
+    category: 'constraint'
   }
 ]

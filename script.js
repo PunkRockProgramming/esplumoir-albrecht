@@ -132,14 +132,14 @@ function getScaleDegreeMap(root, scaleType) {
   return map
 }
 
-function renderFretboardSVG(degreeMap, tuningId, showLabels) {
+function renderFretboardSVG(degreeMap, tuningId, showLabels, firstPosition = false) {
   const tuning = allTunings.find(t => t.id === tuningId) || allTunings[0]
   if (!tuning) return ''
 
   const W = 1400, H = 240
   const PAD_L = 30, PAD_R = 10, PAD_T = 28, PAD_B = 10
-  const FRETS = 12, STRINGS = 6
-  // col 0 = open string (left of nut), cols 1–12 = frets
+  const FRETS = firstPosition ? 4 : 12, STRINGS = 6
+  // col 0 = open string (left of nut), cols 1–N = frets
   const COLS = FRETS + 1
   const COL_W = (W - PAD_L - PAD_R) / COLS
   const STRING_SPACING = (H - PAD_T - PAD_B) / (STRINGS - 1)
@@ -157,13 +157,13 @@ function renderFretboardSVG(degreeMap, tuningId, showLabels) {
   // Fretboard background
   p.push(`<rect x="${PAD_L}" y="${PAD_T}" width="${W - PAD_L - PAD_R}" height="${H - PAD_T - PAD_B}" fill="#181818" rx="2"/>`)
 
-  // Inlay markers
+  // Inlay markers (only show if within visible fret range)
   const midY = strY(0) + (H - PAD_T - PAD_B) / 2;
-  [3, 5, 7, 9].forEach(f => p.push(`<circle cx="${colX(f)}" cy="${midY}" r="8" fill="#252525"/>`))
-  ;[12].forEach(f => {
-    p.push(`<circle cx="${colX(f)}" cy="${strY(1)}" r="8" fill="#252525"/>`)
-    p.push(`<circle cx="${colX(f)}" cy="${strY(4)}" r="8" fill="#252525"/>`)
-  })
+  [3, 5, 7, 9].filter(f => f <= FRETS).forEach(f => p.push(`<circle cx="${colX(f)}" cy="${midY}" r="8" fill="#252525"/>`))
+  if (FRETS >= 12) {
+    p.push(`<circle cx="${colX(12)}" cy="${strY(1)}" r="8" fill="#252525"/>`)
+    p.push(`<circle cx="${colX(12)}" cy="${strY(4)}" r="8" fill="#252525"/>`)
+  }
 
   // Strings — thicker toward low E (bottom)
   for (let s = 0; s < STRINGS; s++) {
@@ -182,7 +182,7 @@ function renderFretboardSVG(degreeMap, tuningId, showLabels) {
   }
 
   // Fret numbers
-  ;[3, 5, 7, 9, 12].forEach(f => {
+  ;[3, 5, 7, 9, 12].filter(f => f <= FRETS).forEach(f => {
     p.push(`<text x="${colX(f)}" y="${PAD_T - 7}" text-anchor="middle" fill="#504c48" font-size="13" font-family="system-ui,sans-serif">${f}</text>`)
   })
 
@@ -285,6 +285,7 @@ let activeKeyMoodFilter = null
 let selectedKey = null
 let vizTuningId = 'e-standard'
 let vizShowLabels = true
+let vizFirstPosition = false
 
 // Forge state
 let forgePositions = new Map()  // "str,fret" → true
@@ -397,7 +398,7 @@ function updateVisualizer() {
   }
 
   document.getElementById('fretboard-container').innerHTML =
-    renderFretboardSVG(degreeMap, vizTuningId, vizShowLabels)
+    renderFretboardSVG(degreeMap, vizTuningId, vizShowLabels, vizFirstPosition)
   document.getElementById('piano-container').innerHTML =
     renderPianoHTML(degreeMap, vizShowLabels)
   document.getElementById('degree-legend').innerHTML =
@@ -860,6 +861,35 @@ function renderForgeFretboardSVG() {
 }
 
 function updateForge() {
+  // String indicators (× / O / fret number)
+  const tuning = allTunings.find(t => t.id === forgeTuningId) || allTunings[0]
+  if (tuning) {
+    const displayStrings = [...tuning.openNotes].reverse()
+    const indicators = document.getElementById('forge-string-indicators')
+    indicators.innerHTML = ''
+    for (let s = 0; s < 6; s++) {
+      const label = normalizeNote(displayStrings[s].replace(/\d/, ''))
+      const strLabel = document.createElement('span')
+      strLabel.className = 'forge-str-label'
+      strLabel.textContent = s === 0 ? label.toLowerCase() : label
+
+      let fretNum = null
+      forgePositions.forEach((_, key) => {
+        const [ks, kf] = key.split(',').map(Number)
+        if (ks === s) fretNum = kf
+      })
+
+      const ind = document.createElement('div')
+      ind.className = 'forge-string-ind'
+      const marker = document.createElement('span')
+      marker.className = 'forge-string-marker' + (fretNum !== null ? ' active' : '')
+      marker.textContent = fretNum === null ? '×' : fretNum === 0 ? 'O' : fretNum
+      ind.appendChild(strLabel)
+      ind.appendChild(marker)
+      indicators.appendChild(ind)
+    }
+  }
+
   const container = document.getElementById('forge-fretboard-container')
   container.innerHTML = renderForgeFretboardSVG()
 
@@ -908,15 +938,28 @@ function renderForgeProgression() {
     return
   }
   row.innerHTML = ''
+  const last = forgeProgression.length - 1
   forgeProgression.forEach((chord, i) => {
     const chip = document.createElement('div')
     chip.className = 'chord-chip'
     chip.innerHTML =
+      (i > 0    ? `<button class="chord-chip-move" data-dir="-1" aria-label="move left">‹</button>` : '') +
       `<span class="chord-chip-name">${chord.name}</span>` +
+      (i < last  ? `<button class="chord-chip-move" data-dir="1"  aria-label="move right">›</button>` : '') +
       `<button class="chord-chip-remove" aria-label="remove">×</button>`
     chip.querySelector('.chord-chip-name').addEventListener('click', () => {
       forgePositions = new Map(chord.voicing)
       updateForge()
+    })
+    chip.querySelectorAll('.chord-chip-move').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation()
+        const dir = parseInt(btn.dataset.dir)
+        const tmp = forgeProgression[i + dir]
+        forgeProgression[i + dir] = forgeProgression[i]
+        forgeProgression[i] = tmp
+        renderForgeProgression()
+      })
     })
     chip.querySelector('.chord-chip-remove').addEventListener('click', e => {
       e.stopPropagation()
@@ -1109,6 +1152,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('viz-show-labels').addEventListener('change', e => {
     vizShowLabels = e.target.checked
+    updateVisualizer()
+  })
+
+  document.getElementById('viz-first-position').addEventListener('change', e => {
+    vizFirstPosition = e.target.checked
     updateVisualizer()
   })
 
