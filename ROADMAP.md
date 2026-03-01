@@ -4,55 +4,49 @@
 
 ---
 
-## v1 — Core Tool (Sprint 1)
+## Shipped
 
-**Goal:** Working web app with all five sections functional, AI suggestions live.
-
-- [ ] Scaffold: `package.json`, install deps, `npm link` as `song`
-- [ ] Data files: keys (20+), tunings (4), tones (8–10), logic-instruments (12–15), strategies (15)
-- [ ] `server.js` — Express static + 5 GET data routes + stub AI routes
-- [ ] `bin/song.js` — `serve` command
-- [ ] Tab algorithm in `public/script.js` — scale builder, ASCII tab, chord diagrams
-- [ ] `public/index.html` — 5 section tabs, all form elements, output containers
-- [ ] `public/style.css` — full dark studio palette, card-flip CSS
-- [ ] Section wiring: navigation, data loading, Analog, Keys, Digital, Esoteric sections
-- [ ] AI integration: `POST /api/suggest` and `POST /api/lyrics` + client fetch calls
-- [ ] End-to-end test: all sections functional, mood search and lyrics return real Claude output
-
-**Done when:** `song serve` starts on :3232, all five sections work, AI endpoints return real responses.
+### v1 — Core Tool
+- Data files: keys (20+), tunings (4), tones (9), instruments (13), strategies (15)
+- **Grimoire** — key/mode reference with emotional profiles; root + mode free selectors; fretboard (SVG, 0–12) + piano visualizer; diatonic chord tabs (Scale / I–VII) that filter the fretboard to chord notes; scale degree color legend
+- **Suggestions panel** — Analog (Helix tone presets) / Digital (Logic instruments) toggle, filtered by key mood tags
+- **Mood search** — client-side keyword scoring against 45 pre-researched mood profiles; returns key, tone, instrument, and starting point suggestions instantly with no API call
+- **Esoteric Strategies** — 15-card deck with reversed state (~30% draw chance), flip animation, category badge
+- **The Forge** — interactive fretboard (click to select notes); chord identification (16 templates: power through 9ths); chord chips with tab diagrams showing fret/string layout; progression builder; localStorage save and recall of named progressions
+- Static site — no server, no build step; deployed on GitHub Pages
 
 ---
 
-## v2 — Content Depth
+## Next
 
+### Content Depth
 - [ ] Expand strategies deck: 15 → 30 cards
-- [ ] Add more keys: all 12 major + 12 natural minor + 6 modes = ~30 entries
-- [ ] Add more tone presets (8→15) covering more genres
-- [ ] Add more Logic instruments (15→25) — heavier focus on ambient/industrial/folk
-- [ ] Pentatonic and blues scale support in tab generator
+- [ ] Add more keys: fill out all 12 roots × major/minor + remaining modes (~30 total)
+- [ ] More Helix tones (9 → 15) — broader genre coverage
+- [ ] More Logic instruments (13 → 25) — heavier ambient/industrial/folk representation
+- [ ] Pentatonic and blues scale support in the Grimoire visualizer
 
----
+### The Forge — Enhancements
+- [ ] Mute/open string markers (× and O) above the fretboard
+- [ ] Barre chord detection — if all selected frets share a minimum, suggest it's a barre
+- [ ] Export progression as plain-text tab block
+- [ ] Reorder chords in progression (drag or arrow buttons)
 
-## v3 — Save & Session
+### Grimoire — Enhancements
+- [ ] First-position mode toggle (frets 0–4 only) for the visualizer
+- [ ] Relative key links on each key card (e.g. "relative major: G")
+- [ ] Notable uses expanded — more entries, linked to Esoteric cards thematically
 
-- [ ] Save a "session" — current key, tuning, tone, instrument picks → JSON
-- [ ] Load previous session from local storage or a JSON file
-- [ ] Export session as text summary (markdown or plaintext)
-- [ ] Lyrics brainstorm: ability to save/append generated outlines to a file
-
----
-
-## v4 — Integration
-
-- [ ] `wiz creature` style: `song idea <theme>` CLI command — runs mood search and prints suggestions directly in terminal without opening browser
-- [ ] Connect to `~/.wiz-notes.md` — pull recent brain dumps as lyric seeds
-- [ ] Optional: if Folklore Wiki exists, link key entries to wiki stubs
+### Session / Export
+- [ ] Save current key + tuning selection to localStorage (restore on reload)
+- [ ] Export current Grimoire view (key + fretboard) as SVG or PNG
 
 ---
 
 ## Deferred / Unlikely
 
-- MIDI output — scope creep; use Logic directly
-- Audio playback in browser — too heavy for this tool
-- Multi-user or cloud sync — personal tool only
-- Chord progression generator — out of scope until tab algorithm is mature
+- Server / CLI (`song serve`) — dropped in favor of static deployment
+- Lyrics brainstorm section — removed; out of scope
+- MIDI output — too heavy
+- Audio playback in browser — too heavy
+- Multi-user / cloud sync — personal tool only
