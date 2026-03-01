@@ -58,15 +58,12 @@
 ## Next
 
 ### Content
-- [ ] Continue expanding mood profiles (90 → 105+)
-- [ ] Add more keys / modes as needed (all 12 pentatonic minor, chromatic-adjacent modes)
-
-### Content
-- [ ] Continue expanding mood profiles (105 → 120+)
+- [ ] More mood profiles (105 → 120+) — plenty of thematic territory left
+- [ ] More keys / modes — locrian, whole tone, additional pentatonic minor roots with prose profiles
 
 ### The Forge
-- [ ] Progression playback sketch — single strum ordering hint (text-based, no audio)
-- [ ] Voicing quality improvements — generated shapes sometimes include low strings that guitarists would mute; could score by playability
+- [ ] Voicing quality — generated shapes include all strings that contain a chord tone; could add a playability scorer that mutes strings unlikely to be fretted in a real shape
+- [ ] Progression playback sketch — strum order hint (text-based, no audio)
 
 ---
 
