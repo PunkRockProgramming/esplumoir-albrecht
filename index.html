@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>esplumoir-albrecht</title>
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -30,6 +30,7 @@
   <!-- Section Navigation -->
   <nav class="section-nav">
     <button class="nav-tab active" data-section="keys">Grimoire</button>
+    <button class="nav-tab" data-section="forge">The Forge</button>
     <button class="nav-tab" data-section="esoteric">Esoteric Strategies</button>
   </nav>
 
@@ -119,6 +120,55 @@
   </section>
 
   <!-- ============================================================ -->
+  <!-- Forge Section                                                -->
+  <!-- ============================================================ -->
+  <section id="forge" class="section">
+    <div class="section-header">
+      <h2>The Forge</h2>
+      <p class="section-sub">Select notes — identify chords, build progressions</p>
+    </div>
+
+    <div class="forge-controls">
+      <div class="control-group" style="flex-direction:row;align-items:center;gap:8px">
+        <span class="output-label" style="white-space:nowrap">Tuning</span>
+        <select id="forge-tuning"></select>
+      </div>
+      <button id="forge-clear" class="secondary-btn">Clear</button>
+    </div>
+
+    <div id="forge-fretboard-container" class="forge-fretboard-container"></div>
+
+    <div class="forge-chord-panel">
+      <div id="forge-chord-result" class="forge-chord-result hidden">
+        <div class="forge-chord-name-row">
+          <span id="forge-chord-name" class="forge-chord-name"></span>
+          <button id="forge-add-chord" class="secondary-btn">+ progression</button>
+        </div>
+        <div id="forge-chord-notes" class="forge-chord-notes"></div>
+      </div>
+      <div id="forge-chord-hint" class="forge-chord-hint">select 2 or more notes to identify a chord</div>
+    </div>
+
+    <div class="forge-progression-section">
+      <div class="forge-progression-header">
+        <span class="output-label">Current Progression</span>
+        <div class="forge-save-row">
+          <input type="text" id="forge-prog-name" class="forge-name-input" placeholder="name this progression..." />
+          <button id="forge-save-prog" class="secondary-btn">Save</button>
+        </div>
+      </div>
+      <div id="forge-progression-row" class="forge-progression-row">
+        <span class="forge-prog-empty">no chords yet — add from the fretboard above</span>
+      </div>
+    </div>
+
+    <div class="forge-saved-section">
+      <div class="output-label" style="margin-bottom:12px">Saved Progressions</div>
+      <div id="forge-saved-list" class="forge-saved-list"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
   <!-- Esoteric Section                                             -->
   <!-- ============================================================ -->
   <section id="esoteric" class="section">
@@ -142,6 +192,6 @@
     </div>
   </section>
 
-  <script src="/script.js" type="module"></script>
+  <script src="script.js" type="module"></script>
 </body>
 </html>

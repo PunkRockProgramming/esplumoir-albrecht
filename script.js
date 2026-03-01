@@ -40,6 +40,25 @@ const DEGREE_COLORS = [
 
 const DEGREE_NAMES_SHORT = ['1', '2', '3', '4', '5', '6', '7']
 
+const CHORD_TEMPLATES = [
+  { suffix: '5',    intervals: [0, 7] },
+  { suffix: '',     intervals: [0, 4, 7] },
+  { suffix: 'm',    intervals: [0, 3, 7] },
+  { suffix: 'dim',  intervals: [0, 3, 6] },
+  { suffix: 'aug',  intervals: [0, 4, 8] },
+  { suffix: 'sus2', intervals: [0, 2, 7] },
+  { suffix: 'sus4', intervals: [0, 5, 7] },
+  { suffix: 'maj7', intervals: [0, 4, 7, 11] },
+  { suffix: 'm7',   intervals: [0, 3, 7, 10] },
+  { suffix: '7',    intervals: [0, 4, 7, 10] },
+  { suffix: 'dim7', intervals: [0, 3, 6, 9] },
+  { suffix: 'm7b5', intervals: [0, 3, 6, 10] },
+  { suffix: 'add9', intervals: [0, 4, 7, 2] },
+  { suffix: 'maj9', intervals: [0, 4, 7, 11, 2] },
+  { suffix: 'm9',   intervals: [0, 3, 7, 10, 2] },
+  { suffix: '9',    intervals: [0, 4, 7, 10, 2] },
+]
+
 // ============================================================
 // Tab Algorithm
 // ============================================================
@@ -266,6 +285,12 @@ let activeKeyMoodFilter = null
 let selectedKey = null
 let vizTuningId = 'e-standard'
 let vizShowLabels = true
+
+// Forge state
+let forgePositions = new Map()  // "str,fret" → true
+let forgeTuningId  = 'e-standard'
+let forgeProgression = []       // [{ name, voicing: Map }]
+const FORGE_KEY = 'esplumoir-forge'
 
 // ============================================================
 // Data Loading
@@ -705,6 +730,291 @@ function showMoodResult(query) {
 }
 
 // ============================================================
+// The Forge
+// ============================================================
+
+function getForgeNotes() {
+  const tuning = allTunings.find(t => t.id === forgeTuningId) || allTunings[0]
+  if (!tuning) return []
+  const displayStrings = [...tuning.openNotes].reverse()
+  const seen = new Set()
+  const notes = []
+  forgePositions.forEach((_, key) => {
+    const [s, col] = key.split(',').map(Number)
+    const openNote = normalizeNote(displayStrings[s])
+    const openIdx  = CHROMATIC.indexOf(openNote)
+    const note = col === 0 ? openNote : CHROMATIC[(openIdx + col) % 12]
+    if (!seen.has(note)) { seen.add(note); notes.push(note) }
+  })
+  return notes
+}
+
+function identifyChord(notes) {
+  if (notes.length < 2) return null
+  const indices = [...new Set(
+    notes.map(n => CHROMATIC.indexOf(normalizeNote(n))).filter(i => i >= 0)
+  )]
+  if (indices.length < 2) return null
+
+  let best = null, bestScore = -Infinity
+  for (const rootIdx of indices) {
+    const intervals = new Set(indices.map(i => (i - rootIdx + 12) % 12))
+    for (const tmpl of CHORD_TEMPLATES) {
+      const tmplSet = new Set(tmpl.intervals)
+      let matches = 0, misses = 0
+      for (const ti of tmplSet) {
+        if (intervals.has(ti)) matches++
+        else misses++
+      }
+      const extra = [...intervals].filter(i => !tmplSet.has(i)).length
+      const score  = matches - misses * 0.5 - extra * 0.25
+      if (score > bestScore) {
+        bestScore = score
+        best = { root: CHROMATIC[rootIdx], suffix: tmpl.suffix, matches }
+      }
+    }
+  }
+  if (!best || best.matches < 2) return null
+  return `${best.root}${best.suffix}`
+}
+
+function renderForgeFretboardSVG() {
+  const tuning = allTunings.find(t => t.id === forgeTuningId) || allTunings[0]
+  if (!tuning) return ''
+
+  const W = 1400, H = 240
+  const PAD_L = 30, PAD_R = 10, PAD_T = 28, PAD_B = 10
+  const FRETS = 12, STRINGS = 6
+  const COLS = FRETS + 1
+  const COL_W = (W - PAD_L - PAD_R) / COLS
+  const STRING_SPACING = (H - PAD_T - PAD_B) / (STRINGS - 1)
+  const NUT_X = PAD_L + COL_W
+  const DOT_R  = 14
+
+  const colX = col => PAD_L + col * COL_W + COL_W / 2
+  const strY  = s   => PAD_T + s * STRING_SPACING
+
+  const displayStrings = [...tuning.openNotes].reverse()
+  const p = []
+
+  // Fretboard background
+  p.push(`<rect x="${PAD_L}" y="${PAD_T}" width="${W - PAD_L - PAD_R}" height="${H - PAD_T - PAD_B}" fill="#181818" rx="2"/>`)
+
+  // Inlay markers
+  const midY = strY(0) + (H - PAD_T - PAD_B) / 2
+  ;[3, 5, 7, 9].forEach(f => p.push(`<circle cx="${colX(f)}" cy="${midY}" r="8" fill="#252525"/>`))
+  ;[12].forEach(f => {
+    p.push(`<circle cx="${colX(f)}" cy="${strY(1)}" r="8" fill="#252525"/>`)
+    p.push(`<circle cx="${colX(f)}" cy="${strY(4)}" r="8" fill="#252525"/>`)
+  })
+
+  // Strings
+  for (let s = 0; s < STRINGS; s++) {
+    const y  = strY(s)
+    const sw = (0.6 + (STRINGS - 1 - s) * 0.2).toFixed(2)
+    p.push(`<line x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}" stroke="#404040" stroke-width="${sw}"/>`)
+  }
+
+  // Nut
+  p.push(`<line x1="${NUT_X}" y1="${strY(0)}" x2="${NUT_X}" y2="${strY(5)}" stroke="#8a8278" stroke-width="4" stroke-linecap="round"/>`)
+
+  // Fret lines
+  for (let f = 2; f <= FRETS; f++) {
+    const x = PAD_L + f * COL_W
+    p.push(`<line x1="${x}" y1="${strY(0)}" x2="${x}" y2="${strY(5)}" stroke="#303030" stroke-width="1"/>`)
+  }
+
+  // Fret numbers
+  ;[3, 5, 7, 9, 12].forEach(f => {
+    p.push(`<text x="${colX(f)}" y="${PAD_T - 7}" text-anchor="middle" fill="#504c48" font-size="13" font-family="system-ui,sans-serif">${f}</text>`)
+  })
+
+  // String labels
+  for (let s = 0; s < STRINGS; s++) {
+    const note = normalizeNote(displayStrings[s])
+    p.push(`<text x="${PAD_L - 4}" y="${strY(s) + 4}" text-anchor="end" fill="#6e6a64" font-size="13" font-family="Courier New,monospace">${note}</text>`)
+  }
+
+  // Selected note dots
+  for (let s = 0; s < STRINGS; s++) {
+    const openNote = normalizeNote(displayStrings[s])
+    const openIdx  = CHROMATIC.indexOf(openNote)
+    for (let col = 0; col <= FRETS; col++) {
+      if (!forgePositions.has(`${s},${col}`)) continue
+      const note = col === 0 ? openNote : CHROMATIC[(openIdx + col) % 12]
+      const x = colX(col), y = strY(s)
+      p.push(`<circle cx="${x}" cy="${y}" r="${DOT_R}" fill="#c8882a" opacity="0.95"/>`)
+      p.push(`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" fill="#111" font-size="9.5" font-weight="700" font-family="system-ui,sans-serif">${note}</text>`)
+    }
+  }
+
+  // Transparent hit targets (on top)
+  for (let s = 0; s < STRINGS; s++) {
+    for (let col = 0; col <= FRETS; col++) {
+      const x = colX(col), y = strY(s)
+      p.push(`<circle class="forge-hit" cx="${x}" cy="${y}" r="18" fill="transparent" data-str="${s}" data-fret="${col}"/>`)
+    }
+  }
+
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">${p.join('')}</svg>`
+}
+
+function updateForge() {
+  const container = document.getElementById('forge-fretboard-container')
+  container.innerHTML = renderForgeFretboardSVG()
+
+  container.querySelectorAll('.forge-hit').forEach(el => {
+    el.addEventListener('click', () => {
+      const key = `${el.dataset.str},${el.dataset.fret}`
+      if (forgePositions.has(key)) forgePositions.delete(key)
+      else forgePositions.set(key, true)
+      updateForge()
+    })
+  })
+
+  const notes     = getForgeNotes()
+  const chordName = notes.length >= 2 ? identifyChord(notes) : null
+  const resultEl  = document.getElementById('forge-chord-result')
+  const hintEl    = document.getElementById('forge-chord-hint')
+
+  if (notes.length >= 2) {
+    document.getElementById('forge-chord-name').textContent  = chordName || '?'
+    document.getElementById('forge-chord-notes').textContent = notes.join('  ·  ')
+    resultEl.classList.remove('hidden')
+    hintEl.style.display = 'none'
+  } else {
+    resultEl.classList.add('hidden')
+    hintEl.style.display = ''
+  }
+}
+
+function positionsToObject(map) {
+  const obj = {}
+  map.forEach((_, k) => { obj[k] = true })
+  return obj
+}
+
+function objectToPositions(obj) {
+  const map = new Map()
+  Object.keys(obj).forEach(k => map.set(k, true))
+  return map
+}
+
+function renderForgeProgression() {
+  const row = document.getElementById('forge-progression-row')
+  if (!forgeProgression.length) {
+    row.innerHTML = '<span class="forge-prog-empty">no chords yet — add from the fretboard above</span>'
+    return
+  }
+  row.innerHTML = ''
+  forgeProgression.forEach((chord, i) => {
+    const chip = document.createElement('div')
+    chip.className = 'chord-chip'
+    chip.innerHTML =
+      `<span class="chord-chip-name">${chord.name}</span>` +
+      `<button class="chord-chip-remove" aria-label="remove">×</button>`
+    chip.querySelector('.chord-chip-name').addEventListener('click', () => {
+      forgePositions = new Map(chord.voicing)
+      updateForge()
+    })
+    chip.querySelector('.chord-chip-remove').addEventListener('click', e => {
+      e.stopPropagation()
+      forgeProgression.splice(i, 1)
+      renderForgeProgression()
+    })
+    row.appendChild(chip)
+  })
+}
+
+function loadSavedProgressions() {
+  try { return JSON.parse(localStorage.getItem(FORGE_KEY) || '[]') } catch { return [] }
+}
+
+function writeSavedProgressions(list) {
+  try { localStorage.setItem(FORGE_KEY, JSON.stringify(list)) } catch {}
+}
+
+function renderSavedProgressions() {
+  const list  = document.getElementById('forge-saved-list')
+  const saved = loadSavedProgressions()
+  if (!saved.length) {
+    list.innerHTML = '<span class="forge-prog-empty">no saved progressions</span>'
+    return
+  }
+  list.innerHTML = ''
+  saved.forEach((prog, i) => {
+    const row = document.createElement('div')
+    row.className = 'saved-prog-row'
+    row.innerHTML = `
+      <div class="saved-prog-info">
+        <span class="saved-prog-name">${prog.name}</span>
+        <span class="saved-prog-chords">${prog.chords.map(c => c.name).join(' — ')}</span>
+      </div>
+      <div class="saved-prog-actions">
+        <button class="secondary-btn" data-action="load">Load</button>
+        <button class="secondary-btn" data-action="delete">Delete</button>
+      </div>`
+    row.querySelector('[data-action="load"]').addEventListener('click', () => {
+      forgeProgression = prog.chords.map(c => ({ name: c.name, voicing: objectToPositions(c.voicing) }))
+      renderForgeProgression()
+      if (forgeProgression.length) {
+        forgePositions = new Map(forgeProgression[0].voicing)
+        updateForge()
+      }
+    })
+    row.querySelector('[data-action="delete"]').addEventListener('click', () => {
+      const updated = loadSavedProgressions()
+      updated.splice(i, 1)
+      writeSavedProgressions(updated)
+      renderSavedProgressions()
+    })
+    list.appendChild(row)
+  })
+}
+
+function buildForge() {
+  const forgeSelect = document.getElementById('forge-tuning')
+  allTunings.forEach(t => {
+    const opt = document.createElement('option')
+    opt.value = t.id; opt.textContent = t.name
+    forgeSelect.appendChild(opt)
+  })
+  forgeSelect.value = forgeTuningId
+  forgeSelect.addEventListener('change', () => {
+    forgeTuningId = forgeSelect.value
+    forgePositions.clear()
+    updateForge()
+  })
+
+  document.getElementById('forge-clear').addEventListener('click', () => {
+    forgePositions.clear()
+    updateForge()
+  })
+
+  document.getElementById('forge-add-chord').addEventListener('click', () => {
+    const notes = getForgeNotes()
+    if (notes.length < 2) return
+    forgeProgression.push({ name: identifyChord(notes) || '?', voicing: new Map(forgePositions) })
+    renderForgeProgression()
+  })
+
+  document.getElementById('forge-save-prog').addEventListener('click', () => {
+    if (!forgeProgression.length) return
+    const nameInput = document.getElementById('forge-prog-name')
+    const name = nameInput.value.trim() || `Progression ${loadSavedProgressions().length + 1}`
+    const saved = loadSavedProgressions()
+    saved.push({ name, chords: forgeProgression.map(c => ({ name: c.name, voicing: positionsToObject(c.voicing) })) })
+    writeSavedProgressions(saved)
+    nameInput.value = ''
+    renderSavedProgressions()
+  })
+
+  updateForge()
+  renderForgeProgression()
+  renderSavedProgressions()
+}
+
+// ============================================================
 // Init
 // ============================================================
 
@@ -788,6 +1098,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (val) showMoodResult(val)
     }
   })
+
+  // Forge
+  buildForge()
 
   // Initial section
   switchSection('keys')
