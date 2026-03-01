@@ -6,6 +6,12 @@
 
 ## Shipped
 
+### v4 — Content Depth + SVG Export
+- Tones expanded 9 → 15: shoegaze-wall, post-punk-chorus, jazz-clean, psych-fuzz, lo-fi-tape, noise-feedback
+- Instruments expanded 13 → 20: vintage-keys-rhodes, alchemy-breath, sculpture-mallet, es2-sub-drone, alchemy-folk-strings, retro-synth-dark-lead, alchemy-ritual-bells
+- Mood profiles expanded 49 → 64: +15 profiles covering fractured, autumn, tender, cold revenge, dreamlike, gothic, triumph, bunker, childhood, hunger, sacred, chaos, aftermath, coastal, folk storytelling
+- Grimoire: SVG fretboard export — `⬇ SVG` button downloads `fretboard-{key}.svg` with current tuning/labels/position applied
+
 ### v1 — Core Tool
 - Data files: keys (20+), tunings (4), tones (9), instruments (13), strategies (15), mood profiles (45)
 - **Grimoire** — key/mode reference with emotional profiles; root + mode free selectors; SVG fretboard (0–12) + piano visualizer; diatonic chord tabs (Scale / I–VII) that filter fretboard to chord notes; scale degree color legend; tuning selector
@@ -34,12 +40,8 @@
 ## Next
 
 ### Content
-- [ ] More Helix tones (9 → 15) — broader genre coverage
-- [ ] More Logic instruments (13 → 25) — heavier ambient / industrial / folk
-- [ ] Expand mood profiles (45 → 60+)
-
-### Grimoire
-- [ ] Export current Grimoire view (key + fretboard) as SVG download
+- [ ] More Logic instruments (20 → 25) — remaining gaps
+- [ ] Expand mood profiles (64 → 75+)
 
 ### The Forge
 - [ ] Smarter chord identification — inversion awareness, slash chords (e.g. G/B)
