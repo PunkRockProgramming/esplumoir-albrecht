@@ -17,14 +17,17 @@ const ENHARMONIC = {
 }
 
 const SCALE_INTERVALS = {
-  major:           [0, 2, 4, 5, 7, 9, 11],
-  minor:           [0, 2, 3, 5, 7, 8, 10],
-  dorian:          [0, 2, 3, 5, 7, 9, 10],
-  phrygian:        [0, 1, 3, 5, 7, 8, 10],
-  lydian:          [0, 2, 4, 6, 7, 9, 11],
-  mixolydian:      [0, 2, 4, 5, 7, 9, 10],
-  harmonicMinor:   [0, 2, 3, 5, 7, 8, 11],
-  phrygianDominant:[0, 1, 4, 5, 7, 8, 10]
+  major:            [0, 2, 4, 5, 7, 9, 11],
+  minor:            [0, 2, 3, 5, 7, 8, 10],
+  dorian:           [0, 2, 3, 5, 7, 9, 10],
+  phrygian:         [0, 1, 3, 5, 7, 8, 10],
+  lydian:           [0, 2, 4, 6, 7, 9, 11],
+  mixolydian:       [0, 2, 4, 5, 7, 9, 10],
+  harmonicMinor:    [0, 2, 3, 5, 7, 8, 11],
+  phrygianDominant: [0, 1, 4, 5, 7, 8, 10],
+  pentatonicMajor:  [0, 2, 4, 7, 9],
+  pentatonicMinor:  [0, 3, 5, 7, 10],
+  blues:            [0, 3, 5, 6, 7, 10],
 }
 
 // Scale degree colors: 1–7 (index 0–6)
@@ -82,6 +85,7 @@ function computeDiatonicChords(root, scaleType) {
   const rootIdx = CHROMATIC.indexOf(normalizedRoot)
   const intervals = SCALE_INTERVALS[scaleType]
   if (!intervals || rootIdx === -1) return []
+  if (intervals.length < 6) return []
 
   const scaleNotes = intervals.map(i => CHROMATIC[(rootIdx + i) % 12])
 
@@ -291,7 +295,8 @@ let vizFirstPosition = false
 let forgePositions = new Map()  // "str,fret" → true
 let forgeTuningId  = 'e-standard'
 let forgeProgression = []       // [{ name, voicing: Map }]
-const FORGE_KEY = 'esplumoir-forge'
+const FORGE_KEY   = 'esplumoir-forge'
+const SESSION_KEY = 'esplumoir-session'
 
 // ============================================================
 // Data Loading
@@ -348,7 +353,9 @@ function renderTones(moodFilter = []) {
 const MODE_LABELS = {
   major: 'Major', minor: 'Minor', dorian: 'Dorian', phrygian: 'Phrygian',
   lydian: 'Lydian', mixolydian: 'Mixolydian', harmonicMinor: 'Harmonic Minor',
-  phrygianDominant: 'Phrygian Dominant'
+  phrygianDominant: 'Phrygian Dominant',
+  pentatonicMajor: 'Pentatonic Major', pentatonicMinor: 'Pentatonic Minor',
+  blues: 'Blues'
 }
 
 function makeSyntheticKey(root, mode) {
@@ -412,6 +419,16 @@ function renderChordTabs() {
     ? computeDiatonicChords(selectedKey.root, selectedKey.mode)
     : []
 
+  // For pentatonic/blues scales (< 6 notes), only show the Scale tab
+  if (!currentDiatonicChords.length) {
+    selectedChordIdx = null
+    const scaleBtn = document.createElement('button')
+    scaleBtn.className = 'chord-tab active'
+    scaleBtn.textContent = 'Scale'
+    container.appendChild(scaleBtn)
+    return
+  }
+
   const activate = (btn, idx) => {
     container.querySelectorAll('.chord-tab').forEach(b => b.classList.remove('active'))
     btn.classList.add('active')
@@ -447,6 +464,12 @@ function updateSuggestions() {
   }
 }
 
+function saveSession() {
+  try {
+    localStorage.setItem(SESSION_KEY, JSON.stringify({ keyId: selectedKey?.id || null, tuningId: vizTuningId }))
+  } catch {}
+}
+
 function selectKey(keyData) {
   selectedKey = keyData
   selectedChordIdx = null
@@ -466,6 +489,9 @@ function selectKey(keyData) {
   renderChordTabs()
   updateVisualizer()
   updateSuggestions()
+
+  // Persist — only card-selected keys have a non-null id
+  if (keyData.id) saveSession()
 }
 
 function renderKeys() {
@@ -481,6 +507,16 @@ function renderKeys() {
     const card = document.createElement('div')
     card.className = 'key-card' + (selectedKey && selectedKey.id === key.id ? ' selected' : '')
     card.dataset.keyId = key.id
+
+    const relatedHtml = (key.relatedKeys && key.relatedKeys.length)
+      ? `<div class="related-keys">related: ${key.relatedKeys.map(name => {
+          const match = allKeys.find(k => k.name === name)
+          return match
+            ? `<span class="related-key-link" data-key-id="${match.id}">${name}</span>`
+            : `<span>${name}</span>`
+        }).join(', ')}</div>`
+      : ''
+
     card.innerHTML = `
       <div class="card-header">
         <span class="card-name">${key.name}</span>
@@ -488,9 +524,19 @@ function renderKeys() {
       </div>
       <p class="emotional-profile">${key.emotionalProfile}</p>
       <p class="card-desc">${key.notableUses}</p>
+      ${relatedHtml}
       <div class="tag-row">${key.moods.map(m => `<span class="tag">${m}</span>`).join('')}</div>
     `
     card.addEventListener('click', () => selectKey(key))
+
+    card.querySelectorAll('.related-key-link').forEach(link => {
+      link.addEventListener('click', e => {
+        e.stopPropagation()
+        const target = allKeys.find(k => k.id === link.dataset.keyId)
+        if (target) selectKey(target)
+      })
+    })
+
     container.appendChild(card)
   })
 }
@@ -908,7 +954,22 @@ function updateForge() {
   const hintEl    = document.getElementById('forge-chord-hint')
 
   if (notes.length >= 2) {
-    document.getElementById('forge-chord-name').textContent  = chordName || '?'
+    // Barre detection: find the lowest fret > 0 that appears on 2+ strings
+    const fretCounts = new Map()
+    forgePositions.forEach((_, key) => {
+      const fret = parseInt(key.split(',')[1])
+      if (fret > 0) fretCounts.set(fret, (fretCounts.get(fret) || 0) + 1)
+    })
+    let barreLabel = ''
+    fretCounts.forEach((count, fret) => {
+      if (count >= 2) {
+        const minBarre = barreLabel ? Math.min(parseInt(barreLabel), fret) : fret
+        barreLabel = String(minBarre)
+      }
+    })
+
+    const displayName = (chordName || '?') + (barreLabel ? ` (barre ${barreLabel})` : '')
+    document.getElementById('forge-chord-name').textContent  = displayName
     document.getElementById('forge-chord-notes').textContent = notes.join('  ·  ')
     resultEl.classList.remove('hidden')
     hintEl.style.display = 'none'
@@ -932,6 +993,8 @@ function objectToPositions(obj) {
 
 function renderForgeProgression() {
   const row = document.getElementById('forge-progression-row')
+  const exportBtn = document.getElementById('forge-export-tab')
+  if (exportBtn) exportBtn.disabled = !forgeProgression.length
   if (!forgeProgression.length) {
     row.innerHTML = '<span class="forge-prog-empty">no chords yet — add from the fretboard above</span>'
     renderForgeProgTabs()
@@ -1063,6 +1126,73 @@ function renderSavedProgressions() {
   })
 }
 
+function exportForgeTab() {
+  if (!forgeProgression.length) return
+
+  const tuning = allTunings.find(t => t.id === forgeTuningId) || allTunings[0]
+  const displayStrings = [...tuning.openNotes].reverse()
+  const stringLabels = displayStrings.map((n, i) => {
+    const letter = normalizeNote(n.replace(/\d/, ''))
+    return i === 0 ? letter.toLowerCase() : letter
+  })
+
+  // Build columns: each chord is a column of 6 fret values
+  const cols = forgeProgression.map(chord => {
+    return Array.from({ length: 6 }, (_, s) => {
+      let fretNum = null
+      chord.voicing.forEach((_, key) => {
+        const [ks, kf] = key.split(',').map(Number)
+        if (ks === s) fretNum = kf
+      })
+      return fretNum
+    })
+  })
+
+  // Determine width of each column (max of fret digits, chord name, min 2)
+  const colWidths = forgeProgression.map((chord, ci) => {
+    const maxFretLen = Math.max(...cols[ci].map(f => f === null ? 1 : String(f).length))
+    return Math.max(maxFretLen, chord.name.length, 2)
+  })
+
+  // Build tab lines (one per string)
+  const lines = stringLabels.map((label, s) => {
+    const cells = cols.map((col, ci) => {
+      const w = colWidths[ci]
+      const fret = col[s]
+      const val = fret === null ? '-'.repeat(w) : String(fret).padEnd(w, '-')
+      return val
+    })
+    return `${label} |--${cells.join('--|--')}--|`
+  })
+
+  // Chord name row — each name centered under its column
+  const nameRow = forgeProgression.map((chord, ci) => {
+    return chord.name.padEnd(colWidths[ci])
+  })
+  lines.push(`  |  ${nameRow.join('   ')}`)
+
+  const text = lines.join('\n')
+
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('forge-export-tab')
+    btn.textContent = 'copied!'
+    setTimeout(() => { btn.textContent = 'Export tab' }, 1500)
+  }).catch(() => {
+    // fallback: select a hidden textarea
+    const ta = document.createElement('textarea')
+    ta.value = text
+    ta.style.position = 'fixed'
+    ta.style.opacity = '0'
+    document.body.appendChild(ta)
+    ta.select()
+    document.execCommand('copy')
+    document.body.removeChild(ta)
+    const btn = document.getElementById('forge-export-tab')
+    btn.textContent = 'copied!'
+    setTimeout(() => { btn.textContent = 'Export tab' }, 1500)
+  })
+}
+
 function buildForge() {
   const forgeSelect = document.getElementById('forge-tuning')
   allTunings.forEach(t => {
@@ -1088,6 +1218,8 @@ function buildForge() {
     forgeProgression.push({ name: identifyChord(notes) || '?', voicing: new Map(forgePositions) })
     renderForgeProgression()
   })
+
+  document.getElementById('forge-export-tab').addEventListener('click', exportForgeTab)
 
   document.getElementById('forge-save-prog').addEventListener('click', () => {
     if (!forgeProgression.length) return
@@ -1148,6 +1280,7 @@ document.addEventListener('DOMContentLoaded', () => {
   vizTuningSelect.addEventListener('change', () => {
     vizTuningId = vizTuningSelect.value
     updateVisualizer()
+    saveSession()
   })
 
   document.getElementById('viz-show-labels').addEventListener('change', e => {
@@ -1163,9 +1296,28 @@ document.addEventListener('DOMContentLoaded', () => {
   buildKeyFilters()
   renderKeys()
 
-  // Default: select E minor (also populates suggestions)
-  const defaultKey = allKeys.find(k => k.id === 'e-minor') || allKeys[0]
-  if (defaultKey) selectKey(defaultKey)
+  // Restore session or fall back to E minor
+  let sessionRestored = false
+  try {
+    const session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null')
+    if (session) {
+      if (session.tuningId) {
+        const savedTuning = allTunings.find(t => t.id === session.tuningId)
+        if (savedTuning) {
+          vizTuningId = session.tuningId
+          vizTuningSelect.value = vizTuningId
+        }
+      }
+      if (session.keyId) {
+        const savedKey = allKeys.find(k => k.id === session.keyId)
+        if (savedKey) { selectKey(savedKey); sessionRestored = true }
+      }
+    }
+  } catch {}
+  if (!sessionRestored) {
+    const defaultKey = allKeys.find(k => k.id === 'e-minor') || allKeys[0]
+    if (defaultKey) selectKey(defaultKey)
+  }
 
   // Suggestions toggle
   document.querySelectorAll('.toggle-btn').forEach(btn => {

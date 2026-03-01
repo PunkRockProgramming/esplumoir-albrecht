@@ -357,6 +357,23 @@ select:focus, textarea:focus { border-color: var(--accent); }
   font-style: italic;
 }
 
+.related-keys {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.related-key-link {
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--accent-dim);
+}
+
+.related-key-link:hover {
+  color: #e0a040;
+}
+
 .tag-row {
   display: flex;
   flex-wrap: wrap;
