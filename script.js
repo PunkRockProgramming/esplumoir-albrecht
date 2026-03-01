@@ -919,6 +919,23 @@ function renderForgeFretboardSVG() {
   return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">${p.join('')}</svg>`
 }
 
+function getForgeBassNote() {
+  const tuning = allTunings.find(t => t.id === forgeTuningId) || allTunings[0]
+  if (!tuning) return null
+  const displayStrings = [...tuning.openNotes].reverse()
+  let bassStr = -1
+  forgePositions.forEach((_, key) => {
+    const s = parseInt(key.split(',')[0])
+    if (s > bassStr) bassStr = s  // higher index = lower-pitched string
+  })
+  if (bassStr < 0) return null
+  const bassKey = [...forgePositions.keys()].find(k => parseInt(k.split(',')[0]) === bassStr)
+  const col = parseInt(bassKey.split(',')[1])
+  const openNote = normalizeNote(displayStrings[bassStr])
+  const openIdx  = CHROMATIC.indexOf(openNote)
+  return col === 0 ? openNote : CHROMATIC[(openIdx + col) % 12]
+}
+
 function updateForge() {
   // String indicators (× / O / fret number)
   const tuning = allTunings.find(t => t.id === forgeTuningId) || allTunings[0]
@@ -981,7 +998,10 @@ function updateForge() {
       }
     })
 
-    const displayName = (chordName || '?') + (barreLabel ? ` (barre ${barreLabel})` : '')
+    const bassNote  = chordName ? getForgeBassNote() : null
+    const chordRoot = chordName ? chordName.replace(/[^A-G#b].*/, '') : null
+    const slashSuffix = (bassNote && chordRoot && bassNote !== chordRoot) ? `/${bassNote}` : ''
+    const displayName = (chordName || '?') + slashSuffix + (barreLabel ? ` (barre ${barreLabel})` : '')
     document.getElementById('forge-chord-name').textContent  = displayName
     document.getElementById('forge-chord-notes').textContent = notes.join('  ·  ')
     resultEl.classList.remove('hidden')

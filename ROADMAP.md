@@ -6,6 +6,11 @@
 
 ## Shipped
 
+### v5 — Content Depth + Slash Chords
+- Instruments expanded 20 → 25: alchemy-piano (Steinway Grand), alchemy-mellotron (Mellotron Mk II), retro-synth-poly (Poly Analog Pad), sculpture-upright-bass (Upright Bass), ultrabeat-world-perc (World Percussion)
+- Mood profiles expanded 64 → 75: +11 profiles covering claustrophobia, spring/rebirth, shame/guilt, surveillance, exhaustion/burnout, isolation in a crowd, transformation, science fiction, recklessness/youth, predator/hunting, home/returning home
+- Forge: slash chord / inversion detection — `getForgeBassNote()` finds the lowest-pitched selected string; appends `/BassNote` when bass differs from chord root (e.g. `G/B`, `Am/E`, `D/F#`)
+
 ### v4 — Content Depth + SVG Export
 - Tones expanded 9 → 15: shoegaze-wall, post-punk-chorus, jazz-clean, psych-fuzz, lo-fi-tape, noise-feedback
 - Instruments expanded 13 → 20: vintage-keys-rhodes, alchemy-breath, sculpture-mallet, es2-sub-drone, alchemy-folk-strings, retro-synth-dark-lead, alchemy-ritual-bells
@@ -40,11 +45,12 @@
 ## Next
 
 ### Content
-- [ ] More Logic instruments (20 → 25) — remaining gaps
-- [ ] Expand mood profiles (64 → 75+)
+- [ ] Continue expanding mood profiles (75 → 90+)
+- [ ] Add more tunings (open D, open G, C standard)
 
 ### The Forge
-- [ ] Smarter chord identification — inversion awareness, slash chords (e.g. G/B)
+- [ ] Chord suggestions — given current voicing, suggest diatonic next chords in a key
+- [ ] Named progression export to text file (not just clipboard)
 
 ---
 

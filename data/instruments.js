@@ -238,5 +238,65 @@ export const INSTRUMENTS = [
     keyTags: ['any — single notes only, not chords'],
     midiNotes: 'C3–C6',
     description: 'Tuned metal percussion with long, complex decay. Each note rings for seconds — so sparse use is essential. One strike per phrase. Works as punctuation between guitar lines or as a time-keeper in extremely slow passages. The silence between strikes carries as much information as the strike itself.'
+  },
+  {
+    id: 'alchemy-piano',
+    name: 'Steinway Grand',
+    plugin: 'Alchemy',
+    preset: 'Steinway Grand',
+    category: 'keys',
+    moodTags: ['introspective', 'brooding', 'cinematic', 'classical', 'dark'],
+    genreTags: ['cinematic', 'post-classical', 'dark pop', 'neo-classical', 'ambient'],
+    keyTags: ['any — adapts across all keys'],
+    midiNotes: 'A0–C8',
+    description: 'Dark concert-hall piano with medium sustain and slight room decay. The low register has genuine weight; the upper register has clarity without brightness. Use for solo piano writing, or as the harmonic anchor underneath other instruments. Does not disappear in a mix — earns its place.'
+  },
+  {
+    id: 'alchemy-mellotron',
+    name: 'Mellotron Mk II',
+    plugin: 'Alchemy',
+    preset: 'Mellotron Strings/Flute',
+    category: 'strings',
+    moodTags: ['haunting', 'vintage', 'psychedelic', 'eerie', 'warm'],
+    genreTags: ['psychedelic', 'prog rock', 'folk rock', 'cinematic', 'dark folk'],
+    keyTags: ['G major', 'D mixolydian', 'A minor', 'B minor', 'C major'],
+    midiNotes: 'C2–G5',
+    description: 'Tape-sampled strings and flute blend with authentic Mellotron instability — slight pitch drift, tape hiss at the edges, a warmth that sounds like 1967 bleeding into now. Best for sustained chords and slow melodic lines. The imperfection is the feature: it sounds like something that should have died but didn\'t.'
+  },
+  {
+    id: 'retro-synth-poly',
+    name: 'Poly Analog Pad',
+    plugin: 'Retro Synth',
+    preset: 'Warm Poly',
+    category: 'pad',
+    moodTags: ['warm', 'vintage', 'dense', 'lush', 'nostalgic'],
+    genreTags: ['synthwave', 'new wave', 'dream pop', 'ambient', 'post-punk'],
+    keyTags: ['any — polyphonic across all keys'],
+    midiNotes: 'C2–C6',
+    description: 'Warm polyphonic analog chords with slow attack and moderate release. Sounds like a Juno-60 playing something it half-remembers. Use for held chord beds where the harmonics slowly emerge. Good at the major 7 and minor 7 territory — chords that feel unresolved but not unstable.'
+  },
+  {
+    id: 'sculpture-upright-bass',
+    name: 'Upright Bass',
+    plugin: 'Sculpture',
+    preset: 'Acoustic Bass',
+    category: 'bass',
+    moodTags: ['warm', 'intimate', 'jazz', 'folk', 'earthy'],
+    genreTags: ['jazz', 'folk', 'dark folk', 'Americana', 'cinematic'],
+    keyTags: ['any — follows song root'],
+    midiNotes: 'E1–G3',
+    description: 'Physical model double bass with a woody, resonant attack and natural string buzz. Sits in the low-mid range rather than subfrequencies — you hear the instrument, not just the note. Best at slower tempos where each note can breathe. Pairs naturally with acoustic guitar and folk strings. The gut-string quality makes it feel like something played in a room, not produced.'
+  },
+  {
+    id: 'ultrabeat-world-perc',
+    name: 'World Percussion',
+    plugin: 'Ultrabeat',
+    preset: 'World Kit',
+    category: 'percussion',
+    moodTags: ['ritualistic', 'earthy', 'meditative', 'driving', 'folk'],
+    genreTags: ['world', 'folk', 'dark folk', 'ambient', 'cinematic'],
+    keyTags: ['any — rhythmic element'],
+    midiNotes: 'C1–B2',
+    description: 'Tabla and frame drum kit — dry, immediate, recorded close. The tabla has a tuned quality that blends into harmonic arrangements; the frame drum provides the pulse. Unlike electronic percussion, this breathes with the performance. Works for meditative rhythmic patterns at any tempo, or as contrast to synthetic elements.'
   }
 ]

@@ -450,5 +450,82 @@ export const MOOD_MAP = [
     tones: ['acoustic-sim', 'jazz-clean'],
     instruments: ['alchemy-folk-strings', 'alchemy-ritual-bells', 'vintage-keys-rhodes'],
     startingPoint: 'DADGAD or open G. Modal — Dorian or Mixolydian for that ancient quality. Folk strings doubling the guitar at unison or octave. Ritual bells for scene breaks. Let the song breathe between verses — the silence is where the listener makes pictures.'
+  },
+  {
+    keywords: ['claustrophobia', 'claustrophobic', 'trapped', 'confined', 'no escape', 'walls closing', 'tight', 'suffocate', 'boxed in', 'enclosed', 'cramped', 'no way out'],
+    keys: ['c-sharp-minor', 'e-phrygian', 'a-harmonic-minor'],
+    tones: ['high-gain-modern', 'doom-fuzz'],
+    instruments: ['es2-sub-drone', 'es2-texture', 'alchemy-dark-pad'],
+    startingPoint: 'E Phrygian or C# minor — the half-step semitone feels like a wall. Build density rather than dynamics: add layers without giving the music room to breathe. Sub drone on the root keeps the low end pressurized. Do not resolve the tension.'
+  },
+  {
+    keywords: ['spring', 'rebirth', 'renewal', 'new growth', 'bloom', 'thaw', 'emerging', 'beginning again', 'hope', 'green', 'awakening', 'revival', 'fresh start'],
+    keys: ['g-major', 'f-major', 'a-dorian'],
+    tones: ['clean-fender', 'acoustic-sim'],
+    instruments: ['alchemy-mellotron', 'alchemy-shimmer', 'alchemy-pad-lush'],
+    startingPoint: 'G or F major with open voicings — let the strings ring. Mellotron flute underneath for a warmth that feels like something waking up. Avoid percussion at first; let the melody carry before the rhythm enters. The arrival is the point.'
+  },
+  {
+    keywords: ['shame', 'ashamed', 'guilt', 'guilty', 'humiliation', 'humiliated', 'disgrace', 'disgraced', 'remorse', 'regret', 'self-loathing', 'worthless', 'failure'],
+    keys: ['d-minor', 'f-sharp-minor', 'a-minor'],
+    tones: ['edge-of-breakup', 'acoustic-sim'],
+    instruments: ['alchemy-piano', 'alchemy-breath', 'string-ensemble'],
+    startingPoint: 'D minor, slow and exposed. Piano plays the chord and holds — no melodic movement, just the harmony sitting there. Breath pad underneath: something human and barely audible. This music knows what it did.'
+  },
+  {
+    keywords: ['surveillance', 'watched', 'watching', 'observed', 'monitored', 'tracked', 'visibility', 'seen', 'exposed', 'panopticon', 'cameras', 'scrutiny', 'no privacy'],
+    keys: ['c-sharp-minor', 'f-sharp-minor', 'e-phrygian'],
+    tones: ['post-punk-chorus', 'high-gain-modern'],
+    instruments: ['retro-synth-dark-lead', 'retro-synth-arp', 'es2-texture'],
+    startingPoint: 'C# minor or E Phrygian with a cold, chorused guitar. Arpeggiator at 16th notes — something mechanical, regular, without emotion. Dark lead synth on the melodic line: it doesn\'t hide, it doesn\'t run. Noise texture underneath like static on a line that isn\'t quite secure.'
+  },
+  {
+    keywords: ['exhaustion', 'burnout', 'tired', 'emptied', 'drained', 'depleted', 'nothing left', 'worn out', 'run down', 'bone tired', 'fatigue', 'overworked'],
+    keys: ['d-minor', 'a-minor', 'g-dorian'],
+    tones: ['lo-fi-tape', 'edge-of-breakup'],
+    instruments: ['alchemy-piano', 'alchemy-breath', 'alchemy-folk-strings'],
+    startingPoint: 'D minor at very slow tempo. Piano chords with long spacing — each one feels like an effort. Tape saturation for the sense of something degraded. Do not build to anything. This music ends where it started, just quieter.'
+  },
+  {
+    keywords: ['crowd', 'crowded', 'isolation in crowd', 'surrounded but alone', 'invisible', 'among people', 'public loneliness', 'anonymous', 'nobody sees me', 'lost in the noise'],
+    keys: ['a-minor', 'd-dorian', 'c-sharp-minor'],
+    tones: ['post-punk-chorus', 'ambient-reverb'],
+    instruments: ['alchemy-mellotron', 'alchemy-dark-pad', 'retro-synth-arp'],
+    startingPoint: 'Dense, layered texture — Mellotron strings underneath to suggest a mass of sound around a melody. The arpeggiator represents the noise of other people. The guitar melody sits on top: clear, singular, unheard. Reverb long enough that individual notes blur into the atmosphere.'
+  },
+  {
+    keywords: ['transformation', 'metamorphosis', 'becoming', 'changing', 'change', 'shifting', 'morphing', 'transition', 'evolving', 'shed', 'unrecognizable', 'no longer', 'becoming someone else'],
+    keys: ['a-dorian', 'd-mixolydian', 'eb-major'],
+    tones: ['ambient-reverb', 'psych-fuzz'],
+    instruments: ['alchemy-shimmer', 'sculpture-glass', 'alchemy-mellotron'],
+    startingPoint: 'Start in A Dorian with clean, recognizable chord shapes. Gradually introduce shimmer pad and glass resonator — let the tonality blur at the edges. By the end, the original melody should be unrecognizable. The transformation is in the arrangement, not just the notes.'
+  },
+  {
+    keywords: ['science fiction', 'sci-fi', 'future', 'futuristic', 'cyberpunk', 'space', 'technology', 'artificial', 'synthetic', 'dystopia', 'android', 'machine intelligence', 'neon dystopia'],
+    keys: ['c-sharp-minor', 'e-minor', 'd-dorian'],
+    tones: ['post-punk-chorus', 'high-gain-modern'],
+    instruments: ['retro-synth-dark-lead', 'retro-synth-arp', 'es2-sub-drone'],
+    startingPoint: 'Cold, precise, electronic. C# minor or D Dorian with a chorused guitar that sounds like it was designed, not played. Dark lead synth on the melodic line. Arpeggiator at a locked tempo — the grid is the aesthetic. Sub drone for the weight of infrastructure. This is a world without mercy but with very good reverb.'
+  },
+  {
+    keywords: ['reckless', 'recklessness', 'youth', 'young and stupid', 'invincible', 'nothing to lose', 'impulse', 'impulsive', 'no consequences', 'drunk on it', 'abandon', 'careless abandon'],
+    keys: ['d-mixolydian', 'e-minor', 'g-major'],
+    tones: ['crunch-marshall', 'psych-fuzz'],
+    instruments: ['alchemy-organ', 'retro-synth-arp', 'vintage-clav'],
+    startingPoint: 'Mixolydian riff, fast, slightly ahead of the beat. Organ underneath for the feeling that this is also ceremonial — recklessness as ritual. Don\'t lock the tempo too hard; let it rush. The imprecision is the point. Play like you believe nothing will go wrong.'
+  },
+  {
+    keywords: ['predator', 'hunting', 'stalking', 'prey', 'circling', 'patient threat', 'dangerous calm', 'menace', 'before the attack', 'closing in', 'inevitable'],
+    keys: ['b-phrygian-dominant', 'e-phrygian', 'c-sharp-minor'],
+    tones: ['doom-fuzz', 'high-gain-modern'],
+    instruments: ['es2-sub-drone', 'alchemy-dark-pad', 'retro-synth-dark-lead'],
+    startingPoint: 'Phrygian Dominant or E Phrygian at slow, deliberate tempo. The danger is in the patience — do not rush. Sub drone on the root: constant pressure. Dark pad underneath like shadow moving. Guitar enters when it\'s ready, not when the listener expects it.'
+  },
+  {
+    keywords: ['home', 'returning home', 'homecoming', 'coming back', 'familiar', 'where I belong', 'roots', 'return', 'place I know', 'the old house', 'welcome back'],
+    keys: ['g-major', 'c-major', 'f-major', 'd-mixolydian'],
+    tones: ['acoustic-sim', 'clean-fender'],
+    instruments: ['alchemy-piano', 'alchemy-folk-strings', 'alchemy-pad-lush'],
+    startingPoint: 'G or C major with familiar, open chord shapes — nothing clever. Piano for the warmth of a lit room. Folk strings doubling the melody at a distance, like something half-remembered. Play at a tempo that feels like walking. The song should feel like it was always there.'
   }
 ]
