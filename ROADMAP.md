@@ -15,16 +15,16 @@
 - **The Forge** — interactive SVG fretboard (click to select notes); chord identification (16 templates: power → 9ths); chord chips + tab frames showing voicing; progression builder; localStorage save and recall of named progressions
 - Static site — no server, no build step, no dependencies; deployed on GitHub Pages
 
+### v2 — Content Depth + Forge Polish
+- Strategies deck expanded 15 → 30 cards (balanced across 6 categories)
+- Keys expanded 20 → 32 entries — all 12 major + all 12 minor roots covered with full `emotionalProfile` prose
+- Forge: mute/open string indicators above fretboard (× / O / fret number, amber when active)
+- Forge: chord reorder arrows (‹ ›) on progression chips
+- Grimoire: first-position mode toggle (frets 0–4, inlay markers clip to range)
+
 ---
 
 ## Next
-
-### Sprint 2 (active)
-- [in-sprint] Expand strategies deck: 15 → 30 cards
-- [in-sprint] Fill all 12 major + 12 minor keys (complete root × mode coverage)
-- [in-sprint] Forge: mute / open string indicators above fretboard (× / O)
-- [in-sprint] Forge: reorder chords in progression (← → on chips)
-- [in-sprint] Grimoire: first-position mode toggle (frets 0–4 only)
 
 ### Content
 - [ ] More Helix tones (9 → 15) — broader genre coverage
@@ -33,7 +33,7 @@
 
 ### The Forge
 - [ ] Export progression as plain-text tab block (copy to clipboard)
-- [ ] Barre chord detection — if all selected frets share a minimum fret, label it a barre
+- [ ] Barre chord detection — if all selected frets share a minimum, label as barre
 
 ### Grimoire
 - [ ] Relative key links on each key card (e.g. "relative major: G")
