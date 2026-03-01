@@ -345,5 +345,110 @@ export const MOOD_MAP = [
     tones: ['crunch-marshall', 'high-gain-modern'],
     instruments: ['alchemy-organ', 'percussion-industrial', 'es2-lead'],
     startingPoint: 'Mixolydian or minor riff with hard, committed rhythm. Organ for communal weight — this is music for a room of people who agree. Let it feel like a fist in the air.'
+  },
+  {
+    keywords: ['fractured', 'dissociation', 'dissociate', 'split', 'fragmented', 'disconnected', 'unreal', 'unreality', 'outside myself', 'watching myself', 'depersonalization', 'shattered'],
+    keys: ['c-sharp-minor', 'f-sharp-minor', 'e-phrygian'],
+    tones: ['post-punk-chorus', 'ambient-reverb'],
+    instruments: ['sculpture-mallet', 'es2-texture', 'alchemy-breath'],
+    startingPoint: 'Chorused, icy riff in C# minor — something that sounds like it\'s happening in another room. Glass mallet for melodic fragments that don\'t belong to the main line. Breath pad underneath: human but not present.'
+  },
+  {
+    keywords: ['autumn', 'fall', 'harvest', 'dying leaves', 'decay', 'fading light', 'october', 'november', 'amber', 'dusk', 'seasonal', 'end of warmth'],
+    keys: ['d-minor', 'g-dorian', 'a-minor'],
+    tones: ['acoustic-sim', 'lo-fi-tape'],
+    instruments: ['alchemy-folk-strings', 'vintage-keys-rhodes', 'alchemy-pad-lush'],
+    startingPoint: 'D minor or G Dorian with a slow, fingerpicked progression. Folk strings doubling the melody at low volume — something that sounds like it\'s being played in a room that\'s getting dark. Tape saturation on the guitar track.'
+  },
+  {
+    keywords: ['tender', 'gentle', 'soft touch', 'careful', 'tentative', 'delicate love', 'quiet affection', 'hushed', 'whispered', 'barely there', 'intimate moment'],
+    keys: ['f-major', 'ab-major', 'g-major'],
+    tones: ['jazz-clean', 'lo-fi-tape'],
+    instruments: ['vintage-keys-rhodes', 'alchemy-breath', 'alchemy-pad-lush'],
+    startingPoint: 'Jazz clean tone, volume rolled back to 6. Rhodes underneath at very low level. One note at a time in the melody — more space than sound. The restraint is what makes it tender.'
+  },
+  {
+    keywords: ['cold revenge', 'revenge', 'calculated', 'patient', 'ice cold', 'methodical', 'planning', 'waiting', 'retribution', 'payback', 'settle scores'],
+    keys: ['c-sharp-minor', 'b-minor', 'f-sharp-minor'],
+    tones: ['post-punk-chorus', 'high-gain-modern'],
+    instruments: ['retro-synth-dark-lead', 'es2-sub-drone', 'percussion-industrial'],
+    startingPoint: 'Cold, chorused minor progression in C# or B minor — nothing frantic, nothing hot. Dark lead synth on the melody: controlled, deliberate. Sub drone on the root holds pressure underneath everything.'
+  },
+  {
+    keywords: ['dreamlike', 'unconscious', 'sleep', 'sleeping', 'hypnagogia', 'half awake', 'liminal sleep', 'between sleeping', 'lucid', 'surreal landscape', 'subconscious'],
+    keys: ['a-dorian', 'c-lydian', 'eb-major'],
+    tones: ['lo-fi-tape', 'ambient-reverb'],
+    instruments: ['alchemy-breath', 'alchemy-shimmer', 'vintage-keys-rhodes'],
+    startingPoint: 'Dorian or Lydian with tape saturation and long reverb. Let notes blur at the edges. Rhodes for something familiar in an unfamiliar place. The tape wobble gives it the feeling of uncertain ground.'
+  },
+  {
+    keywords: ['gothic', 'gothic cathedral', 'ruin', 'ruined', 'crumbling', 'stone', 'decay architecture', 'derelict', 'abandoned building', 'moss', 'ancient', 'medieval'],
+    keys: ['d-minor', 'a-harmonic-minor', 'e-phrygian'],
+    tones: ['black-metal-cold', 'jazz-clean'],
+    instruments: ['alchemy-choir', 'alchemy-ritual-bells', 'string-ensemble'],
+    startingPoint: 'A harmonic minor or D minor at slow, deliberate tempo. Ritual bells sparingly — one strike per section. Choir pad barely audible, as if singing came through the walls. The space is as important as the sound.'
+  },
+  {
+    keywords: ['triumph', 'triumphant', 'hard won', 'earned', 'survived', 'made it', 'overcoming', 'vindication', 'proved them wrong', 'release', 'finally', 'arrived'],
+    keys: ['eb-major', 'd-mixolydian', 'g-major'],
+    tones: ['crunch-marshall', 'psych-fuzz'],
+    instruments: ['alchemy-organ', 'string-ensemble', 'alchemy-ritual-bells'],
+    startingPoint: 'Open power chords in Eb or G, full amp volume. Organ gives it ceremonial weight. Let string ensemble build underneath before the guitar enters. Ritual bell strike at the arrival — a single note that means: here.'
+  },
+  {
+    keywords: ['bunker', 'siege', 'trapped', 'fortified', 'survival', 'under attack', 'endurance', 'holding out', 'surrounded', 'last stand', 'waiting for impact'],
+    keys: ['e-minor', 'b-minor', 'd-minor'],
+    tones: ['high-gain-modern', 'noise-feedback'],
+    instruments: ['es2-sub-drone', 'percussion-industrial', 'alchemy-dark-pad'],
+    startingPoint: 'Heavy minor riff at midtempo — functional, not expressive. Sub drone on the root: constant, oppressive. Industrial percussion like a metronome built by someone who doesn\'t expect to survive. Noise feedback as transition material between sections.'
+  },
+  {
+    keywords: ['childhood', 'child', 'young', 'innocent', 'innocence', 'early', 'small', 'before', 'simpler time', 'home as a kid', 'growing up', 'formative'],
+    keys: ['g-major', 'c-major', 'f-major'],
+    tones: ['lo-fi-tape', 'acoustic-sim'],
+    instruments: ['vintage-keys-rhodes', 'alchemy-pad-lush', 'sculpture-mallet'],
+    startingPoint: 'G or C major, slow tempo. Tape saturation makes it feel slightly faded, like old footage. Glass mallet for single melodic notes that feel simple but mean everything. Rhodes for warmth and the specific ache of something remembered, not lived.'
+  },
+  {
+    keywords: ['hunger', 'craving', 'wanting', 'desire', 'appetite', 'longing for', 'can\'t have', 'ache for', 'need', 'starving', 'thirst', 'desperate want'],
+    keys: ['f-sharp-minor', 'b-phrygian-dominant', 'a-harmonic-minor'],
+    tones: ['psych-fuzz', 'edge-of-breakup'],
+    instruments: ['retro-synth-dark-lead', 'vintage-keys-rhodes', 'es2-sub-drone'],
+    startingPoint: 'Harmonic minor or Phrygian Dominant — the exotic interval sounds like something that can\'t be satisfied. Psych fuzz tone with the guitar volume at 7: warm but straining. Dark lead for the melodic line that keeps circling back to the same note.'
+  },
+  {
+    keywords: ['sacred', 'reverence', 'reverend', 'holy ground', 'sanctified', 'hallowed', 'altar', 'shrine', 'pilgrimage', 'consecrated', 'set apart', 'numinous'],
+    keys: ['eb-major', 'f-major', 'a-harmonic-minor'],
+    tones: ['jazz-clean', 'ambient-reverb'],
+    instruments: ['alchemy-ritual-bells', 'alchemy-choir', 'es2-sub-drone'],
+    startingPoint: 'Jazz clean tone, extremely sparse playing — one note, then silence. Ritual bells mark the phrase endings. Choir pad at barely audible volume: the sense of voices that have always been here. Sub drone on the tonic, so low you feel it rather than hear it.'
+  },
+  {
+    keywords: ['chaos', 'entropy', 'disorder', 'everything breaking', 'collapse', 'unraveling', 'out of control', 'panic', 'spiraling', 'falling apart', 'disintegration'],
+    keys: ['e-minor', 'c-sharp-minor', 'e-phrygian'],
+    tones: ['noise-feedback', 'high-gain-modern'],
+    instruments: ['percussion-industrial', 'es2-texture', 'retro-synth-dark-lead'],
+    startingPoint: 'Start with a locked, precise metal riff in E minor or E Phrygian — then introduce noise feedback gradually. Industrial percussion keeps the machine rhythm even as the guitar dissolves. By the end, the structure should feel like it\'s barely holding.'
+  },
+  {
+    keywords: ['aftermath', 'silence after', 'quiet after', 'the morning after', 'still standing', 'wreckage', 'what remains', 'dust settling', 'survive', 'surviving', 'post-event'],
+    keys: ['d-minor', 'a-minor', 'g-dorian'],
+    tones: ['lo-fi-tape', 'jazz-clean'],
+    instruments: ['alchemy-folk-strings', 'alchemy-breath', 'sculpture-mallet'],
+    startingPoint: 'Very sparse. D minor or A minor, single notes only. Tape tone — not high fidelity, something that\'s been through it. Breath pad at low volume: the sense of someone still breathing. Folk strings for one melodic phrase, once. Don\'t repeat it.'
+  },
+  {
+    keywords: ['coastal', 'shore', 'cliff', 'headland', 'lighthouse', 'fog', 'tidal', 'estuary', 'saltwater', 'grey sea', 'overcast water', 'maritime melancholy'],
+    keys: ['d-dorian', 'g-dorian', 'f-major'],
+    tones: ['clean-fender', 'shoegaze-wall'],
+    instruments: ['alchemy-shimmer', 'alchemy-folk-strings', 'es2-sub-drone'],
+    startingPoint: 'D Dorian with open strings ringing. Clean Fender for the exposed guitar, shimmer pad for the sense of distance and water. Folk strings on the melody — something that sounds like it comes from the land, not the sea. Sub drone for the low weight of water.'
+  },
+  {
+    keywords: ['folk tale', 'storytelling', 'narrative', 'ballad', 'once upon a time', 'legend', 'myth', 'oral tradition', 'singer', 'chronicle', 'saga', 'epic story'],
+    keys: ['g-dorian', 'd-mixolydian', 'a-minor'],
+    tones: ['acoustic-sim', 'jazz-clean'],
+    instruments: ['alchemy-folk-strings', 'alchemy-ritual-bells', 'vintage-keys-rhodes'],
+    startingPoint: 'DADGAD or open G. Modal — Dorian or Mixolydian for that ancient quality. Folk strings doubling the guitar at unison or octave. Ritual bells for scene breaks. Let the song breathe between verses — the silence is where the listener makes pictures.'
   }
 ]

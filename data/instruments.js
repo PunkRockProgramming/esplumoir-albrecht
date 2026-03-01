@@ -154,5 +154,89 @@ export const INSTRUMENTS = [
     keyTags: ['Ab major', 'Eb major', 'G major', 'C Lydian', 'A Dorian'],
     midiNotes: 'C2–C5',
     description: 'Slow-attack, slow-release pad with heavy chorus and hall reverb baked in. Plays beneath everything else without demanding attention. The musical equivalent of late afternoon light. Good for transitions and for sustaining harmonic context while other elements move.'
+  },
+  {
+    id: 'vintage-keys-rhodes',
+    name: 'Vintage Rhodes',
+    plugin: 'Alchemy',
+    preset: 'Vintage Electric Piano',
+    category: 'keys',
+    moodTags: ['warm', 'soulful', 'moody', 'cinematic', 'intimate'],
+    genreTags: ['soul', 'jazz', 'R&B', 'dark pop', 'cinematic'],
+    keyTags: ['D minor', 'A minor', 'C major', 'F major', 'G Dorian'],
+    midiNotes: 'C2–C6',
+    description: 'Warm electric piano with slow attack tines and gentle tremolo. Sits between guitar and pad without competing with either. Velocity-sensitive — light touch produces a hush, full velocity produces a bark. The instrument that makes minor chords sound tender rather than sad.'
+  },
+  {
+    id: 'alchemy-breath',
+    name: 'Breath Pad',
+    plugin: 'Alchemy',
+    preset: 'Breathe',
+    category: 'pad',
+    moodTags: ['intimate', 'fragile', 'haunting', 'ethereal', 'human'],
+    genreTags: ['ambient', 'folk', 'post-classical', 'cinematic'],
+    keyTags: ['any — works across registers'],
+    midiNotes: 'C3–G5',
+    description: 'Breathy vocal synthesis with blurred pitch and human instability. The breath is the sound — not voice, not quite instrument. Works as a background layer when something human is needed but a voice would be too literal. Hold sustained notes and let the internal modulation do the work.'
+  },
+  {
+    id: 'sculpture-mallet',
+    name: 'Glass Mallet',
+    plugin: 'Sculpture',
+    preset: 'Glass Marimba',
+    category: 'percussion',
+    moodTags: ['crystalline', 'precise', 'cold', 'minimal', 'strange'],
+    genreTags: ['minimalist', 'modern classical', 'experimental', 'ambient'],
+    keyTags: ['C Lydian', 'E Phrygian', 'any pentatonic'],
+    midiNotes: 'C4–C7',
+    description: 'Physical modeling of a metallic bell-glass hybrid. Attack is sharp, decay is long, overtones are complex. Sounds like something between a marimba and a glass harmonica. Works for sparse melodic lines where each note needs to be an event, not a passage.'
+  },
+  {
+    id: 'es2-sub-drone',
+    name: 'Sub Drone',
+    plugin: 'ES2',
+    preset: 'Sine Sub',
+    category: 'bass',
+    moodTags: ['meditative', 'heavy', 'ritualistic', 'hypnotic', 'dark'],
+    genreTags: ['ambient', 'doom', 'industrial', 'experimental'],
+    keyTags: ['any — stays on root'],
+    midiNotes: 'C1–C3',
+    description: 'Pure sine oscillator at subsonic register. More felt than heard at low levels — adds physical weight to a mix without harmonic color. Hold the root note and let everything else move above it. Increase volume to the point where you feel it, then back off slightly.'
+  },
+  {
+    id: 'alchemy-folk-strings',
+    name: 'Folk Strings',
+    plugin: 'Alchemy',
+    preset: 'Dark Folk Strings',
+    category: 'strings',
+    moodTags: ['folk', 'dark', 'mournful', 'rustic', 'narrative'],
+    genreTags: ['dark folk', 'folk', 'folk noir', 'Americana', 'post-classical'],
+    keyTags: ['D minor', 'A minor', 'G Dorian', 'D Dorian', 'G major'],
+    midiNotes: 'C2–C5',
+    description: 'Fiddle and cello hybrid in the dark register of each instrument. More raw and immediate than the orchestral string ensemble — sounds like a session player in a barn, not a scoring stage. Works well doubling guitar melodies or carrying the melody line on its own.'
+  },
+  {
+    id: 'retro-synth-dark-lead',
+    name: 'Dark Lead',
+    plugin: 'Retro Synth',
+    preset: 'Sawtooth Lead',
+    category: 'lead',
+    moodTags: ['dark', 'cold', 'cinematic', 'driven', 'electronic'],
+    genreTags: ['synthwave', 'dark synth', 'post-punk', 'industrial', 'electronic noir'],
+    keyTags: ['C# minor', 'E minor', 'D minor', 'B minor'],
+    midiNotes: 'C3–C5',
+    description: 'Sawtooth oscillator with minor-oriented filter envelope and subtle chorus. Monophonic, portamento on. The sound of synthetic menace — controlled, deliberate, cold. Pair with industrial percussion or dark pad underneath. Does not brighten or warm up; that\'s the point.'
+  },
+  {
+    id: 'alchemy-ritual-bells',
+    name: 'Ritual Bells',
+    plugin: 'Alchemy',
+    preset: 'Temple Bells',
+    category: 'percussion',
+    moodTags: ['ceremonial', 'dark', 'ritualistic', 'sparse', 'resonant'],
+    genreTags: ['ambient', 'cinematic', 'dark folk', 'gothic', 'experimental'],
+    keyTags: ['any — single notes only, not chords'],
+    midiNotes: 'C3–C6',
+    description: 'Tuned metal percussion with long, complex decay. Each note rings for seconds — so sparse use is essential. One strike per phrase. Works as punctuation between guitar lines or as a time-keeper in extremely slow passages. The silence between strikes carries as much information as the strike itself.'
   }
 ]

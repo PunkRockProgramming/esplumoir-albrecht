@@ -120,5 +120,87 @@ export const TONES = [
       { type: 'reverb', model: 'Frozen Reverb', notes: 'Very long decay with infinite sustain option — sounds like a stone church' }
     ],
     description: 'Cold, trebly, purposefully raw. The tone of frozen landscapes and burning churches. Tremolo-pick a minor chord and leave it ringing. It knows what it is.'
+  },
+  {
+    id: 'shoegaze-wall',
+    name: 'Shoegaze / Wall of Sound',
+    ampModel: 'Fender Jazzmaster → Fender Deluxe Reverb',
+    cabinet: '1x12 Jensen',
+    moodTags: ['lush', 'shoegaze', 'wall-of-sound', 'romantic', 'overwhelming'],
+    keyTags: ['C Lydian', 'Eb major', 'Ab major', 'A Dorian', 'any — the tone is the point'],
+    effectsChain: [
+      { type: 'fuzz', model: 'Fuzz Face', notes: 'Silicon, cranked — compressed and smooth at the top end' },
+      { type: 'pitch', model: 'Octave Up', notes: 'Dry signal + one octave up blended — fattens the shimmer' },
+      { type: 'reverb', model: 'Shimmer Reverb', notes: 'Long decay, high shimmer mix — the note blooms into a cloud' },
+      { type: 'delay', model: 'Tape Echo', notes: '480ms, high feedback — smears into the reverb tail' }
+    ],
+    description: 'Wall of sound through fuzz and shimmer. The guitar dissolves into the effect chain — you\'re not playing chords, you\'re playing texture. Tune to Lydian, strum whole notes, let it bloom.'
+  },
+  {
+    id: 'post-punk-chorus',
+    name: 'Post-Punk / Cold Wave',
+    ampModel: 'Roland JC-120',
+    cabinet: '2x12 Chorus Built-In',
+    moodTags: ['cold', 'distant', 'post-punk', 'mechanical', 'alienated'],
+    keyTags: ['E minor', 'D minor', 'B minor', 'A minor', 'G Dorian'],
+    effectsChain: [
+      { type: 'chorus', model: 'Roland Dimension D', notes: 'Mode 4 — widest chorus, icy stereo spread' },
+      { type: 'delay', model: 'Digital Delay', notes: '340ms, moderate mix — clean, not tape-warped' }
+    ],
+    description: 'Clean, icy, chorused. The sound of 1983 in a room with bad lighting. No overdrive — the coldness is the point. Works for angular post-punk riffs and distant arpeggios alike. The Cure, Joy Division, Bauhaus territory.'
+  },
+  {
+    id: 'jazz-clean',
+    name: 'Jazz Clean',
+    ampModel: 'Fender Super Reverb',
+    cabinet: '4x10 Jensen',
+    moodTags: ['warm', 'intimate', 'sophisticated', 'smooth', 'jazz'],
+    keyTags: ['D Dorian', 'G Dorian', 'C major', 'F major', 'Bb major', 'A Dorian'],
+    effectsChain: [
+      { type: 'eq', model: 'Treble Roll-Off', notes: 'Tone knob at 3/10 — dark, round attack, no brightness' }
+    ],
+    description: 'Hollow-body warmth through a clean amp with the tone rolled back. Dark, round, no reverb added — let the room breathe. Pick lightly near the neck pickup. Best for chord melody, single-line improvisation, and anything that wants to feel like late night and cigarette smoke.'
+  },
+  {
+    id: 'psych-fuzz',
+    name: 'Psychedelic Fuzz',
+    ampModel: 'Marshall Super Bass 100W',
+    cabinet: '4x12 Greenback',
+    moodTags: ['psychedelic', 'swirling', 'warm', 'bluesy', 'vintage'],
+    keyTags: ['E minor', 'A Dorian', 'D Mixolydian', 'E blues', 'A blues'],
+    effectsChain: [
+      { type: 'fuzz', model: 'Germanium Fuzz Face', notes: 'Warm, touch-responsive — cleans up when you roll the guitar volume back' },
+      { type: 'modulation', model: 'Rotary Speaker', notes: 'Slow speed — swirling, organ-adjacent movement' },
+      { type: 'reverb', model: 'Spring Reverb', notes: 'Long spring — adds drip and vintage splash' }
+    ],
+    description: 'Germanium fuzz through a roaring Marshall, rotary and spring reverb. The sound of 1968 leaking into the present. Touch-responsive — play soft for crunch, dig in for the wall. Hendrix, Cream, Blue Cheer territory.'
+  },
+  {
+    id: 'lo-fi-tape',
+    name: 'Lo-Fi / Tape',
+    ampModel: 'Fender Champ 5W',
+    cabinet: '1x8 Alnico',
+    moodTags: ['lo-fi', 'degraded', 'nostalgic', 'warm', 'intimate'],
+    keyTags: ['G major', 'D major', 'A minor', 'C major', 'any — tone is bedroom-level'],
+    effectsChain: [
+      { type: 'saturation', model: 'Tape Cassette', notes: 'Warm saturation with slight compression — no clean headroom' },
+      { type: 'modulation', model: 'Wow/Flutter', notes: 'Subtle pitch wobble — not obvious, just alive and unstable' },
+      { type: 'noise', model: 'Hiss/Room', notes: 'Low-level hiss layer — sounds like a home recording' }
+    ],
+    description: 'Bedroom-level Champ through cassette saturation. The imperfections are the character — slight pitch wobble, quiet hiss, compressed headroom. Record at low volume. The degradation is not a flaw, it\'s the texture.'
+  },
+  {
+    id: 'noise-feedback',
+    name: 'Noise / Feedback',
+    ampModel: 'Any loud amp — driven hard',
+    cabinet: '4x12 close-mic',
+    moodTags: ['noise', 'abrasive', 'dissonant', 'experimental', 'chaotic'],
+    keyTags: ['any — atonal or E minor for organized chaos'],
+    effectsChain: [
+      { type: 'distortion', model: 'Rat + Boss DS-1 stacked', notes: 'Both drives cranked — walls of harmonic distortion' },
+      { type: 'reverb', model: 'Gated Reverb', notes: 'Long pre-delay, short gate — sustains then cuts brutally' },
+      { type: 'feedback', model: 'Controlled Feedback', notes: 'Guitar angled toward speaker — pitch of feedback controlled by position' }
+    ],
+    description: 'Prepared guitar and sustained feedback as compositional element. Volume and position control pitch. Not random — intentional noise. Sonic Youth, Glenn Branca, Rhys Chatham territory. Point the guitar, listen to what comes back.'
   }
 ]

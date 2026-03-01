@@ -383,6 +383,19 @@ function populateVizRootMode() {
   })
 }
 
+function downloadFretboardSVG() {
+  if (!selectedKey) return
+  const degreeMap = getScaleDegreeMap(selectedKey.root, selectedKey.mode)
+  const svgStr = renderFretboardSVG(degreeMap, vizTuningId, vizShowLabels, vizFirstPosition)
+  const blob = new Blob([svgStr], { type: 'image/svg+xml' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `fretboard-${selectedKey.name.replace(/\s+/g, '-').toLowerCase()}.svg`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 function updateVisualizer() {
   if (!selectedKey) return
   const tuning = allTunings.find(t => t.id === vizTuningId) || allTunings[0]
@@ -1292,6 +1305,8 @@ document.addEventListener('DOMContentLoaded', () => {
     vizFirstPosition = e.target.checked
     updateVisualizer()
   })
+
+  document.getElementById('viz-download-svg').addEventListener('click', downloadFretboardSVG)
 
   buildKeyFilters()
   renderKeys()
