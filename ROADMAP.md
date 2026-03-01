@@ -22,6 +22,13 @@
 - Forge: chord reorder arrows (‹ ›) on progression chips
 - Grimoire: first-position mode toggle (frets 0–4, inlay markers clip to range)
 
+### v3 — Scales, Session, Forge Export
+- Grimoire: pentatonic major, pentatonic minor, blues scale support — fretboard + piano render correctly; chord tabs suppressed for sub-6-note scales
+- Grimoire: related key links on each key card — clickable, navigates to that key
+- Forge: barre chord detection — appends `(barre N)` to chord name when 2+ strings share a fret
+- Forge: Export tab — ASCII tab block copied to clipboard with "copied!" confirmation; disabled when progression empty
+- Session persistence — selected key + tuning saved to localStorage, restored on reload
+
 ---
 
 ## Next
@@ -31,17 +38,11 @@
 - [ ] More Logic instruments (13 → 25) — heavier ambient / industrial / folk
 - [ ] Expand mood profiles (45 → 60+)
 
-### The Forge
-- [ ] Export progression as plain-text tab block (copy to clipboard)
-- [ ] Barre chord detection — if all selected frets share a minimum, label as barre
-
 ### Grimoire
-- [ ] Relative key links on each key card (e.g. "relative major: G")
-- [ ] Pentatonic and blues scale support
-
-### Session / Export
-- [ ] Save current key + tuning selection to localStorage (restore on reload)
 - [ ] Export current Grimoire view (key + fretboard) as SVG download
+
+### The Forge
+- [ ] Smarter chord identification — inversion awareness, slash chords (e.g. G/B)
 
 ---
 
