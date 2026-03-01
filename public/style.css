@@ -1,0 +1,894 @@
+/* ============================================================
+   CSS Variables
+   ============================================================ */
+:root {
+  --bg:        #111111;
+  --surface:   #1c1c1c;
+  --surface2:  #252525;
+  --border:    #2e2e2e;
+  --text:      #d4cfc8;
+  --muted:     #6e6a64;
+  --accent:    #c8882a;
+  --accent2:   #8a3a3a;
+  --accent-dim: #7a5318;
+  --error:     #a03030;
+  --success:   #4a7a4a;
+  --font-mono: 'Courier New', Courier, monospace;
+  --font-ui:   system-ui, -apple-system, sans-serif;
+  --radius:    4px;
+  --radius-lg: 8px;
+}
+
+/* ============================================================
+   Reset + Base
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul { list-style: none; padding: 0; }
+ul li { padding: 2px 0; }
+ul li::before { content: '— '; color: var(--muted); }
+
+h1, h2, h3, h4 { font-weight: 600; line-height: 1.2; }
+
+/* ============================================================
+   Header
+   ============================================================ */
+header {
+  padding: 24px 32px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+}
+
+.tagline {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 2px;
+  letter-spacing: 0.02em;
+}
+
+/* ============================================================
+   Mood Search Bar
+   ============================================================ */
+.mood-search-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 32px;
+}
+
+.mood-search-inner {
+  display: flex;
+  gap: 8px;
+  max-width: 900px;
+}
+
+.mood-search-inner input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.mood-search-inner input:focus {
+  border-color: var(--accent);
+}
+
+.mood-search-inner input::placeholder { color: var(--muted); }
+
+.mood-result {
+  max-width: 900px;
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.88rem;
+  position: relative;
+}
+
+.mood-result.hidden { display: none; }
+
+.mood-result-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.mood-result-starting-point {
+  grid-column: 1 / -1;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+}
+
+.mood-result-section h4,
+.mood-result-starting-point h4 {
+  font-size: 0.75rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+/* ============================================================
+   Section Navigation
+   ============================================================ */
+.section-nav {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  background: var(--bg);
+}
+
+.nav-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  padding: 12px 18px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.nav-tab:hover { color: var(--text); }
+
+.nav-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ============================================================
+   Sections
+   ============================================================ */
+.section {
+  display: none;
+  padding: 28px 32px 48px;
+  max-width: 1100px;
+}
+
+.section.active { display: block; }
+
+/* Keys gets the full viewport — visualizer needs the room */
+#keys { max-width: none; }
+
+/* ============================================================
+   Mood key quick-select buttons
+   ============================================================ */
+.mood-key-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.mood-key-buttons.hidden { display: none; }
+
+.mood-key-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  padding: 5px 14px;
+  transition: border-color 0.1s, background 0.1s, color 0.1s;
+}
+
+.mood-key-btn:hover {
+  border-color: var(--accent-dim);
+}
+
+.mood-key-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #111;
+  font-weight: 600;
+}
+
+.section-header {
+  margin-bottom: 24px;
+}
+
+.section-header h2 {
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.section-sub {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ============================================================
+   Controls
+   ============================================================ */
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.control-group label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+select, textarea {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  padding: 6px 10px;
+  outline: none;
+  transition: border-color 0.15s;
+  min-width: 140px;
+}
+
+select:focus, textarea:focus { border-color: var(--accent); }
+
+.radio-label {
+  font-size: 0.85rem;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+/* ============================================================
+   Tab Output
+   ============================================================ */
+.output-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.output-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+
+/* ============================================================
+   Card Grid
+   ============================================================ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.keys-grid {
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+}
+
+.tone-card,
+.key-card,
+.instrument-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  transition: border-color 0.15s;
+}
+
+.tone-card:hover,
+.key-card:hover,
+.instrument-card:hover {
+  border-color: var(--accent-dim);
+}
+
+.card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 8px;
+}
+
+.card-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.card-sub {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.card-desc {
+  font-size: 0.83rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.emotional-profile {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.65;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.tag {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  padding: 1px 7px;
+}
+
+.tag-genre {
+  border-color: var(--accent-dim);
+  color: var(--accent);
+}
+
+/* ============================================================
+   Filter Buttons
+   ============================================================ */
+.filter-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.filter-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  padding-top: 4px;
+  min-width: 70px;
+}
+
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.filter-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 0.77rem;
+  padding: 3px 10px;
+  transition: all 0.1s;
+}
+
+.filter-btn:hover {
+  border-color: var(--accent-dim);
+  color: var(--text);
+}
+
+.filter-btn.active {
+  background: var(--accent2);
+  border-color: var(--accent2);
+  color: var(--text);
+}
+
+/* ============================================================
+   Suggestions Panel (Keys tab — Analog / Digital toggle)
+   ============================================================ */
+.suggestions-panel {
+  margin-bottom: 28px;
+}
+
+.suggestions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.suggestions-toggle {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.toggle-btn {
+  background: var(--surface2);
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 0.77rem;
+  letter-spacing: 0.03em;
+  padding: 5px 16px;
+  transition: background 0.1s, color 0.1s;
+}
+
+.toggle-btn:not(:last-child) {
+  border-right: 1px solid var(--border);
+}
+
+.toggle-btn:hover { color: var(--text); }
+
+.toggle-btn.active {
+  background: var(--accent2);
+  color: var(--text);
+}
+
+/* ============================================================
+   Chord Tabs (Keys visualizer)
+   ============================================================ */
+.chord-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.chord-tab {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  padding: 5px 13px 6px;
+  transition: border-color 0.1s, background 0.1s, color 0.1s;
+  min-width: 52px;
+}
+
+.chord-tab:hover {
+  border-color: var(--accent-dim);
+  color: var(--text);
+}
+
+.chord-tab.active {
+  background: var(--accent2);
+  border-color: var(--accent2);
+  color: var(--text);
+}
+
+.chord-tab-degree {
+  font-size: 0.67rem;
+  color: var(--muted);
+  font-style: italic;
+  line-height: 1;
+}
+
+.chord-tab.active .chord-tab-degree {
+  color: #d4cfc8;
+  opacity: 0.7;
+}
+
+.chord-tab-name {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* ============================================================
+   Lyrics Section
+   ============================================================ */
+.lyrics-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 600px;
+  margin-bottom: 24px;
+}
+
+.lyrics-form textarea {
+  min-width: 100%;
+  max-width: 100%;
+  resize: vertical;
+}
+
+.lyrics-output {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  max-width: 700px;
+}
+
+.lyrics-output.hidden { display: none; }
+
+.lyrics-section {
+  margin-bottom: 20px;
+}
+
+.lyrics-section h4 {
+  font-size: 0.75rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+.primary-btn {
+  background: var(--accent2);
+  border: 1px solid var(--accent2);
+  border-radius: var(--radius);
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 0.88rem;
+  letter-spacing: 0.03em;
+  padding: 9px 22px;
+  transition: background 0.15s, border-color 0.15s;
+  align-self: flex-start;
+}
+
+.primary-btn:hover {
+  background: #a04444;
+  border-color: #a04444;
+}
+
+#mood-submit {
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: #111;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 8px 18px;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+#mood-submit:hover { background: #d99c42; }
+
+/* ============================================================
+   Esoteric Card
+   ============================================================ */
+.card-stage {
+  display: flex;
+  justify-content: center;
+  padding: 32px 0 24px;
+}
+
+.strategy-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  max-width: 400px;
+  min-height: 220px;
+  padding: 36px 32px 24px;
+  position: relative;
+  text-align: center;
+  transition: transform 0.3s ease;
+  width: 100%;
+}
+
+/* Reversed card — rotate the entire card upside down */
+.strategy-card.reversed {
+  transform: rotate(180deg);
+  border-color: var(--accent2);
+}
+
+/* Flip-in animation when drawing */
+@keyframes flipIn {
+  0%   { opacity: 0; transform: rotateY(90deg); }
+  100% { opacity: 1; transform: rotateY(0deg); }
+}
+
+@keyframes flipInReversed {
+  0%   { opacity: 0; transform: rotate(180deg) rotateY(90deg); }
+  100% { opacity: 1; transform: rotate(180deg) rotateY(0deg); }
+}
+
+.strategy-card.flipped-in {
+  animation: flipIn 0.35s ease forwards;
+}
+
+.strategy-card.reversed.flipped-in {
+  animation: flipInReversed 0.35s ease forwards;
+}
+
+/* Flip-out (during transition) */
+.strategy-card.flipping {
+  opacity: 0;
+  transform: rotateY(90deg);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.strategy-card.reversed.flipping {
+  opacity: 0;
+  transform: rotate(180deg) rotateY(90deg);
+}
+
+.card-text {
+  color: var(--text);
+  font-size: 1.1rem;
+  font-style: italic;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: center;
+}
+
+.card-category {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  padding: 2px 10px;
+  text-transform: uppercase;
+}
+
+.reversed-badge {
+  background: var(--accent2);
+  border-radius: 3px;
+  color: var(--text);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 2px 10px;
+  position: absolute;
+  text-transform: uppercase;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.reversed-badge.hidden { display: none; }
+
+.card-controls {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 16px;
+}
+
+/* ============================================================
+   State: Loading, Error, Cached
+   ============================================================ */
+.loading-text {
+  color: var(--muted);
+  font-style: italic;
+  font-size: 0.88rem;
+}
+
+.error-text {
+  color: var(--error);
+  font-size: 0.88rem;
+}
+
+.cached-badge {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--muted);
+  display: inline-block;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  margin-top: 12px;
+  padding: 2px 8px;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   Key Visualizer
+   ============================================================ */
+.key-visualizer {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 24px;
+  padding: 16px 20px 18px;
+}
+
+.viz-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.viz-title { flex: 1; min-width: 0; }
+
+.viz-key-name {
+  font-size: 1.1rem;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+
+.viz-key-notes {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.viz-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.viz-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 14px;
+}
+
+.viz-panel { display: flex; flex-direction: column; gap: 8px; }
+
+.fretboard-container {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  line-height: 0;
+}
+
+/* ============================================================
+   Piano
+   ============================================================ */
+.piano-wrap {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.piano {
+  position: relative;
+  height: 178px;
+  flex-shrink: 0;
+}
+
+.piano-key {
+  position: absolute;
+  border-radius: 0 0 4px 4px;
+  cursor: default;
+  transition: background 0.08s;
+}
+
+.piano-white {
+  width: 54px;
+  height: 172px;
+  border: 1px solid #111;
+  z-index: 1;
+}
+
+.piano-black {
+  width: 34px;
+  height: 108px;
+  border: 1px solid #000;
+  z-index: 2;
+}
+
+.piano-key-label {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  pointer-events: none;
+  white-space: nowrap;
+  color: #111;
+}
+
+/* ============================================================
+   Degree Legend
+   ============================================================ */
+.degree-legend {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.degree-chip {
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 6px;
+}
+
+.degree-chip-label {
+  color: #111;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* ============================================================
+   Key card — selected state
+   ============================================================ */
+.key-card {
+  cursor: pointer;
+}
+
+.key-card.selected {
+  border-color: var(--accent);
+}

@@ -1,0 +1,794 @@
+import { KEYS }       from './data/keys.js'
+import { TUNINGS }    from './data/tunings.js'
+import { TONES }      from './data/tones.js'
+import { INSTRUMENTS } from './data/instruments.js'
+import { STRATEGIES }  from './data/strategies.js'
+import { MOOD_MAP }    from './data/mood-map.js'
+
+// ============================================================
+// Constants
+// ============================================================
+
+const CHROMATIC = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+
+const ENHARMONIC = {
+  'Db': 'C#', 'Eb': 'D#', 'Fb': 'E', 'Gb': 'F#',
+  'Ab': 'G#', 'Bb': 'A#', 'Cb': 'B'
+}
+
+const SCALE_INTERVALS = {
+  major:           [0, 2, 4, 5, 7, 9, 11],
+  minor:           [0, 2, 3, 5, 7, 8, 10],
+  dorian:          [0, 2, 3, 5, 7, 9, 10],
+  phrygian:        [0, 1, 3, 5, 7, 8, 10],
+  lydian:          [0, 2, 4, 6, 7, 9, 11],
+  mixolydian:      [0, 2, 4, 5, 7, 9, 10],
+  harmonicMinor:   [0, 2, 3, 5, 7, 8, 11],
+  phrygianDominant:[0, 1, 4, 5, 7, 8, 10]
+}
+
+// Scale degree colors: 1–7 (index 0–6)
+const DEGREE_COLORS = [
+  '#c8882a', // 1 — root (amber)
+  '#5a9e5a', // 2 — green
+  '#5a7ab8', // 3 — blue
+  '#8a5aaa', // 4 — purple
+  '#b85a5a', // 5 — red
+  '#3a9a8a', // 6 — teal
+  '#b88a3a', // 7 — warm tan
+]
+
+const DEGREE_NAMES_SHORT = ['1', '2', '3', '4', '5', '6', '7']
+
+// ============================================================
+// Tab Algorithm
+// ============================================================
+
+function normalizeNote(note) {
+  return ENHARMONIC[note] || note
+}
+
+function buildScaleNoteSet(root, scaleType) {
+  const normalizedRoot = normalizeNote(root)
+  const rootIdx = CHROMATIC.indexOf(normalizedRoot)
+  if (rootIdx === -1) return new Set()
+  const intervals = SCALE_INTERVALS[scaleType]
+  if (!intervals) return new Set()
+  return new Set(intervals.map(i => CHROMATIC[(rootIdx + i) % 12]))
+}
+
+
+function computeDiatonicChords(root, scaleType) {
+  const normalizedRoot = normalizeNote(root)
+  const rootIdx = CHROMATIC.indexOf(normalizedRoot)
+  const intervals = SCALE_INTERVALS[scaleType]
+  if (!intervals || rootIdx === -1) return []
+
+  const scaleNotes = intervals.map(i => CHROMATIC[(rootIdx + i) % 12])
+
+  const TRIAD_QUALITIES = {
+    '4,7': 'major', '3,7': 'minor', '3,6': 'dim', '4,8': 'aug'
+  }
+  const DEGREE_NAMES = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII']
+
+  return scaleNotes.map((note, i) => {
+    const noteIdx = CHROMATIC.indexOf(note)
+    const third = CHROMATIC[(noteIdx + 3) % 12]
+    const fifth = CHROMATIC[(noteIdx + 7) % 12]
+
+    // Find intervals within scale
+    const thirdInterval = scaleNotes.includes(third) ? 3 : 4
+    const fifthIntervalOptions = [6, 7, 8]
+    const fifthInterval = fifthIntervalOptions.find(iv => scaleNotes.includes(CHROMATIC[(noteIdx + iv) % 12])) || 7
+
+    const qualityKey = `${thirdInterval},${fifthInterval}`
+    const quality = TRIAD_QUALITIES[qualityKey] || 'major'
+
+    const chordThird = CHROMATIC[(noteIdx + thirdInterval) % 12]
+    const chordFifth = CHROMATIC[(noteIdx + fifthInterval) % 12]
+
+    return {
+      degree: DEGREE_NAMES[i],
+      name: note + (quality === 'minor' ? 'm' : quality === 'dim' ? 'dim' : quality === 'aug' ? 'aug' : ''),
+      root: note,
+      quality,
+      notes: [note, chordThird, chordFifth]
+    }
+  })
+}
+
+// ============================================================
+// Key Visualizer — Fretboard + Piano
+// ============================================================
+
+function getScaleDegreeMap(root, scaleType) {
+  const r = normalizeNote(root)
+  const rootIdx = CHROMATIC.indexOf(r)
+  const intervals = SCALE_INTERVALS[scaleType]
+  if (!intervals || rootIdx === -1) return new Map()
+  const map = new Map()
+  intervals.forEach((interval, degree) => {
+    map.set(CHROMATIC[(rootIdx + interval) % 12], degree)
+  })
+  return map
+}
+
+function renderFretboardSVG(degreeMap, tuningId, showLabels) {
+  const tuning = allTunings.find(t => t.id === tuningId) || allTunings[0]
+  if (!tuning) return ''
+
+  const W = 1400, H = 240
+  const PAD_L = 30, PAD_R = 10, PAD_T = 28, PAD_B = 10
+  const FRETS = 12, STRINGS = 6
+  // col 0 = open string (left of nut), cols 1–12 = frets
+  const COLS = FRETS + 1
+  const COL_W = (W - PAD_L - PAD_R) / COLS
+  const STRING_SPACING = (H - PAD_T - PAD_B) / (STRINGS - 1)
+  const NUT_X = PAD_L + COL_W
+  const DOT_R = 14
+
+  const colX = col => PAD_L + col * COL_W + COL_W / 2
+  const strY = s  => PAD_T + s * STRING_SPACING
+
+  // Display order: high string at top (index 5 of openNotes), low string at bottom (index 0)
+  const displayStrings = [...tuning.openNotes].reverse()
+
+  const p = [] // SVG parts
+
+  // Fretboard background
+  p.push(`<rect x="${PAD_L}" y="${PAD_T}" width="${W - PAD_L - PAD_R}" height="${H - PAD_T - PAD_B}" fill="#181818" rx="2"/>`)
+
+  // Inlay markers
+  const midY = strY(0) + (H - PAD_T - PAD_B) / 2;
+  [3, 5, 7, 9].forEach(f => p.push(`<circle cx="${colX(f)}" cy="${midY}" r="8" fill="#252525"/>`))
+  ;[12].forEach(f => {
+    p.push(`<circle cx="${colX(f)}" cy="${strY(1)}" r="8" fill="#252525"/>`)
+    p.push(`<circle cx="${colX(f)}" cy="${strY(4)}" r="8" fill="#252525"/>`)
+  })
+
+  // Strings — thicker toward low E (bottom)
+  for (let s = 0; s < STRINGS; s++) {
+    const y = strY(s)
+    const sw = (0.6 + (STRINGS - 1 - s) * 0.2).toFixed(2)
+    p.push(`<line x1="${PAD_L}" y1="${y}" x2="${W - PAD_R}" y2="${y}" stroke="#404040" stroke-width="${sw}"/>`)
+  }
+
+  // Nut
+  p.push(`<line x1="${NUT_X}" y1="${strY(0)}" x2="${NUT_X}" y2="${strY(5)}" stroke="#8a8278" stroke-width="4" stroke-linecap="round"/>`)
+
+  // Fret lines (starting at fret 2 column = after nut)
+  for (let f = 2; f <= FRETS; f++) {
+    const x = PAD_L + f * COL_W
+    p.push(`<line x1="${x}" y1="${strY(0)}" x2="${x}" y2="${strY(5)}" stroke="#303030" stroke-width="1"/>`)
+  }
+
+  // Fret numbers
+  ;[3, 5, 7, 9, 12].forEach(f => {
+    p.push(`<text x="${colX(f)}" y="${PAD_T - 7}" text-anchor="middle" fill="#504c48" font-size="13" font-family="system-ui,sans-serif">${f}</text>`)
+  })
+
+  // String labels (open note name)
+  for (let s = 0; s < STRINGS; s++) {
+    const note = normalizeNote(displayStrings[s])
+    p.push(`<text x="${PAD_L - 4}" y="${strY(s) + 4}" text-anchor="end" fill="#6e6a64" font-size="13" font-family="Courier New,monospace">${note}</text>`)
+  }
+
+  // Scale note dots
+  for (let s = 0; s < STRINGS; s++) {
+    const openNote = normalizeNote(displayStrings[s])
+    const openIdx = CHROMATIC.indexOf(openNote)
+    for (let col = 0; col <= FRETS; col++) {
+      const note = col === 0 ? openNote : CHROMATIC[(openIdx + col) % 12]
+      if (!degreeMap.has(note)) continue
+      const degree = degreeMap.get(note)
+      const color = DEGREE_COLORS[degree]
+      const x = colX(col), y = strY(s)
+      p.push(`<circle cx="${x}" cy="${y}" r="${DOT_R}" fill="${color}" opacity="0.95"/>`)
+      if (showLabels) {
+        p.push(`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" fill="#111" font-size="9.5" font-weight="700" font-family="system-ui,sans-serif">${note}</text>`)
+      }
+    }
+  }
+
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block">${p.join('')}</svg>`
+}
+
+function renderPianoHTML(degreeMap, showLabels) {
+  const WW = 54, WH = 172  // white key dims
+  const BW = 34, BH = 108  // black key dims
+  const GAP = 2
+  const STEP = WW + GAP
+
+  const WHITE_NOTES   = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
+  const BLACK_AFTER   = { C: 'C#', D: 'D#', F: 'F#', G: 'G#', A: 'A#' }
+
+  let html = `<div class="piano" style="width:${14 * STEP - GAP}px">`
+
+  let wi = 0
+  for (const oct of [3, 4]) {
+    for (const note of WHITE_NOTES) {
+      const x = wi * STEP
+      const deg = degreeMap.has(note) ? degreeMap.get(note) : null
+      const bg  = deg !== null ? DEGREE_COLORS[deg] : '#2e2926'
+      html += `<div class="piano-key piano-white" style="left:${x}px;background:${bg}" title="${note}${oct}">`
+      if (showLabels && deg !== null) {
+        const isRoot = deg === 0
+        html += `<span class="piano-key-label" style="color:#111;font-weight:${isRoot ? '700' : '500'}">${note}</span>`
+      }
+      html += `</div>`
+
+      // Black key to the right of this white key (if one exists)
+      const bn = BLACK_AFTER[note]
+      if (bn) {
+        const bx  = x + WW - Math.floor(BW / 2) + 1
+        const bdg = degreeMap.has(bn) ? degreeMap.get(bn) : null
+        const bbg = bdg !== null ? DEGREE_COLORS[bdg] : '#111'
+        html += `<div class="piano-key piano-black" style="left:${bx}px;background:${bbg}" title="${bn}${oct}">`
+        if (showLabels && bdg !== null) {
+          html += `<span class="piano-key-label" style="color:#111;font-weight:${bdg === 0 ? '700' : '500'}">${bn}</span>`
+        }
+        html += `</div>`
+      }
+      wi++
+    }
+  }
+
+  html += `</div>`
+  return html
+}
+
+function renderDegreeLegend() {
+  const labels = ['root', '2nd', '3rd', '4th', '5th', '6th', '7th']
+  return DEGREE_COLORS.map((color, i) =>
+    `<span class="degree-chip" style="background:${color}"><span class="degree-chip-label">${labels[i]}</span></span>`
+  ).join('')
+}
+
+// ============================================================
+// App State
+// ============================================================
+
+let allKeys = []
+let allTunings = []
+let allTones = []
+let allInstruments = []
+let allStrategies = []
+
+let currentStrategyIdx = null
+let currentStrategyReversed = false
+let activeSection = 'keys'
+let suggestionsMode = 'analog'
+let selectedChordIdx = null       // null = full scale view
+let currentDiatonicChords = []
+let activeKeyRootFilter = null
+let activeKeyModeFilter = null
+let activeKeyMoodFilter = null
+let selectedKey = null
+let vizTuningId = 'e-standard'
+let vizShowLabels = true
+
+// ============================================================
+// Data Loading
+// ============================================================
+
+function loadData() {
+  allKeys        = KEYS
+  allTunings     = TUNINGS
+  allTones       = TONES
+  allInstruments = INSTRUMENTS
+  allStrategies  = STRATEGIES
+}
+
+// ============================================================
+// Navigation
+// ============================================================
+
+function switchSection(id) {
+  activeSection = id
+  document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === id))
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.dataset.section === id))
+}
+
+
+function renderTones(moodFilter = []) {
+  const container = document.getElementById('suggestions-grid')
+  container.innerHTML = ''
+
+  const filtered = moodFilter.length
+    ? allTones.filter(t => t.moodTags.some(m => moodFilter.includes(m)))
+    : allTones
+
+  const displayTones = filtered.length ? filtered : allTones
+
+  displayTones.forEach(tone => {
+    const card = document.createElement('div')
+    card.className = 'tone-card'
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-name">${tone.name}</span>
+        <span class="card-sub">${tone.ampModel}</span>
+      </div>
+      <p class="card-desc">${tone.description}</p>
+      <div class="tag-row">${tone.moodTags.map(m => `<span class="tag">${m}</span>`).join('')}</div>
+    `
+    container.appendChild(card)
+  })
+}
+
+// ============================================================
+// Keys Section
+// ============================================================
+
+const MODE_LABELS = {
+  major: 'Major', minor: 'Minor', dorian: 'Dorian', phrygian: 'Phrygian',
+  lydian: 'Lydian', mixolydian: 'Mixolydian', harmonicMinor: 'Harmonic Minor',
+  phrygianDominant: 'Phrygian Dominant'
+}
+
+function makeSyntheticKey(root, mode) {
+  const normalizedRoot = normalizeNote(root)
+  const rootIdx = CHROMATIC.indexOf(normalizedRoot)
+  const intervals = SCALE_INTERVALS[mode] || []
+  const notes = intervals.map(i => CHROMATIC[(rootIdx + i) % 12])
+  return { id: null, root, mode, name: `${root} ${MODE_LABELS[mode] || mode}`, notes, moods: [] }
+}
+
+function populateVizRootMode() {
+  const rootSelect = document.getElementById('viz-root')
+  const modeSelect = document.getElementById('viz-mode')
+
+  ;['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'].forEach(r => {
+    const opt = document.createElement('option')
+    opt.value = r; opt.textContent = r
+    rootSelect.appendChild(opt)
+  })
+
+  Object.entries(MODE_LABELS).forEach(([value, label]) => {
+    const opt = document.createElement('option')
+    opt.value = value; opt.textContent = label
+    modeSelect.appendChild(opt)
+  })
+}
+
+function updateVisualizer() {
+  if (!selectedKey) return
+  const tuning = allTunings.find(t => t.id === vizTuningId) || allTunings[0]
+
+  document.getElementById('viz-key-name').textContent = selectedKey.name
+  document.getElementById('viz-key-notes').textContent = selectedKey.notes.join('  ·  ')
+  document.getElementById('viz-tuning-label').textContent = tuning ? tuning.name : ''
+
+  // Build degree map — filter to chord notes when a chord tab is active
+  let degreeMap = getScaleDegreeMap(selectedKey.root, selectedKey.mode)
+  if (selectedChordIdx !== null && currentDiatonicChords[selectedChordIdx]) {
+    const chordNoteSet = new Set(
+      currentDiatonicChords[selectedChordIdx].notes.map(n => normalizeNote(n))
+    )
+    const filtered = new Map()
+    degreeMap.forEach((degree, note) => {
+      if (chordNoteSet.has(normalizeNote(note))) filtered.set(note, degree)
+    })
+    degreeMap = filtered
+  }
+
+  document.getElementById('fretboard-container').innerHTML =
+    renderFretboardSVG(degreeMap, vizTuningId, vizShowLabels)
+  document.getElementById('piano-container').innerHTML =
+    renderPianoHTML(degreeMap, vizShowLabels)
+  document.getElementById('degree-legend').innerHTML =
+    renderDegreeLegend()
+}
+
+function renderChordTabs() {
+  const container = document.getElementById('chord-tabs')
+  container.innerHTML = ''
+  currentDiatonicChords = selectedKey
+    ? computeDiatonicChords(selectedKey.root, selectedKey.mode)
+    : []
+
+  const activate = (btn, idx) => {
+    container.querySelectorAll('.chord-tab').forEach(b => b.classList.remove('active'))
+    btn.classList.add('active')
+    selectedChordIdx = idx
+    updateVisualizer()
+  }
+
+  // Scale tab (full key)
+  const scaleBtn = document.createElement('button')
+  scaleBtn.className = 'chord-tab' + (selectedChordIdx === null ? ' active' : '')
+  scaleBtn.textContent = 'Scale'
+  scaleBtn.addEventListener('click', () => activate(scaleBtn, null))
+  container.appendChild(scaleBtn)
+
+  // One tab per diatonic chord
+  currentDiatonicChords.forEach((chord, i) => {
+    const btn = document.createElement('button')
+    btn.className = 'chord-tab' + (selectedChordIdx === i ? ' active' : '')
+    btn.innerHTML =
+      `<span class="chord-tab-degree">${chord.degree}</span>` +
+      `<span class="chord-tab-name">${chord.name}</span>`
+    btn.addEventListener('click', () => activate(btn, i))
+    container.appendChild(btn)
+  })
+}
+
+function updateSuggestions() {
+  const moods = selectedKey ? selectedKey.moods : []
+  if (suggestionsMode === 'analog') {
+    renderTones(moods)
+  } else {
+    renderInstruments(moods)
+  }
+}
+
+function selectKey(keyData) {
+  selectedKey = keyData
+  selectedChordIdx = null
+
+  // Sync root/mode selectors
+  const rootSel = document.getElementById('viz-root')
+  const modeSel = document.getElementById('viz-mode')
+  if (rootSel) rootSel.value = normalizeNote(keyData.root)
+  if (modeSel) modeSel.value = keyData.mode
+
+  document.querySelectorAll('.key-card').forEach(c =>
+    c.classList.toggle('selected', c.dataset.keyId === keyData.id)
+  )
+  document.querySelectorAll('.mood-key-btn').forEach(b =>
+    b.classList.toggle('active', b.textContent === keyData.name)
+  )
+  renderChordTabs()
+  updateVisualizer()
+  updateSuggestions()
+}
+
+function renderKeys() {
+  const container = document.getElementById('keys-grid')
+  container.innerHTML = ''
+
+  let filtered = allKeys
+  if (activeKeyRootFilter) filtered = filtered.filter(k => k.root === activeKeyRootFilter)
+  if (activeKeyModeFilter) filtered = filtered.filter(k => k.mode === activeKeyModeFilter)
+  if (activeKeyMoodFilter) filtered = filtered.filter(k => k.moods.includes(activeKeyMoodFilter))
+
+  filtered.forEach(key => {
+    const card = document.createElement('div')
+    card.className = 'key-card' + (selectedKey && selectedKey.id === key.id ? ' selected' : '')
+    card.dataset.keyId = key.id
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-name">${key.name}</span>
+        <span class="card-sub">${key.notes.join(' – ')}</span>
+      </div>
+      <p class="emotional-profile">${key.emotionalProfile}</p>
+      <p class="card-desc">${key.notableUses}</p>
+      <div class="tag-row">${key.moods.map(m => `<span class="tag">${m}</span>`).join('')}</div>
+    `
+    card.addEventListener('click', () => selectKey(key))
+    container.appendChild(card)
+  })
+}
+
+function renderMoodKeyButtons(mood) {
+  const container = document.getElementById('mood-key-buttons')
+  container.innerHTML = ''
+
+  if (!mood) {
+    container.classList.add('hidden')
+    return
+  }
+
+  const matching = allKeys.filter(k => k.moods.includes(mood))
+  if (!matching.length) {
+    container.classList.add('hidden')
+    return
+  }
+
+  container.classList.remove('hidden')
+
+  matching.forEach(key => {
+    const btn = document.createElement('button')
+    btn.className = 'mood-key-btn' + (selectedKey && selectedKey.id === key.id ? ' active' : '')
+    btn.textContent = key.name
+    btn.addEventListener('click', () => {
+      container.querySelectorAll('.mood-key-btn').forEach(b => b.classList.remove('active'))
+      btn.classList.add('active')
+      selectKey(key)
+    })
+    container.appendChild(btn)
+  })
+
+  // Auto-select the first matching key
+  const first = matching.find(k => selectedKey && k.id === selectedKey.id) || matching[0]
+  if (first) selectKey(first)
+}
+
+function syncVisualizerToFilters() {
+  let candidates = allKeys
+  if (activeKeyRootFilter) candidates = candidates.filter(k => k.root === activeKeyRootFilter)
+  if (activeKeyModeFilter) candidates = candidates.filter(k => k.mode === activeKeyModeFilter)
+  if (candidates.length > 0) selectKey(candidates[0])
+}
+
+function buildKeyFilters() {
+  // Root filters — ordered chromatically
+  const roots = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+  const presentRoots = roots.filter(r => allKeys.some(k => k.root === r))
+  buildFilterGroup('key-root-filters', presentRoots, val => {
+    activeKeyRootFilter = val
+    renderKeys()
+    syncVisualizerToFilters()
+  }, () => {
+    activeKeyRootFilter = null
+    renderKeys()
+    syncVisualizerToFilters()
+  })
+
+  // Mode filters — ordered logically
+  const modeOrder = ['major', 'minor', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'harmonicMinor', 'phrygianDominant']
+  const modeLabels = {
+    major: 'major', minor: 'minor', dorian: 'dorian', phrygian: 'phrygian',
+    lydian: 'lydian', mixolydian: 'mixolydian', harmonicMinor: 'harm. minor', phrygianDominant: 'phryg. dom.'
+  }
+  const presentModes = modeOrder.filter(m => allKeys.some(k => k.mode === m))
+  buildFilterGroup('key-mode-filters', presentModes, val => {
+    activeKeyModeFilter = val
+    renderKeys()
+    syncVisualizerToFilters()
+  }, () => {
+    activeKeyModeFilter = null
+    renderKeys()
+    syncVisualizerToFilters()
+  }, modeLabels)
+
+  // Mood filters — show matching keys as selectable buttons
+  const moodSet = new Set()
+  allKeys.forEach(k => k.moods.forEach(m => moodSet.add(m)))
+  buildFilterGroup('key-mood-filters', Array.from(moodSet).sort(), val => {
+    activeKeyMoodFilter = val
+    renderKeys()
+    renderMoodKeyButtons(val)
+  }, () => {
+    activeKeyMoodFilter = null
+    renderKeys()
+    renderMoodKeyButtons(null)
+  })
+}
+
+function renderInstruments(moodFilter = []) {
+  const container = document.getElementById('suggestions-grid')
+  container.innerHTML = ''
+
+  const filtered = moodFilter.length
+    ? allInstruments.filter(i => i.moodTags.some(m => moodFilter.includes(m)))
+    : allInstruments
+
+  const displayInstrs = filtered.length ? filtered : allInstruments
+
+  displayInstrs.forEach(instr => {
+    const card = document.createElement('div')
+    card.className = 'instrument-card'
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="card-name">${instr.name}</span>
+        <span class="card-sub">${instr.plugin} — ${instr.preset}</span>
+      </div>
+      <p class="card-desc">${instr.description}</p>
+      <div class="tag-row">
+        ${instr.moodTags.map(m => `<span class="tag">${m}</span>`).join('')}
+        <span class="tag tag-genre">${instr.category}</span>
+      </div>
+    `
+    container.appendChild(card)
+  })
+}
+
+function buildFilterGroup(containerId, values, onSelect, onAll, labels = {}) {
+  const container = document.getElementById(containerId)
+  container.innerHTML = ''
+
+  const allBtn = document.createElement('button')
+  allBtn.className = 'filter-btn active'
+  allBtn.textContent = 'all'
+  allBtn.addEventListener('click', () => {
+    container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'))
+    allBtn.classList.add('active')
+    onAll()
+  })
+  container.appendChild(allBtn)
+
+  values.forEach(val => {
+    const btn = document.createElement('button')
+    btn.className = 'filter-btn'
+    btn.textContent = labels[val] || val
+    btn.addEventListener('click', () => {
+      container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'))
+      btn.classList.add('active')
+      onSelect(val)
+    })
+    container.appendChild(btn)
+  })
+}
+
+// ============================================================
+// Esoteric Section
+// ============================================================
+
+function drawCard() {
+  if (!allStrategies.length) return
+
+  // Avoid immediate repeat
+  let idx
+  do {
+    idx = Math.floor(Math.random() * allStrategies.length)
+  } while (allStrategies.length > 1 && idx === currentStrategyIdx)
+  currentStrategyIdx = idx
+
+  // ~30% chance of reversed
+  currentStrategyReversed = Math.random() < 0.3
+
+  const card = allStrategies[idx]
+  const cardEl = document.getElementById('strategy-card')
+  const textEl = document.getElementById('card-text')
+  const categoryEl = document.getElementById('card-category')
+  const reversedBadge = document.getElementById('card-reversed-badge')
+
+  // Flip out: add flipped class, swap content mid-flip, flip back
+  cardEl.classList.add('flipping')
+
+  setTimeout(() => {
+    textEl.textContent = currentStrategyReversed ? card.reversed : card.text
+    categoryEl.textContent = card.category
+    reversedBadge.classList.toggle('hidden', !currentStrategyReversed)
+    cardEl.classList.toggle('reversed', currentStrategyReversed)
+    cardEl.classList.remove('flipping')
+    cardEl.classList.add('flipped-in')
+    setTimeout(() => cardEl.classList.remove('flipped-in'), 400)
+  }, 300)
+}
+
+// ============================================================
+// Mood Search (client-side, static mood map)
+// ============================================================
+
+function searchMoodMap(query) {
+  const tokens = query.toLowerCase().replace(/[^a-z\s]/g, ' ').split(/\s+/).filter(s => s.length > 2)
+  if (!tokens.length) return null
+
+  let best = null, bestScore = 0
+  for (const profile of MOOD_MAP) {
+    let score = 0
+    for (const token of tokens) {
+      for (const kw of profile.keywords) {
+        if (kw.includes(token) || token.includes(kw)) score++
+      }
+    }
+    if (score > bestScore) { bestScore = score; best = profile }
+  }
+  return best
+}
+
+function showMoodResult(query) {
+  const resultPanel = document.getElementById('mood-result')
+  resultPanel.classList.remove('hidden')
+
+  const profile = searchMoodMap(query)
+  if (!profile) {
+    resultPanel.innerHTML = '<span class="error-text">No match — try different words.</span>'
+    return
+  }
+
+  const matchedKeys   = profile.keys.map(id => allKeys.find(k => k.id === id)).filter(Boolean)
+  const matchedTones  = profile.tones.map(id => allTones.find(t => t.id === id)).filter(Boolean)
+  const matchedInstrs = profile.instruments.map(id => allInstruments.find(i => i.id === id)).filter(Boolean)
+
+  resultPanel.innerHTML = `
+    <div class="mood-result-inner">
+      <div class="mood-result-section">
+        <h4>Keys</h4>
+        <ul>${matchedKeys.map(k => `<li><strong>${k.name}</strong> — ${k.moods.join(', ')}</li>`).join('')}</ul>
+      </div>
+      <div class="mood-result-section">
+        <h4>Tones</h4>
+        <ul>${matchedTones.map(t => `<li><strong>${t.name}</strong> — ${t.ampModel}</li>`).join('')}</ul>
+      </div>
+      <div class="mood-result-section">
+        <h4>Instruments</h4>
+        <ul>${matchedInstrs.map(i => `<li><strong>${i.name}</strong> — ${i.plugin}</li>`).join('')}</ul>
+      </div>
+      <div class="mood-result-starting-point">
+        <h4>Starting Point</h4>
+        <p>${profile.startingPoint}</p>
+      </div>
+    </div>
+  `
+}
+
+// ============================================================
+// Init
+// ============================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadData()
+
+  // Nav
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => switchSection(tab.dataset.section))
+  })
+
+  // Keys — root / mode free selectors
+  populateVizRootMode()
+  const vizRootSelect = document.getElementById('viz-root')
+  const vizModeSelect = document.getElementById('viz-mode')
+  vizRootSelect.value = 'E'
+  vizModeSelect.value = 'minor'
+
+  const onVizRootModeChange = () => {
+    selectedKey = makeSyntheticKey(vizRootSelect.value, vizModeSelect.value)
+    selectedChordIdx = null
+    document.querySelectorAll('.key-card').forEach(c => c.classList.remove('selected'))
+    document.querySelectorAll('.mood-key-btn').forEach(b => b.classList.remove('active'))
+    renderChordTabs()
+    updateVisualizer()
+    updateSuggestions()
+  }
+  vizRootSelect.addEventListener('change', onVizRootModeChange)
+  vizModeSelect.addEventListener('change', onVizRootModeChange)
+
+  // Keys — visualizer tuning select
+  const vizTuningSelect = document.getElementById('viz-tuning')
+  allTunings.forEach(t => {
+    const opt = document.createElement('option')
+    opt.value = t.id
+    opt.textContent = t.name
+    vizTuningSelect.appendChild(opt)
+  })
+  vizTuningSelect.value = vizTuningId
+  vizTuningSelect.addEventListener('change', () => {
+    vizTuningId = vizTuningSelect.value
+    updateVisualizer()
+  })
+
+  document.getElementById('viz-show-labels').addEventListener('change', e => {
+    vizShowLabels = e.target.checked
+    updateVisualizer()
+  })
+
+  buildKeyFilters()
+  renderKeys()
+
+  // Default: select E minor (also populates suggestions)
+  const defaultKey = allKeys.find(k => k.id === 'e-minor') || allKeys[0]
+  if (defaultKey) selectKey(defaultKey)
+
+  // Suggestions toggle
+  document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'))
+      btn.classList.add('active')
+      suggestionsMode = btn.dataset.mode
+      updateSuggestions()
+    })
+  })
+
+  // Esoteric
+  drawCard()
+  document.getElementById('draw-again').addEventListener('click', drawCard)
+
+  // Mood search
+  const moodInput = document.getElementById('mood-input')
+  const moodSubmit = document.getElementById('mood-submit')
+  moodSubmit.addEventListener('click', () => {
+    const val = moodInput.value.trim()
+    if (val) showMoodResult(val)
+  })
+  moodInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const val = moodInput.value.trim()
+      if (val) showMoodResult(val)
+    }
+  })
+
+  // Initial section
+  switchSection('keys')
+})

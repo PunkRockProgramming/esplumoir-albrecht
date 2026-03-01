@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>esplumoir-albrecht</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <header>
+    <h1>esplumoir-albrecht</h1>
+    <p class="tagline">songwriting reference / dark studio tools</p>
+  </header>
+
+  <!-- Mood Search Bar -->
+  <div class="mood-search-bar">
+    <div class="mood-search-inner">
+      <input
+        type="text"
+        id="mood-input"
+        placeholder="describe a mood or theme — get key, tone, and instrument suggestions"
+        autocomplete="off"
+      />
+      <button id="mood-submit">search</button>
+    </div>
+    <div id="mood-result" class="mood-result hidden"></div>
+  </div>
+
+  <!-- Section Navigation -->
+  <nav class="section-nav">
+    <button class="nav-tab active" data-section="keys">Grimoire</button>
+    <button class="nav-tab" data-section="esoteric">Esoteric Strategies</button>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!-- Keys Section                                                 -->
+  <!-- ============================================================ -->
+  <section id="keys" class="section active">
+    <div class="section-header">
+      <h2>Grimoire</h2>
+      <p class="section-sub">Musical key and mode reference — emotional profiles</p>
+    </div>
+
+    <div class="filter-row">
+      <div class="filter-group">
+        <span class="filter-label">Root</span>
+        <div id="key-root-filters" class="filter-buttons"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Mode</span>
+        <div id="key-mode-filters" class="filter-buttons"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Mood</span>
+        <div id="key-mood-filters" class="filter-buttons"></div>
+      </div>
+    </div>
+
+    <!-- Mood key quick-select (shown when a mood filter is active) -->
+    <div id="mood-key-buttons" class="mood-key-buttons hidden"></div>
+
+    <!-- Key Visualizer -->
+    <div id="key-visualizer" class="key-visualizer">
+      <div class="viz-header">
+        <div class="viz-title">
+          <h3 id="viz-key-name" class="viz-key-name">E Minor</h3>
+          <span id="viz-key-notes" class="viz-key-notes"></span>
+        </div>
+        <div class="viz-controls">
+          <div class="control-group" style="flex-direction:row;align-items:center;gap:8px">
+            <span class="output-label" style="white-space:nowrap">Root</span>
+            <select id="viz-root" style="min-width:72px"></select>
+          </div>
+          <div class="control-group" style="flex-direction:row;align-items:center;gap:8px">
+            <span class="output-label" style="white-space:nowrap">Mode</span>
+            <select id="viz-mode" style="min-width:160px"></select>
+          </div>
+          <div class="control-group" style="flex-direction:row;align-items:center;gap:8px">
+            <span class="output-label" style="white-space:nowrap">Tuning</span>
+            <select id="viz-tuning"></select>
+          </div>
+          <label class="radio-label">
+            <input type="checkbox" id="viz-show-labels" checked> Note names
+          </label>
+        </div>
+      </div>
+
+      <!-- Chord tabs: Scale + I–VII -->
+      <div id="chord-tabs" class="chord-tabs"></div>
+
+      <div class="viz-panels">
+        <div class="viz-panel">
+          <div class="output-label">Guitar — <span id="viz-tuning-label"></span></div>
+          <div id="fretboard-container" class="fretboard-container"></div>
+        </div>
+        <div class="viz-panel">
+          <div class="output-label">Piano — C3 to B4</div>
+          <div id="piano-container" class="piano-wrap"></div>
+        </div>
+      </div>
+
+      <div id="degree-legend" class="degree-legend"></div>
+    </div>
+
+    <!-- Suggestions panel — Analog tones / Digital instruments -->
+    <div class="suggestions-panel">
+      <div class="suggestions-header">
+        <span class="output-label">Suggestions</span>
+        <div class="suggestions-toggle">
+          <button class="toggle-btn active" data-mode="analog">Analog</button>
+          <button class="toggle-btn" data-mode="digital">Digital</button>
+        </div>
+      </div>
+      <div id="suggestions-grid" class="card-grid"></div>
+    </div>
+
+    <div id="keys-grid" class="card-grid keys-grid"></div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- Esoteric Section                                             -->
+  <!-- ============================================================ -->
+  <section id="esoteric" class="section">
+    <div class="section-header">
+      <h2>Esoteric Strategies</h2>
+      <p class="section-sub">Draw a card. Obey or refuse.</p>
+    </div>
+
+    <div class="card-stage">
+      <div id="strategy-card" class="strategy-card">
+        <div id="card-reversed-badge" class="reversed-badge hidden">reversed</div>
+        <p id="card-text" class="card-text"></p>
+        <div class="card-footer">
+          <span id="card-category" class="card-category"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-controls">
+      <button id="draw-again" class="primary-btn">Draw Again</button>
+    </div>
+  </section>
+
+  <script src="/script.js" type="module"></script>
+</body>
+</html>
