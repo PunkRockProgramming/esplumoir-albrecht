@@ -1039,6 +1039,64 @@ select:focus, textarea:focus { border-color: var(--accent); }
   border-radius: var(--radius);
 }
 
+.forge-prog-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.forge-tab-frame {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: border-color 0.1s;
+  font-family: var(--font-mono);
+}
+
+.forge-tab-frame:hover { border-color: var(--accent-dim); }
+
+.forge-tab-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.forge-tab-strings {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.forge-tab-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.forge-tab-string {
+  font-size: 0.72rem;
+  color: var(--muted);
+  width: 12px;
+  text-align: right;
+}
+
+.forge-tab-fret {
+  font-size: 0.8rem;
+  color: var(--muted);
+  min-width: 18px;
+  text-align: center;
+}
+
+.forge-tab-fret.played {
+  color: var(--text);
+  font-weight: 600;
+}
+
 .forge-prog-empty {
   font-size: 0.82rem;
   color: var(--muted);

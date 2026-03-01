@@ -904,6 +904,7 @@ function renderForgeProgression() {
   const row = document.getElementById('forge-progression-row')
   if (!forgeProgression.length) {
     row.innerHTML = '<span class="forge-prog-empty">no chords yet — add from the fretboard above</span>'
+    renderForgeProgTabs()
     return
   }
   row.innerHTML = ''
@@ -923,6 +924,53 @@ function renderForgeProgression() {
       renderForgeProgression()
     })
     row.appendChild(chip)
+  })
+  renderForgeProgTabs()
+}
+
+function renderForgeProgTabs() {
+  const container = document.getElementById('forge-prog-tabs')
+  container.innerHTML = ''
+  if (!forgeProgression.length) return
+
+  const tuning = allTunings.find(t => t.id === forgeTuningId) || allTunings[0]
+  if (!tuning) return
+
+  const displayStrings = [...tuning.openNotes].reverse()
+  // Strip octave numbers; use lowercase 'e' for the highest string
+  const stringLabels = displayStrings.map((n, i) => {
+    const letter = normalizeNote(n.replace(/\d/, ''))
+    return i === 0 ? letter.toLowerCase() : letter
+  })
+
+  forgeProgression.forEach((chord, chordIdx) => {
+    const frame = document.createElement('div')
+    frame.className = 'forge-tab-frame'
+    frame.title = 'click to load voicing'
+
+    let html = `<div class="forge-tab-name">${chord.name}</div><div class="forge-tab-strings">`
+    for (let s = 0; s < 6; s++) {
+      let fretNum = null
+      chord.voicing.forEach((_, key) => {
+        const [ks, kf] = key.split(',').map(Number)
+        if (ks === s) fretNum = kf
+      })
+      const played = fretNum !== null
+      html +=
+        `<div class="forge-tab-row">` +
+        `<span class="forge-tab-string">${stringLabels[s]}</span>` +
+        `<span class="forge-tab-fret${played ? ' played' : ''}">${played ? fretNum : '—'}</span>` +
+        `</div>`
+    }
+    html += '</div>'
+    frame.innerHTML = html
+
+    frame.addEventListener('click', () => {
+      forgePositions = new Map(chord.voicing)
+      updateForge()
+    })
+
+    container.appendChild(frame)
   })
 }
 
