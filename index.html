@@ -113,8 +113,8 @@
       <div class="suggestions-header">
         <span class="output-label">Suggestions</span>
         <div class="suggestions-toggle">
-          <button class="toggle-btn active" data-mode="analog">Analog</button>
-          <button class="toggle-btn" data-mode="digital">Digital</button>
+          <button class="toggle-btn active" data-mode="analog">Iron</button>
+          <button class="toggle-btn" data-mode="digital">Ether</button>
         </div>
       </div>
       <div id="suggestions-grid" class="card-grid"></div>
@@ -204,6 +204,14 @@
       <button id="draw-again" class="primary-btn">Draw Again</button>
     </div>
   </section>
+
+  <!-- Key Detail Modal -->
+  <div id="detail-modal" class="modal-overlay" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-key-name">
+      <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
 
   <script src="script.js" type="module"></script>
 </body>

@@ -225,10 +225,10 @@ function renderPianoHTML(degreeMap, showLabels) {
   const WHITE_NOTES   = ['C', 'D', 'E', 'F', 'G', 'A', 'B']
   const BLACK_AFTER   = { C: 'C#', D: 'D#', F: 'F#', G: 'G#', A: 'A#' }
 
-  let html = `<div class="piano" style="width:${14 * STEP - GAP}px">`
+  let html = `<div class="piano" style="width:${28 * STEP - GAP}px">`
 
   let wi = 0
-  for (const oct of [3, 4]) {
+  for (const oct of [2, 3, 4, 5]) {
     for (const note of WHITE_NOTES) {
       const x = wi * STEP
       const deg = degreeMap.has(note) ? degreeMap.get(note) : null
@@ -541,13 +541,16 @@ function renderKeys() {
       ${relatedHtml}
       <div class="tag-row">${key.moods.map(m => `<span class="tag">${m}</span>`).join('')}</div>
     `
-    card.addEventListener('click', () => selectKey(key))
+    card.addEventListener('click', e => {
+      if (e.target.closest('.related-key-link')) return
+      openKeyModal(key)
+    })
 
     card.querySelectorAll('.related-key-link').forEach(link => {
       link.addEventListener('click', e => {
         e.stopPropagation()
         const target = allKeys.find(k => k.id === link.dataset.keyId)
-        if (target) selectKey(target)
+        if (target) openKeyModal(target)
       })
     })
 
@@ -754,6 +757,101 @@ function searchMoodMap(query) {
   return best
 }
 
+// ============================================================
+// Key Detail Modal
+// ============================================================
+
+function openKeyModal(key) {
+  const modal   = document.getElementById('detail-modal')
+  const content = document.getElementById('modal-content')
+
+  const chords  = computeDiatonicChords(key.root, key.mode)
+  const tones   = allTones.filter(t => t.moodTags?.some(tag => key.moods.includes(tag)))
+  const instrs  = allInstruments.filter(i => i.moodTags?.some(tag => key.moods.includes(tag)))
+
+  const relatedChips = (key.relatedKeys ?? []).map(name => {
+    const rk = allKeys.find(k => k.name === name)
+    return rk
+      ? `<button class="modal-chip" data-key-id="${rk.id}">${name}</button>`
+      : `<span class="modal-chip-static">${name}</span>`
+  }).join('')
+
+  const chordRows = chords.map(c =>
+    `<div class="modal-row"><strong>${c.degree}</strong>${c.name}</div>`
+  ).join('')
+
+  const toneRows = tones.map(t =>
+    `<div class="modal-row"><strong>${t.name}</strong>${t.ampModel} — ${t.description}</div>`
+  ).join('')
+
+  const instrRows = instrs.map(i =>
+    `<div class="modal-row"><strong>${i.name}</strong>${i.plugin} / ${i.preset}</div>`
+  ).join('')
+
+  content.innerHTML = `
+    <div class="modal-key-name" id="modal-key-name">${key.name}</div>
+    <div class="modal-key-mode">${key.mode}</div>
+
+    ${key.emotionalProfile ? `
+    <div class="modal-section">
+      <div class="modal-section-label">Emotional Profile</div>
+      <p class="modal-prose">${key.emotionalProfile}</p>
+    </div>` : ''}
+
+    ${key.notableUses ? `
+    <div class="modal-section">
+      <div class="modal-section-label">Notable Uses</div>
+      <p class="modal-prose">${key.notableUses}</p>
+    </div>` : ''}
+
+    ${relatedChips ? `
+    <div class="modal-section">
+      <div class="modal-section-label">Related Keys</div>
+      <div class="modal-chips">${relatedChips}</div>
+    </div>` : ''}
+
+    ${chordRows ? `
+    <div class="modal-section">
+      <div class="modal-section-label">Diatonic Chords</div>
+      ${chordRows}
+    </div>` : ''}
+
+    ${toneRows ? `
+    <div class="modal-section">
+      <div class="modal-section-label">Iron Tones (matching mood)</div>
+      ${toneRows}
+    </div>` : ''}
+
+    ${instrRows ? `
+    <div class="modal-section">
+      <div class="modal-section-label">Ether Instruments (matching mood)</div>
+      ${instrRows}
+    </div>` : ''}
+
+    <button class="modal-load-btn" id="modal-load-key">Load "${key.name}" into Grimoire →</button>
+  `
+
+  modal.hidden = false
+
+  // Related key chips
+  content.querySelectorAll('.modal-chip[data-key-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = allKeys.find(k => k.id === btn.dataset.keyId)
+      if (target) openKeyModal(target)
+    })
+  })
+
+  // Load key button
+  content.querySelector('#modal-load-key').addEventListener('click', () => {
+    selectKey(key)
+    closeKeyModal()
+  })
+}
+
+function closeKeyModal() {
+  document.getElementById('detail-modal').hidden = true
+}
+
 function showMoodResult(query) {
   const resultPanel = document.getElementById('mood-result')
   resultPanel.classList.remove('hidden')
@@ -767,6 +865,9 @@ function showMoodResult(query) {
   const matchedKeys   = profile.keys.map(id => allKeys.find(k => k.id === id)).filter(Boolean)
   const matchedTones  = profile.tones.map(id => allTones.find(t => t.id === id)).filter(Boolean)
   const matchedInstrs = profile.instruments.map(id => allInstruments.find(i => i.id === id)).filter(Boolean)
+
+  // Auto-select the top matching key — updates fretboard, dropdowns, and suggestions
+  if (matchedKeys[0]) selectKey(matchedKeys[0])
 
   resultPanel.innerHTML = `
     <div class="mood-result-inner">
@@ -1473,6 +1574,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Forge
   buildForge()
+
+  // Modal close handlers
+  document.getElementById('modal-close').addEventListener('click', closeKeyModal)
+  document.getElementById('detail-modal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeKeyModal()
+  })
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeKeyModal()
+  })
 
   // Initial section
   switchSection('keys')
