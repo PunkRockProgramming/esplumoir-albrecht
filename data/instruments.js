@@ -9,7 +9,8 @@ export const INSTRUMENTS = [
     genreTags: ['cinematic', 'doom', 'post-rock', 'ambient'],
     keyTags: ['E minor', 'D minor', 'B minor', 'C# minor', 'E Phrygian'],
     midiNotes: 'C2–C5',
-    description: 'Slow-attack spectral pad with heavy filtering and subtle pitch drift. Fills low-mid space with dread. Layer underneath guitars for density, or use alone for pure atmosphere.'
+    description: 'Slow-attack spectral pad with heavy filtering and subtle pitch drift. Fills low-mid space with dread. Layer underneath guitars for density, or use alone for pure atmosphere.',
+    workflow: 'Start a session by holding a single root note chord here before touching anything else. Let it establish the emotional floor. Add guitar or melody on top only once the atmosphere has settled — 4–8 bars minimum. Avoid busy MIDI patterns; this instrument wants long, slow notes.'
   },
   {
     id: 'alchemy-shimmer',
@@ -21,7 +22,8 @@ export const INSTRUMENTS = [
     genreTags: ['ambient', 'post-rock', 'cinematic', 'folk'],
     keyTags: ['C Lydian', 'A Dorian', 'G major', 'Eb major'],
     midiNotes: 'C3–C6',
-    description: 'Pitch-shifted reverb pad simulating the shimmer effect. Each held note blooms upward into harmonics. Dangerous to overuse — best as a background presence rather than a featured element.'
+    description: 'Pitch-shifted reverb pad simulating the shimmer effect. Each held note blooms upward into harmonics. Dangerous to overuse — best as a background presence rather than a featured element.',
+    workflow: 'Introduce it only after the song has a tonal center established. Layer beneath a guitar melody and bring it up slowly in the mix. The shimmer works best as a surprise arrival — hold it back until the second verse or chorus. Resist playing chords; single sustained notes bloom more interestingly.'
   },
   {
     id: 'es2-lead',
@@ -33,7 +35,8 @@ export const INSTRUMENTS = [
     genreTags: ['industrial', 'synthwave', 'electronic rock', 'new wave'],
     keyTags: ['E minor', 'A minor', 'D minor', 'C# minor'],
     midiNotes: 'C3–C5',
-    description: 'Sawtooth-based monophonic lead with moderate portamento. Cuts through dense mixes. Pair with guitar for a layered electro-rock texture or use as the primary melodic voice in electronic arrangements.'
+    description: 'Sawtooth-based monophonic lead with moderate portamento. Cuts through dense mixes. Pair with guitar for a layered electro-rock texture or use as the primary melodic voice in electronic arrangements.',
+    workflow: 'Use as the melodic voice when you want the melody to feel synthetic and intentional rather than human and improvised. Monophonic only — plan your lines before you play. Works well in call-and-response with a guitar riff. Keep the portamento on and let the slides do expressive work.'
   },
   {
     id: 'retro-synth-bass',
@@ -45,7 +48,8 @@ export const INSTRUMENTS = [
     genreTags: ['electronic', 'pop', 'krautrock', 'dark pop'],
     keyTags: ['any — matches song root'],
     midiNotes: 'C1–C3',
-    description: 'Warm analog-style bass synth. Can replace or double a bass guitar. Works well in arrangements where the bass needs to blend rather than cut. Subtle filter modulation adds life.'
+    description: 'Warm analog-style bass synth. Can replace or double a bass guitar. Works well in arrangements where the bass needs to blend rather than cut. Subtle filter modulation adds life.',
+    workflow: "Treat it like a bass player who locks in with the kick drum. Record MIDI by playing quarter or eighth note patterns along to a rough drum track, not in silence. If it's replacing a real bass, double it with a dry DI signal if available. Don't try to do bass runs — its character is about pulse, not melody."
   },
   {
     id: 'vintage-clav',
@@ -57,7 +61,8 @@ export const INSTRUMENTS = [
     genreTags: ['funk', 'soul', 'R&B', 'blues rock'],
     keyTags: ['E minor', 'A minor', 'D minor', 'G Dorian'],
     midiNotes: 'C2–C6',
-    description: 'Clavinet simulation with built-in wah envelope. Highly velocity-sensitive — muted, dead-on-release playing produces percussive stabs; full-key sustained playing gives sustain. Supermatic funk rhythm instrument.'
+    description: 'Clavinet simulation with built-in wah envelope. Highly velocity-sensitive — muted, dead-on-release playing produces percussive stabs; full-key sustained playing gives sustain. Supermatic funk rhythm instrument.',
+    workflow: 'Write rhythm parts before melody. Mute everything else and build a rhythmic pattern first — it thinks in grooves, not chords. Velocity variation is everything: dead notes at low velocity, stabs at high. Works well locked with a hi-hat pattern. Avoid sustain; this is a percussive instrument pretending to be keys.'
   },
   {
     id: 'es2-texture',
@@ -69,7 +74,8 @@ export const INSTRUMENTS = [
     genreTags: ['industrial', 'noise rock', 'black metal', 'experimental'],
     keyTags: ['any — atonal texture'],
     midiNotes: 'C2–C4',
-    description: 'White noise filtered through a resonant bandpass with slow LFO sweeps. Not a pitched instrument — a texture layer for building unease beneath tonal elements. Does not resolve; it persists.'
+    description: 'White noise filtered through a resonant bandpass with slow LFO sweeps. Not a pitched instrument — a texture layer for building unease beneath tonal elements. Does not resolve; it persists.',
+    workflow: "Don't assign it a note — just set it on a low drone and let it run under the arrangement. Bring it in and out with automation rather than playing it. The filter sweep is the performance. Use it to add unease in sections that are harmonically stable, or to fill the space when guitars drop out."
   },
   {
     id: 'alchemy-choir',
@@ -81,7 +87,8 @@ export const INSTRUMENTS = [
     genreTags: ['ambient', 'cinematic', 'gothic', 'post-classical'],
     keyTags: ['D minor', 'C# minor', 'E minor', 'B minor', 'A Harmonic Minor'],
     midiNotes: 'C3–G5',
-    description: 'Spectral resynthesis of choral voices — human enough to be unsettling, processed enough to be inhuman. Works as a harmonic pad or in short stabs. Sustained major chords sound beautiful; sustained minor chords sound wrong in exactly the right way.'
+    description: 'Spectral resynthesis of choral voices — human enough to be unsettling, processed enough to be inhuman. Works as a harmonic pad or in short stabs. Sustained major chords sound beautiful; sustained minor chords sound wrong in exactly the right way.',
+    workflow: "Works best on simple sustained chord shapes — I–IV–V territory in minor keys. Record a slow pad part and let it breathe. Avoid complex voicings; the spectral processing blurs them into mud. Single notes or open fifths are more effective than full chords. Save it for the song's most emotionally exposed moment."
   },
   {
     id: 'sculpture-glass',
@@ -93,7 +100,8 @@ export const INSTRUMENTS = [
     genreTags: ['ambient', 'experimental', 'minimalist', 'modern classical'],
     keyTags: ['C Lydian', 'E Phrygian', 'any upper-register work'],
     midiNotes: 'C4–C7',
-    description: 'Physical modeling of glass resonators and singing bowls. Attack is nearly silent; the sound builds from the note\'s interior. Velocity controls how much the glass "cracks." Profoundly strange in the upper register.'
+    description: 'Physical modeling of glass resonators and singing bowls. Attack is nearly silent; the sound builds from the note\'s interior. Velocity controls how much the glass "cracks." Profoundly strange in the upper register.',
+    workflow: "Play it in the upper two octaves only, and use it sparingly — one note per phrase, not chords. Treat each note as a punctuation mark rather than part of a line. Works well as a response to a vocal or guitar phrase, arriving a beat after the phrase ends. The build time is part of the instrument: don't rush to the next note."
   },
   {
     id: 'string-ensemble',
@@ -105,7 +113,8 @@ export const INSTRUMENTS = [
     genreTags: ['cinematic', 'post-classical', 'dark folk', 'ambient'],
     keyTags: ['D minor', 'B minor', 'C# minor', 'A Harmonic Minor'],
     midiNotes: 'C2–C6',
-    description: 'Full string ensemble in a dead acoustic space — no room bloom, just the body of the strings. Slow bowing articulation default. Works well doubling guitar melodies an octave up, or as a low-register harmonic bed.'
+    description: 'Full string ensemble in a dead acoustic space — no room bloom, just the body of the strings. Slow bowing articulation default. Works well doubling guitar melodies an octave up, or as a low-register harmonic bed.',
+    workflow: "Start with a whole-note harmonic pad part — one chord per bar, slow bowing. Then listen to what the song needs and add a second pass only if movement is required. Don't try to write string parts in the style of an arranger; let the instrument tell you where to go. Doubling a guitar melody an octave up is almost always a good first choice."
   },
   {
     id: 'retro-synth-arp',
@@ -117,7 +126,8 @@ export const INSTRUMENTS = [
     genreTags: ['krautrock', 'electronic', 'synthwave', 'post-punk'],
     keyTags: ['D Dorian', 'A Dorian', 'D Mixolydian', 'E minor'],
     midiNotes: 'C3–C5',
-    description: 'Sequenced arpeggiator pattern with vintage analog oscillator. Best at 16th-note or dotted 8th patterns against a driving rhythm. The repetition is not monotonous — it is hypnotic. Borrowed from Kraftwerk and Neu! and returned damaged.'
+    description: 'Sequenced arpeggiator pattern with vintage analog oscillator. Best at 16th-note or dotted 8th patterns against a driving rhythm. The repetition is not monotonous — it is hypnotic. Borrowed from Kraftwerk and Neu! and returned damaged.',
+    workflow: 'Set the arpeggiator before writing anything. Find the tempo subdivision first (usually 16ths), then choose the chord. The pattern writes itself — your job is to pick the notes and let it run. Works best as a constant presence that other elements orbit. Avoid having it share the frequency space with a busy guitar part.'
   },
   {
     id: 'alchemy-organ',
@@ -129,7 +139,8 @@ export const INSTRUMENTS = [
     genreTags: ['blues', 'rock', 'soul', 'gospel', 'jazz'],
     keyTags: ['C major', 'G major', 'F major', 'A minor', 'D Dorian'],
     midiNotes: 'C2–C6',
-    description: 'Full-drawbar Hammond B3 simulation with rotary speaker. The rotary speed (slow/fast) changes the character dramatically — slow is mournful, fast is frenzied. Fundamental to gospel, jazz organ, and any rock band that needs a soul.'
+    description: 'Full-drawbar Hammond B3 simulation with rotary speaker. The rotary speed (slow/fast) changes the character dramatically — slow is mournful, fast is frenzied. Fundamental to gospel, jazz organ, and any rock band that needs a soul.',
+    workflow: "Write chord parts first, then overdubs. The organ wants to play the rhythm of the changes — don't try to be melodic until the harmonic part is locked. Rotary speed is the most expressive parameter: slow at low intensity, flipped to fast at the emotional peak. Keep the high end rolled off slightly so it doesn't fight vocals or guitar leads."
   },
   {
     id: 'percussion-industrial',
@@ -141,7 +152,8 @@ export const INSTRUMENTS = [
     genreTags: ['industrial', 'noise rock', 'electronic', 'experimental'],
     keyTags: ['any — rhythmic element'],
     midiNotes: 'C1–B2',
-    description: 'Metal impacts, distorted claps, and sub-heavy kicks processed through heavy saturation. Rhythm without humanity — the machine playing patterns it does not understand. Pairs with noise textures and high-gain guitar for maximum hostility.'
+    description: 'Metal impacts, distorted claps, and sub-heavy kicks processed through heavy saturation. Rhythm without humanity — the machine playing patterns it does not understand. Pairs with noise textures and high-gain guitar for maximum hostility.',
+    workflow: "Don't program it to sound like a drum kit — program it to sound like a machine that doesn't know it's making music. Asymmetric patterns, unexpected accents, long silences. Pair with a kick and hi-hat to anchor the tempo, then layer industrial sounds as texture, not beat. Avoid putting this in every bar; its impact depends on restraint."
   },
   {
     id: 'alchemy-pad-lush',
@@ -153,7 +165,8 @@ export const INSTRUMENTS = [
     genreTags: ['ambient', 'dream pop', 'shoegaze', 'folk pop'],
     keyTags: ['Ab major', 'Eb major', 'G major', 'C Lydian', 'A Dorian'],
     midiNotes: 'C2–C5',
-    description: 'Slow-attack, slow-release pad with heavy chorus and hall reverb baked in. Plays beneath everything else without demanding attention. The musical equivalent of late afternoon light. Good for transitions and for sustaining harmonic context while other elements move.'
+    description: 'Slow-attack, slow-release pad with heavy chorus and hall reverb baked in. Plays beneath everything else without demanding attention. The musical equivalent of late afternoon light. Good for transitions and for sustaining harmonic context while other elements move.',
+    workflow: "This is the harmonic glue. Record it after your main guitar and vocal tracks are down so you know what harmonic space is available. Keep it low in the mix — it should be felt as warmth, not heard as a feature. Slow attack means it works best under sustained or slow-moving parts. Don't change chords with it unless you want a soft sweep of color."
   },
   {
     id: 'vintage-keys-rhodes',
@@ -165,7 +178,8 @@ export const INSTRUMENTS = [
     genreTags: ['soul', 'jazz', 'R&B', 'dark pop', 'cinematic'],
     keyTags: ['D minor', 'A minor', 'C major', 'F major', 'G Dorian'],
     midiNotes: 'C2–C6',
-    description: 'Warm electric piano with slow attack tines and gentle tremolo. Sits between guitar and pad without competing with either. Velocity-sensitive — light touch produces a hush, full velocity produces a bark. The instrument that makes minor chords sound tender rather than sad.'
+    description: 'Warm electric piano with slow attack tines and gentle tremolo. Sits between guitar and pad without competing with either. Velocity-sensitive — light touch produces a hush, full velocity produces a bark. The instrument that makes minor chords sound tender rather than sad.',
+    workflow: 'Treat it like a second voice, not a keyboard part. Write simple, deliberate voicings — two or three notes at most. Velocity range is enormous: start soft and let it bloom. Works brilliantly in the space between vocal phrases. Avoid playing it with the same rhythm as the guitar; the tension between the two feels alive.'
   },
   {
     id: 'alchemy-breath',
@@ -177,7 +191,8 @@ export const INSTRUMENTS = [
     genreTags: ['ambient', 'folk', 'post-classical', 'cinematic'],
     keyTags: ['any — works across registers'],
     midiNotes: 'C3–G5',
-    description: 'Breathy vocal synthesis with blurred pitch and human instability. The breath is the sound — not voice, not quite instrument. Works as a background layer when something human is needed but a voice would be too literal. Hold sustained notes and let the internal modulation do the work.'
+    description: 'Breathy vocal synthesis with blurred pitch and human instability. The breath is the sound — not voice, not quite instrument. Works as a background layer when something human is needed but a voice would be too literal. Hold sustained notes and let the internal modulation do the work.',
+    workflow: "The least aggressive instrument in the palette — use it when you need human presence without literal voice. Write a melodic line and play it slowly, letting each note overlap with the last. The pitch instability means simple diatonic movement sounds more interesting than you'd expect. Avoid using it in sections with other pads; it disappears into dense harmonic material."
   },
   {
     id: 'sculpture-mallet',
@@ -189,7 +204,8 @@ export const INSTRUMENTS = [
     genreTags: ['minimalist', 'modern classical', 'experimental', 'ambient'],
     keyTags: ['C Lydian', 'E Phrygian', 'any pentatonic'],
     midiNotes: 'C4–C7',
-    description: 'Physical modeling of a metallic bell-glass hybrid. Attack is sharp, decay is long, overtones are complex. Sounds like something between a marimba and a glass harmonica. Works for sparse melodic lines where each note needs to be an event, not a passage.'
+    description: 'Physical modeling of a metallic bell-glass hybrid. Attack is sharp, decay is long, overtones are complex. Sounds like something between a marimba and a glass harmonica. Works for sparse melodic lines where each note needs to be an event, not a passage.',
+    workflow: 'Write a melody, not a pad. This is a pitched percussion instrument that wants melodic lines — scalar movement, motifs, repetition with variation. Each note needs silence around it to ring out. Pentatonic scales work well because they avoid interval clashes during the long decay. Use it for the thing a piano would do if it had been left in the cold for a year.'
   },
   {
     id: 'es2-sub-drone',
@@ -201,7 +217,8 @@ export const INSTRUMENTS = [
     genreTags: ['ambient', 'doom', 'industrial', 'experimental'],
     keyTags: ['any — stays on root'],
     midiNotes: 'C1–C3',
-    description: 'Pure sine oscillator at subsonic register. More felt than heard at low levels — adds physical weight to a mix without harmonic color. Hold the root note and let everything else move above it. Increase volume to the point where you feel it, then back off slightly.'
+    description: 'Pure sine oscillator at subsonic register. More felt than heard at low levels — adds physical weight to a mix without harmonic color. Hold the root note and let everything else move above it. Increase volume to the point where you feel it, then back off slightly.',
+    workflow: "Record it last and mix it first. Find the root of your song's key, hold it for the full track length, then bring the level up until you feel it rather than hear it. Done. Don't automate pitch — the drone is the point. If the song modulates, consider ending the drone before the modulation and restarting on the new root."
   },
   {
     id: 'alchemy-folk-strings',
@@ -213,7 +230,8 @@ export const INSTRUMENTS = [
     genreTags: ['dark folk', 'folk', 'folk noir', 'Americana', 'post-classical'],
     keyTags: ['D minor', 'A minor', 'G Dorian', 'D Dorian', 'G major'],
     midiNotes: 'C2–C5',
-    description: 'Fiddle and cello hybrid in the dark register of each instrument. More raw and immediate than the orchestral string ensemble — sounds like a session player in a barn, not a scoring stage. Works well doubling guitar melodies or carrying the melody line on its own.'
+    description: 'Fiddle and cello hybrid in the dark register of each instrument. More raw and immediate than the orchestral string ensemble — sounds like a session player in a barn, not a scoring stage. Works well doubling guitar melodies or carrying the melody line on its own.',
+    workflow: "Play it like a session player, not an arranger — rough and immediate. Double the vocal melody an octave up as a starting point and then decide if it needs to do something independent. The raw quality means it sounds best slightly imperfect: don't quantize the MIDI too tightly. Works at any dynamic level; the low register handles intensity, the high register handles delicacy."
   },
   {
     id: 'retro-synth-dark-lead',
@@ -225,7 +243,8 @@ export const INSTRUMENTS = [
     genreTags: ['synthwave', 'dark synth', 'post-punk', 'industrial', 'electronic noir'],
     keyTags: ['C# minor', 'E minor', 'D minor', 'B minor'],
     midiNotes: 'C3–C5',
-    description: 'Sawtooth oscillator with minor-oriented filter envelope and subtle chorus. Monophonic, portamento on. The sound of synthetic menace — controlled, deliberate, cold. Pair with industrial percussion or dark pad underneath. Does not brighten or warm up; that\'s the point.'
+    description: 'Sawtooth oscillator with minor-oriented filter envelope and subtle chorus. Monophonic, portamento on. The sound of synthetic menace — controlled, deliberate, cold. Pair with industrial percussion or dark pad underneath. Does not brighten or warm up; that\'s the point.',
+    workflow: 'Write the melody before you play it — this instrument rewards deliberate, intentional lines rather than improvisation. Portamento on means intervals are connections, not jumps. Keep lines sparse; a three-note motif repeated with rhythm is more effective than a six-bar run. Use it as the main melodic voice or as a secondary counter-melody, not as an ornament.'
   },
   {
     id: 'alchemy-ritual-bells',
@@ -237,7 +256,8 @@ export const INSTRUMENTS = [
     genreTags: ['ambient', 'cinematic', 'dark folk', 'gothic', 'experimental'],
     keyTags: ['any — single notes only, not chords'],
     midiNotes: 'C3–C6',
-    description: 'Tuned metal percussion with long, complex decay. Each note rings for seconds — so sparse use is essential. One strike per phrase. Works as punctuation between guitar lines or as a time-keeper in extremely slow passages. The silence between strikes carries as much information as the strike itself.'
+    description: 'Tuned metal percussion with long, complex decay. Each note rings for seconds — so sparse use is essential. One strike per phrase. Works as punctuation between guitar lines or as a time-keeper in extremely slow passages. The silence between strikes carries as much information as the strike itself.',
+    workflow: 'One note per phrase, maximum. Decide where in the song the bell strikes matter most — verse, chorus, transition — and place them there only. The long decay means you are always playing through the previous note; embrace this overlap rather than fighting it. Use to mark structural moments in the song (the entry of the chorus, the end of the bridge) rather than as a melodic element.'
   },
   {
     id: 'alchemy-piano',
@@ -249,7 +269,8 @@ export const INSTRUMENTS = [
     genreTags: ['cinematic', 'post-classical', 'dark pop', 'neo-classical', 'ambient'],
     keyTags: ['any — adapts across all keys'],
     midiNotes: 'A0–C8',
-    description: 'Dark concert-hall piano with medium sustain and slight room decay. The low register has genuine weight; the upper register has clarity without brightness. Use for solo piano writing, or as the harmonic anchor underneath other instruments. Does not disappear in a mix — earns its place.'
+    description: 'Dark concert-hall piano with medium sustain and slight room decay. The low register has genuine weight; the upper register has clarity without brightness. Use for solo piano writing, or as the harmonic anchor underneath other instruments. Does not disappear in a mix — earns its place.',
+    workflow: 'Write piano parts away from your main session — just you and the piano, working out the part on its own. Bring the recording back rather than trying to integrate it live. In the mix, the piano occupies mid-range and competes with guitar; address this with EQ rather than volume. Sparse voicings in the lower register work better than full chords in the middle.'
   },
   {
     id: 'alchemy-mellotron',
@@ -261,7 +282,8 @@ export const INSTRUMENTS = [
     genreTags: ['psychedelic', 'prog rock', 'folk rock', 'cinematic', 'dark folk'],
     keyTags: ['G major', 'D mixolydian', 'A minor', 'B minor', 'C major'],
     midiNotes: 'C2–G5',
-    description: 'Tape-sampled strings and flute blend with authentic Mellotron instability — slight pitch drift, tape hiss at the edges, a warmth that sounds like 1967 bleeding into now. Best for sustained chords and slow melodic lines. The imperfection is the feature: it sounds like something that should have died but didn\'t.'
+    description: 'Tape-sampled strings and flute blend with authentic Mellotron instability — slight pitch drift, tape hiss at the edges, a warmth that sounds like 1967 bleeding into now. Best for sustained chords and slow melodic lines. The imperfection is the feature: it sounds like something that should have died but didn\'t.',
+    workflow: "Start with sustained chord pads and let the tape instability do the work. Don't quantize or clean up the performance — the slight timing drift is authentic and valuable. Works well playing the same chord as the guitar but voiced differently, so the two instruments blur together at the edges. Avoid doubling percussion or bass; the Mellotron lives in the harmonic middle ground."
   },
   {
     id: 'retro-synth-poly',
@@ -273,7 +295,8 @@ export const INSTRUMENTS = [
     genreTags: ['synthwave', 'new wave', 'dream pop', 'ambient', 'post-punk'],
     keyTags: ['any — polyphonic across all keys'],
     midiNotes: 'C2–C6',
-    description: 'Warm polyphonic analog chords with slow attack and moderate release. Sounds like a Juno-60 playing something it half-remembers. Use for held chord beds where the harmonics slowly emerge. Good at the major 7 and minor 7 territory — chords that feel unresolved but not unstable.'
+    description: 'Warm polyphonic analog chords with slow attack and moderate release. Sounds like a Juno-60 playing something it half-remembers. Use for held chord beds where the harmonics slowly emerge. Good at the major 7 and minor 7 territory — chords that feel unresolved but not unstable.',
+    workflow: "Best used for chord beds where you want warmth without presence — the pad that's there when you need it but doesn't announce itself. Slow attack means it trails into the chord changes; let that softness be the point. Major 7 and minor 7 voicings sound particularly good here. Avoid playing it in the same register as other pads."
   },
   {
     id: 'sculpture-upright-bass',
@@ -285,7 +308,8 @@ export const INSTRUMENTS = [
     genreTags: ['jazz', 'folk', 'dark folk', 'Americana', 'cinematic'],
     keyTags: ['any — follows song root'],
     midiNotes: 'E1–G3',
-    description: 'Physical model double bass with a woody, resonant attack and natural string buzz. Sits in the low-mid range rather than subfrequencies — you hear the instrument, not just the note. Best at slower tempos where each note can breathe. Pairs naturally with acoustic guitar and folk strings. The gut-string quality makes it feel like something played in a room, not produced.'
+    description: 'Physical model double bass with a woody, resonant attack and natural string buzz. Sits in the low-mid range rather than subfrequencies — you hear the instrument, not just the note. Best at slower tempos where each note can breathe. Pairs naturally with acoustic guitar and folk strings. The gut-string quality makes it feel like something played in a room, not produced.',
+    workflow: 'Play it like a jazz bassist thinks — space and rhythm first, notes second. Write a bass line that has as much silence as sound. The woody attack means fast runs turn into mud; eighth-note pulse parts work better than sixteenth-note busy patterns. Works well without any other bass in the arrangement. Pair with acoustic guitar and folk strings for a fully organic sound picture.'
   },
   {
     id: 'ultrabeat-world-perc',
@@ -297,6 +321,7 @@ export const INSTRUMENTS = [
     genreTags: ['world', 'folk', 'dark folk', 'ambient', 'cinematic'],
     keyTags: ['any — rhythmic element'],
     midiNotes: 'C1–B2',
-    description: 'Tabla and frame drum kit — dry, immediate, recorded close. The tabla has a tuned quality that blends into harmonic arrangements; the frame drum provides the pulse. Unlike electronic percussion, this breathes with the performance. Works for meditative rhythmic patterns at any tempo, or as contrast to synthetic elements.'
+    description: 'Tabla and frame drum kit — dry, immediate, recorded close. The tabla has a tuned quality that blends into harmonic arrangements; the frame drum provides the pulse. Unlike electronic percussion, this breathes with the performance. Works for meditative rhythmic patterns at any tempo, or as contrast to synthetic elements.',
+    workflow: "Build the rhythm pattern before recording anything else. The tabla has a tuned quality that wants to be in the key of the song — tune it to the root before programming. Use frame drum for the pulse and tabla for the color. Avoid pairing with electronic kick and snare; the timbres fight. Works best as the only percussion element, or layered with sparse room ambience."
   }
 ]
