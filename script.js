@@ -1507,6 +1507,9 @@ function initFromParams() {
     params.get('bpm')     || params.get('instruments')
   )
   if (hasContext) renderSongContextBanner(params)
+
+  // Always reveal the wiz panel on a deep-link visit (shows '—' defaults if no key/tuning set)
+  updateWizPanel()
 }
 
 function renderSongContextBanner(params) {
