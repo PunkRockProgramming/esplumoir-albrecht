@@ -1464,6 +1464,52 @@ function buildForge() {
 // Init
 // ============================================================
 
+// ── initFromParams — apply wiz deep-link query params on load ────────────────
+function initFromParams() {
+  const params = new URLSearchParams(window.location.search)
+  if (!params.toString()) return
+
+  // key → pre-select in Grimoire
+  const keyParam = params.get('key')
+  if (keyParam) {
+    const match = allKeys.find(k => k.name.toLowerCase() === keyParam.toLowerCase())
+    if (match) selectKey(match)
+  }
+
+  // tuning → pre-select in Forge
+  const tuningParam = params.get('tuning')
+  if (tuningParam) {
+    const match = allTunings.find(
+      t => t.id === tuningParam || t.name.toLowerCase() === tuningParam.toLowerCase()
+    )
+    if (match) {
+      forgeTuningId = match.id
+      const forgeSelect = document.getElementById('forge-tuning')
+      if (forgeSelect) forgeSelect.value = match.id
+      updateForge()
+    }
+  }
+
+  // mood/seed → run mood search (mood takes priority over seed)
+  const moodParam = params.get('mood') || params.get('seed')
+  if (moodParam) {
+    const moodInput = document.getElementById('mood-input')
+    if (moodInput) moodInput.value = moodParam
+    showMoodResult(moodParam)
+  }
+
+  // Song Context banner — only when title + at least one other context field present
+  const title = params.get('title')
+  const hasContext = title && (
+    params.get('project') || params.get('tempoFeel') ||
+    params.get('bpm')     || params.get('instruments')
+  )
+  if (hasContext) renderSongContextBanner(params)
+}
+
+// Stub — implemented in Task 3
+function renderSongContextBanner(params) {}
+
 document.addEventListener('DOMContentLoaded', () => {
   loadData()
 
@@ -1586,4 +1632,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial section
   switchSection('keys')
+
+  // Apply wiz deep-link params if present
+  initFromParams()
 })
