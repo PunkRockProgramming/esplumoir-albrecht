@@ -1520,10 +1520,6 @@ function renderSongContextBanner(params) {
 
   banner.querySelector('.song-context-text').textContent = '♩  ' + parts.join('  ·  ')
   banner.hidden = false
-
-  banner.querySelector('.song-context-close').addEventListener('click', () => {
-    banner.hidden = true
-  })
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1648,6 +1644,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initial section
   switchSection('keys')
+
+  // Song context banner close button
+  document.getElementById('song-context-banner')?.querySelector('.song-context-close')?.addEventListener('click', () => {
+    document.getElementById('song-context-banner').hidden = true
+  })
 
   // Apply wiz deep-link params if present
   initFromParams()

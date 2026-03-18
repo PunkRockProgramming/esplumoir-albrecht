@@ -1416,6 +1416,8 @@ select:focus, textarea:focus { border-color: var(--accent); }
 .modal-load-btn:hover { background: #d99830; }
 
 /* ── Song Context Banner ──────────────────────────────────────────────────── */
+#song-context-banner[hidden] { display: none; }
+
 #song-context-banner {
   display: flex;
   align-items: center;
