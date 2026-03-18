@@ -219,6 +219,23 @@
     </div>
   </div>
 
+  <!-- wiz reference panel — shows selected key/tuning; updates live -->
+  <div id="wiz-panel" hidden>
+    <button id="wiz-panel-toggle" class="wiz-panel-toggle" aria-expanded="true">wiz ↗</button>
+    <div class="wiz-panel-body">
+      <div class="wiz-panel-row">
+        <span class="wiz-panel-label">Key</span>
+        <span class="wiz-panel-key">—</span>
+      </div>
+      <div class="wiz-panel-row">
+        <span class="wiz-panel-label">Tuning</span>
+        <span class="wiz-panel-tuning">—</span>
+      </div>
+      <div class="wiz-panel-sep"></div>
+      <div class="wiz-panel-hint">Run: wiz song new</div>
+    </div>
+  </div>
+
   <script src="script.js" type="module"></script>
 </body>
 </html>

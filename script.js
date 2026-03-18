@@ -506,6 +506,7 @@ function selectKey(keyData) {
 
   // Persist — only card-selected keys have a non-null id
   if (keyData.id) saveSession()
+  updateWizPanel()
 }
 
 function renderKeys() {
@@ -1417,6 +1418,7 @@ function buildForge() {
     forgeTuningId = forgeSelect.value
     forgePositions.clear()
     updateForge()
+    updateWizPanel()
   })
 
   const keySelect = document.getElementById('forge-key')
@@ -1520,6 +1522,19 @@ function renderSongContextBanner(params) {
 
   banner.querySelector('.song-context-text').textContent = '♩  ' + parts.join('  ·  ')
   banner.hidden = false
+}
+
+function updateWizPanel() {
+  const panel = document.getElementById('wiz-panel')
+  if (!panel) return
+
+  const keyName    = selectedKey ? selectedKey.name : '—'
+  const tuning     = allTunings.find(t => t.id === forgeTuningId)
+  const tuningName = tuning ? tuning.name : '—'
+
+  panel.querySelector('.wiz-panel-key').textContent    = keyName
+  panel.querySelector('.wiz-panel-tuning').textContent = tuningName
+  panel.hidden = false
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1648,6 +1663,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Song context banner close button
   document.getElementById('song-context-banner')?.querySelector('.song-context-close')?.addEventListener('click', () => {
     document.getElementById('song-context-banner').hidden = true
+  })
+
+  // wiz panel toggle
+  document.getElementById('wiz-panel-toggle')?.addEventListener('click', () => {
+    const panel = document.getElementById('wiz-panel')
+    panel?.classList.toggle('collapsed')
+    const btn = document.getElementById('wiz-panel-toggle')
+    btn.setAttribute('aria-expanded', panel?.classList.contains('collapsed') ? 'false' : 'true')
   })
 
   // Apply wiz deep-link params if present
