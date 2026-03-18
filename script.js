@@ -508,6 +508,12 @@ function selectKey(keyData) {
   // Persist — only card-selected keys have a non-null id
   if (keyData.id) saveSession()
   updateWizPanel()
+  if (wizSessionActive && selectedKey?.name) {
+    postToWiz('/song/key', { key: selectedKey.name }).then(() => {
+      const el = document.getElementById('wiz-confirm-key')
+      if (el) el.textContent = '\u2713'
+    })
+  }
 }
 
 function renderKeys() {
@@ -1420,6 +1426,15 @@ function buildForge() {
     forgePositions.clear()
     updateForge()
     updateWizPanel()
+    if (wizSessionActive) {
+      const t = allTunings.find(t => t.id === forgeTuningId)
+      if (t) {
+        postToWiz('/song/tuning', { tuning: t.name }).then(() => {
+          const el = document.getElementById('wiz-confirm-tuning')
+          if (el) el.textContent = '\u2713'
+        })
+      }
+    }
   })
 
   const keySelect = document.getElementById('forge-key')
