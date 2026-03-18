@@ -1500,6 +1500,18 @@ function initFromParams() {
     showMoodResult(moodParam)
   }
 
+  // progression → pre-load named chord chips into the Forge (one chip per chord, no voicing)
+  const progressionParams = params.getAll('progression')
+  progressionParams.forEach(p => {
+    const colonIdx = p.indexOf(':')
+    if (colonIdx === -1) return
+    const chords = p.slice(colonIdx + 1).split(',').map(c => c.trim())
+    chords.forEach(chordName => {
+      if (chordName) forgeProgression.push({ name: chordName, voicing: new Map() })
+    })
+  })
+  if (progressionParams.length) renderForgeProgression()
+
   // Song Context banner — only when title + at least one other context field present
   const title = params.get('title')
   const hasContext = title && (
