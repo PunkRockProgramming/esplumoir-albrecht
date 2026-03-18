@@ -1507,8 +1507,24 @@ function initFromParams() {
   if (hasContext) renderSongContextBanner(params)
 }
 
-// Stub — implemented in Task 3
-function renderSongContextBanner(params) {}
+function renderSongContextBanner(params) {
+  const banner = document.getElementById('song-context-banner')
+  if (!banner) return
+
+  const parts = []
+  if (params.get('title'))       parts.push(params.get('title'))
+  if (params.get('project'))     parts.push(params.get('project'))
+  if (params.get('tempoFeel'))   parts.push(params.get('tempoFeel'))
+  if (params.get('bpm'))         parts.push(`${params.get('bpm')} bpm`)
+  if (params.get('instruments')) parts.push(params.get('instruments'))
+
+  banner.querySelector('.song-context-text').textContent = '♩  ' + parts.join('  ·  ')
+  banner.hidden = false
+
+  banner.querySelector('.song-context-close').addEventListener('click', () => {
+    banner.hidden = true
+  })
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   loadData()
