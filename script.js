@@ -1560,6 +1560,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderChordTabs()
     updateVisualizer()
     updateSuggestions()
+    updateWizPanel()
   }
   vizRootSelect.addEventListener('change', onVizRootModeChange)
   vizModeSelect.addEventListener('change', onVizRootModeChange)
@@ -1668,9 +1669,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // wiz panel toggle
   document.getElementById('wiz-panel-toggle')?.addEventListener('click', () => {
     const panel = document.getElementById('wiz-panel')
-    panel?.classList.toggle('collapsed')
     const btn = document.getElementById('wiz-panel-toggle')
-    btn.setAttribute('aria-expanded', panel?.classList.contains('collapsed') ? 'false' : 'true')
+    const isNowCollapsed = panel?.classList.toggle('collapsed')
+    btn.setAttribute('aria-expanded', isNowCollapsed ? 'false' : 'true')
   })
 
   // Apply wiz deep-link params if present
