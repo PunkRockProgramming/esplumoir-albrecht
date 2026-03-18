@@ -1512,3 +1512,39 @@ select:focus, textarea:focus { border-color: var(--accent); }
 /* Collapsed state */
 #wiz-panel.collapsed .wiz-panel-body { display: none; }
 #wiz-panel.collapsed .wiz-panel-toggle { border-bottom: none; }
+
+/* ── wiz session mode ─────────────────────────────────────────────────────── */
+.wiz-confirm {
+  color: var(--accent);
+  font-size: 0.65rem;
+  margin-left: 0.4rem;
+}
+
+.wiz-save-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  margin-left: 0.5rem;
+  line-height: 1;
+}
+
+.wiz-save-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-dim);
+}
+
+.wiz-save-link {
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-decoration: underline;
+  margin-left: 0.5rem;
+}
+
+.wiz-save-link:hover { color: var(--accent); }

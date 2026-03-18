@@ -294,6 +294,7 @@ let vizFirstPosition = false
 // Forge state
 let forgePositions = new Map()  // "str,fret" → true
 let forgeTuningId  = 'e-standard'
+let wizSessionActive = false
 let forgeKeyId     = null
 let forgeProgression = []       // [{ name, voicing: Map }]
 const FORGE_KEY   = 'esplumoir-forge'
@@ -1552,6 +1553,44 @@ function updateWizPanel() {
   panel.hidden = false
 }
 
+// ── wiz session ───────────────────────────────────────────────────────────────
+async function postToWiz(path, body) {
+  try {
+    await fetch(`http://localhost:3341${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+  } catch {
+    // server stopped mid-session — fail silently
+  }
+}
+
+async function detectWizSession() {
+  try {
+    const res = await fetch('http://localhost:3341/ping', {
+      signal: AbortSignal.timeout(500)
+    })
+    if (res.ok) activateSessionMode()
+  } catch {
+    // server not running — static mode, no change
+  }
+}
+
+function activateSessionMode() {
+  wizSessionActive = true
+
+  // Update wiz panel toggle to show live indicator
+  const toggleBtn = document.getElementById('wiz-panel-toggle')
+  if (toggleBtn) toggleBtn.textContent = 'wiz \u25cf live'
+
+  // Add confirm spans to panel key and tuning rows
+  const keySpan = document.querySelector('.wiz-panel-key')
+  if (keySpan) keySpan.insertAdjacentHTML('afterend', '<span class="wiz-confirm" id="wiz-confirm-key"></span>')
+  const tuningSpan = document.querySelector('.wiz-panel-tuning')
+  if (tuningSpan) tuningSpan.insertAdjacentHTML('afterend', '<span class="wiz-confirm" id="wiz-confirm-tuning"></span>')
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   loadData()
 
@@ -1691,4 +1730,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Apply wiz deep-link params if present
   initFromParams()
+
+  // Detect live wiz session (async — does not block page load)
+  detectWizSession()
 })
