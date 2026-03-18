@@ -1548,3 +1548,13 @@ select:focus, textarea:focus { border-color: var(--accent); }
 }
 
 .wiz-save-link:hover { color: var(--accent); }
+
+.card-workflow {
+  font-size: 0.75rem;
+  color: var(--muted);
+  opacity: 0.8;
+  margin-top: 6px;
+  margin-bottom: 8px;
+  line-height: 1.5;
+  font-style: italic;
+}

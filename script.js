@@ -671,6 +671,7 @@ function renderInstruments(moodFilter = []) {
         <span class="card-sub">${instr.plugin} \u2014 ${instr.preset}</span>
       </div>
       <p class="card-desc">${instr.description}</p>
+      ${instr.workflow ? `<p class="card-workflow">${instr.workflow}</p>` : ''}
       <div class="tag-row">
         ${instr.moodTags.map(m => `<span class="tag">${m}</span>`).join('')}
         <span class="tag tag-genre">${instr.category}</span>
