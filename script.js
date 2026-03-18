@@ -668,14 +668,20 @@ function renderInstruments(moodFilter = []) {
     card.innerHTML = `
       <div class="card-header">
         <span class="card-name">${instr.name}</span>
-        <span class="card-sub">${instr.plugin} — ${instr.preset}</span>
+        <span class="card-sub">${instr.plugin} \u2014 ${instr.preset}</span>
       </div>
       <p class="card-desc">${instr.description}</p>
       <div class="tag-row">
         ${instr.moodTags.map(m => `<span class="tag">${m}</span>`).join('')}
         <span class="tag tag-genre">${instr.category}</span>
+        ${wizSessionActive ? `<a class="wiz-save-link instr-save" data-instr="${instr.name}">save to wiz</a>` : ''}
       </div>
     `
+    if (wizSessionActive) {
+      card.querySelector('.instr-save')?.addEventListener('click', () => {
+        postToWiz('/song/instrument/add', { instrument: instr.name })
+      })
+    }
     container.appendChild(card)
   })
 }
@@ -734,13 +740,25 @@ function drawCard() {
   cardEl.classList.add('flipping')
 
   setTimeout(() => {
-    textEl.textContent = currentStrategyReversed ? card.reversed : card.text
+    const cardText = currentStrategyReversed ? card.reversed : card.text
+    textEl.textContent = cardText
     categoryEl.textContent = card.category
     reversedBadge.classList.toggle('hidden', !currentStrategyReversed)
     cardEl.classList.toggle('reversed', currentStrategyReversed)
     cardEl.classList.remove('flipping')
     cardEl.classList.add('flipped-in')
     setTimeout(() => cardEl.classList.remove('flipped-in'), 400)
+
+    // Session mode: show save link and wire to current card text
+    const saveLink = document.getElementById('wiz-save-strategy')
+    if (saveLink) {
+      if (wizSessionActive) {
+        saveLink.hidden = false
+        saveLink.onclick = () => postToWiz('/song/note', { text: `[Strategy] ${cardText}` })
+      } else {
+        saveLink.hidden = true
+      }
+    }
   }, 300)
 }
 
@@ -894,9 +912,15 @@ function showMoodResult(query) {
       <div class="mood-result-starting-point">
         <h4>Starting Point</h4>
         <p>${profile.startingPoint}</p>
+        ${wizSessionActive ? `<a class="wiz-save-link" id="wiz-save-starting-point">save starting point to wiz</a>` : ''}
       </div>
     </div>
   `
+  if (wizSessionActive) {
+    document.getElementById('wiz-save-starting-point')?.addEventListener('click', () => {
+      postToWiz('/song/note', { text: `[Mood] ${profile.startingPoint}` })
+    })
+  }
 }
 
 // ============================================================
@@ -1202,6 +1226,23 @@ function renderForgeProgression() {
   if (exportBtn) exportBtn.disabled = !forgeProgression.length
   const downloadBtn = document.getElementById('forge-download-tab')
   if (downloadBtn) downloadBtn.disabled = !forgeProgression.length
+
+  // Session mode: show "save to wiz" button when there are chords
+  const existingSaveBtn = document.getElementById('forge-wiz-save')
+  if (existingSaveBtn) existingSaveBtn.remove()
+  if (wizSessionActive && forgeProgression.length > 0) {
+    const saveBtn = document.createElement('button')
+    saveBtn.id = 'forge-wiz-save'
+    saveBtn.className = 'wiz-save-btn'
+    saveBtn.textContent = 'save to wiz'
+    saveBtn.addEventListener('click', () => {
+      const name = window.prompt('Section name (e.g. verse):', 'progression') || 'progression'
+      const chords = forgeProgression.map(c => c.name).join(' \u2014 ')
+      postToWiz('/song/progression', { name, chords })
+    })
+    if (exportBtn) exportBtn.insertAdjacentElement('afterend', saveBtn)
+  }
+
   if (!forgeProgression.length) {
     row.innerHTML = '<span class="forge-prog-empty">no chords yet — add from the fretboard above</span>'
     renderForgeProgTabs()
@@ -1706,12 +1747,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const moodSubmit = document.getElementById('mood-submit')
   moodSubmit.addEventListener('click', () => {
     const val = moodInput.value.trim()
-    if (val) showMoodResult(val)
+    if (val) {
+      showMoodResult(val)
+      if (wizSessionActive) postToWiz('/song/seed', { seed: val })
+    }
   })
   moodInput.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
       const val = moodInput.value.trim()
-      if (val) showMoodResult(val)
+      if (val) {
+        showMoodResult(val)
+        if (wizSessionActive) postToWiz('/song/seed', { seed: val })
+      }
     }
   })
 
