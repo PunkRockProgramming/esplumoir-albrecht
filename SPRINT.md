@@ -36,7 +36,7 @@ Give Grimoire/Forge/Esoteric Strategies memory between sessions so the app can f
 
 ### Features
 - [x] **T6 — Progression audition (WebAudio).** *(PR #6, merged 2026-07-10)* Play a stored progression in-browser from its voicings; play/stop state; no external deps.
-- [ ] **T7 — Mode/borrowed-chord suggestions.** Parallel-mode comparison off `SCALE_INTERVALS` + `computeDiatonicChords()` — "you're in D minor; here's dorian / a borrowed IV" panel in the Grimoire.
+- [x] **T7 — Mode/borrowed-chord suggestions.** *(PR #7, merged 2026-07-10 — includes computeDiatonicChords triad-stacking fix)* Parallel-mode comparison off `SCALE_INTERVALS` + `computeDiatonicChords()` — "you're in D minor; here's dorian / a borrowed IV" panel in the Grimoire.
 
 ### Stretch
 - [ ] **T8 — Strategy draw log (+ per-song history).** Every draw appends `{timestamp, cardId, reversed}` to `esplumoir-draws`; small history list in the Esoteric section; song-slug association when `wizSessionActive`. Draw events also feed the T5 session log.
