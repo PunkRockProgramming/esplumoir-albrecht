@@ -1515,6 +1515,7 @@ select:focus, textarea:focus { border-color: var(--accent); }
 .session-log-controls {
   display: flex;
   justify-content: flex-end;
+  gap: 10px;
 }
 
 .saved-prog-meta {
