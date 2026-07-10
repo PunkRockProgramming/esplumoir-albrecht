@@ -338,8 +338,10 @@ function logEvent(type, detail) {
 const LOG_TYPE_LABELS = {
   key: 'key', 'mood-search': 'mood search', 'mood-filter': 'mood filter',
   tuning: 'tuning', 'chord-added': 'chord', 'progression-saved': 'saved',
-  'strategy-drawn': 'strategy'
+  'strategy-drawn': 'strategy', 'vault-saved': 'vault'
 }
+
+const PAGE_LOADED_AT = new Date().toISOString()
 
 function escapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -368,6 +370,118 @@ function renderSessionLog() {
     div.innerHTML = `<div class="session-visit-date">${d.toLocaleDateString()} · ${fmtTime(visit.startedAt)}</div>${rows}`
     container.appendChild(div)
   })
+}
+
+// ============================================================
+// Vault Write (File System Access API)
+// ============================================================
+
+// The vault directory handle is persisted in IndexedDB so the picker only
+// appears once; permission is re-requested on later visits when needed.
+
+function idbGet(key) {
+  return new Promise(resolve => {
+    const rq = indexedDB.open('esplumoir', 1)
+    rq.onupgradeneeded = () => rq.result.createObjectStore('handles')
+    rq.onsuccess = () => {
+      try {
+        const g = rq.result.transaction('handles', 'readonly').objectStore('handles').get(key)
+        g.onsuccess = () => resolve(g.result || null)
+        g.onerror = () => resolve(null)
+      } catch { resolve(null) }
+    }
+    rq.onerror = () => resolve(null)
+  })
+}
+
+function idbSet(key, val) {
+  return new Promise(resolve => {
+    const rq = indexedDB.open('esplumoir', 1)
+    rq.onupgradeneeded = () => rq.result.createObjectStore('handles')
+    rq.onsuccess = () => {
+      try {
+        const tx = rq.result.transaction('handles', 'readwrite')
+        tx.objectStore('handles').put(val, key)
+        tx.oncomplete = () => resolve(true)
+        tx.onerror = () => resolve(false)
+      } catch { resolve(false) }
+    }
+    rq.onerror = () => resolve(false)
+  })
+}
+
+async function getVaultDir() {
+  let handle = await idbGet('vault-dir')
+  if (handle && typeof handle.queryPermission === 'function') {
+    if (await handle.queryPermission({ mode: 'readwrite' }) === 'granted') return handle
+    if (await handle.requestPermission({ mode: 'readwrite' }) === 'granted') return handle
+  }
+  handle = await window.showDirectoryPicker({ mode: 'readwrite' })
+  await idbSet('vault-dir', handle)
+  return handle
+}
+
+// Current visit → paste-ready session note: activity log + progressions saved this visit
+function buildSessionMarkdown() {
+  const now = new Date()
+  const fmtTime = iso => new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const visit = currentVisitStartedAt
+    ? loadSessionLog().find(v => v.startedAt === currentVisitStartedAt)
+    : null
+
+  const lines = [`# Esplumoir Session — ${now.toISOString().slice(0, 10)}`, '']
+  if (wizSongTitle) lines.push(`- **Song:** ${wizSongTitle}`)
+  lines.push(`- **Started:** ${fmtTime(visit ? visit.startedAt : PAGE_LOADED_AT)}`, '')
+
+  if (visit?.events.length) {
+    lines.push('## Activity', '')
+    visit.events.forEach(e => {
+      lines.push(`- ${fmtTime(e.at)} — ${LOG_TYPE_LABELS[e.type] || e.type}: ${e.detail}`)
+    })
+    lines.push('')
+  }
+
+  const visitStart = visit ? visit.startedAt : PAGE_LOADED_AT
+  const progs = loadSavedProgressions().filter(p => p.savedAt && p.savedAt >= visitStart)
+  if (progs.length) {
+    lines.push('## Progressions', '')
+    progs.forEach(p => lines.push(buildForgeMarkdown(p), ''))
+  }
+
+  return lines.join('\n')
+}
+
+async function saveSessionToVault() {
+  const btn = document.getElementById('session-vault-save')
+  const flash = (label, restore) => {
+    if (!btn) return
+    btn.textContent = label
+    setTimeout(() => { btn.textContent = restore }, 1500)
+  }
+  try {
+    const dir = await getVaultDir()
+    const now = new Date()
+    const stamp = `${now.toISOString().slice(0, 10)} ${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`
+    const fileName = `Esplumoir Session ${stamp}.md`
+    const fh = await dir.getFileHandle(fileName, { create: true })
+    const w = await fh.createWritable()
+    await w.write(buildSessionMarkdown())
+    await w.close()
+    logEvent('vault-saved', fileName)
+    flash('saved!', 'Save session to vault')
+  } catch (err) {
+    if (err?.name === 'AbortError') return  // picker dismissed — not an error
+    flash('failed', 'Save session to vault')
+  }
+}
+
+async function sendSessionToWiz() {
+  await postToWiz('/song/note', { text: `[Session]\n${buildSessionMarkdown()}` })
+  const btn = document.getElementById('session-wiz-send')
+  if (btn) {
+    btn.textContent = 'sent ✓'
+    setTimeout(() => { btn.textContent = 'Send to wiz song' }, 1500)
+  }
 }
 
 // ============================================================
@@ -2120,6 +2234,10 @@ function activateSessionMode() {
   if (keySpan) keySpan.insertAdjacentHTML('afterend', '<span class="wiz-confirm" id="wiz-confirm-key"></span>')
   const tuningSpan = document.querySelector('.wiz-panel-tuning')
   if (tuningSpan) tuningSpan.insertAdjacentHTML('afterend', '<span class="wiz-confirm" id="wiz-confirm-tuning"></span>')
+
+  // Session log: reveal "send to wiz song"
+  const wizSendBtn = document.getElementById('session-wiz-send')
+  if (wizSendBtn) wizSendBtn.hidden = false
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -2272,6 +2390,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const isNowCollapsed = panel?.classList.toggle('collapsed')
     btn.setAttribute('aria-expanded', isNowCollapsed ? 'false' : 'true')
   })
+
+  // Session log: vault save + wiz send
+  const vaultBtn = document.getElementById('session-vault-save')
+  if (vaultBtn) {
+    if (window.showDirectoryPicker) {
+      vaultBtn.addEventListener('click', saveSessionToVault)
+    } else {
+      vaultBtn.disabled = true
+      vaultBtn.title = 'File System Access API not available in this browser'
+    }
+  }
+  document.getElementById('session-wiz-send')?.addEventListener('click', sendSessionToWiz)
 
   // Session log clear
   document.getElementById('session-log-clear')?.addEventListener('click', () => {
