@@ -1368,6 +1368,7 @@ function renderSavedProgressions() {
       </div>
       <div class="saved-prog-actions">
         <button class="secondary-btn" data-action="load">Load</button>
+        <button class="secondary-btn" data-action="markdown" title="copy as Markdown for Obsidian">MD</button>
         <button class="secondary-btn" data-action="delete">Delete</button>
       </div>`
     row.querySelector('[data-action="load"]').addEventListener('click', () => {
@@ -1384,6 +1385,9 @@ function renderSavedProgressions() {
         updateForge()
       }
     })
+    row.querySelector('[data-action="markdown"]').addEventListener('click', e => {
+      copyTextToClipboard(buildForgeMarkdown(prog)).then(() => flashCopied(e.target, 'MD'))
+    })
     row.querySelector('[data-action="delete"]').addEventListener('click', () => {
       const updated = loadSavedProgressions()
       updated.splice(i, 1)
@@ -1394,8 +1398,8 @@ function renderSavedProgressions() {
   })
 }
 
-function buildForgeTabText() {
-  const tuning = allTunings.find(t => t.id === forgeTuningId) || allTunings[0]
+function buildForgeTabText(progression = forgeProgression, tuningId = forgeTuningId) {
+  const tuning = allTunings.find(t => t.id === tuningId) || allTunings[0]
   const displayStrings = [...tuning.openNotes].reverse()
   const stringLabels = displayStrings.map((n, i) => {
     const letter = normalizeNote(n.replace(/\d/, ''))
@@ -1403,7 +1407,7 @@ function buildForgeTabText() {
   })
 
   // Build columns: each chord is a column of 6 fret values
-  const cols = forgeProgression.map(chord => {
+  const cols = progression.map(chord => {
     return Array.from({ length: 6 }, (_, s) => {
       let fretNum = null
       chord.voicing.forEach((_, key) => {
@@ -1415,7 +1419,7 @@ function buildForgeTabText() {
   })
 
   // Determine width of each column (max of fret digits, chord name, min 2)
-  const colWidths = forgeProgression.map((chord, ci) => {
+  const colWidths = progression.map((chord, ci) => {
     const maxFretLen = Math.max(...cols[ci].map(f => f === null ? 1 : String(f).length))
     return Math.max(maxFretLen, chord.name.length, 2)
   })
@@ -1432,20 +1436,33 @@ function buildForgeTabText() {
   })
 
   // Chord name row — each name centered under its column
-  const nameRow = forgeProgression.map((chord, ci) => chord.name.padEnd(colWidths[ci]))
+  const nameRow = progression.map((chord, ci) => chord.name.padEnd(colWidths[ci]))
   lines.push(`  |  ${nameRow.join('   ')}`)
 
   return lines.join('\n')
 }
 
-function exportForgeTab() {
-  if (!forgeProgression.length) return
-  const text = buildForgeTabText()
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('forge-export-tab')
-    btn.textContent = 'copied!'
-    setTimeout(() => { btn.textContent = 'Export tab' }, 1500)
-  }).catch(() => {
+// Markdown block for a saved progression record — paste-ready for an Obsidian note
+function buildForgeMarkdown(prog) {
+  const savedTuning = prog.tuning ? allTunings.find(t => t.id === prog.tuning) : null
+  const chords = prog.chords.map(c => ({ name: c.name, voicing: objectToPositions(c.voicing) }))
+
+  const lines = [`## ${prog.name}`, '']
+  if (prog.savedAt) lines.push(`- **Date:** ${prog.savedAt.slice(0, 10)}`)
+  if (prog.key) lines.push(`- **Key:** ${prog.key}`)
+  if (savedTuning) lines.push(`- **Tuning:** ${savedTuning.name}`)
+  if (prog.moods?.length) lines.push(`- **Moods:** ${prog.moods.join(', ')}`)
+  if (lines.length > 2) lines.push('')
+
+  lines.push(`**Chords:** ${prog.chords.map(c => c.name).join(' — ')}`, '')
+  lines.push('```text')
+  lines.push(buildForgeTabText(chords, prog.tuning || forgeTuningId))
+  lines.push('```')
+  return lines.join('\n')
+}
+
+function copyTextToClipboard(text) {
+  return navigator.clipboard.writeText(text).catch(() => {
     // fallback: select a hidden textarea
     const ta = document.createElement('textarea')
     ta.value = text
@@ -1455,9 +1472,18 @@ function exportForgeTab() {
     ta.select()
     document.execCommand('copy')
     document.body.removeChild(ta)
-    const btn = document.getElementById('forge-export-tab')
-    btn.textContent = 'copied!'
-    setTimeout(() => { btn.textContent = 'Export tab' }, 1500)
+  })
+}
+
+function flashCopied(btn, restoreLabel) {
+  btn.textContent = 'copied!'
+  setTimeout(() => { btn.textContent = restoreLabel }, 1500)
+}
+
+function exportForgeTab() {
+  if (!forgeProgression.length) return
+  copyTextToClipboard(buildForgeTabText()).then(() => {
+    flashCopied(document.getElementById('forge-export-tab'), 'Export tab')
   })
 }
 
