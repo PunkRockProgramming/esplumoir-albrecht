@@ -30,7 +30,7 @@ Give Grimoire/Forge/Esoteric Strategies memory between sessions so the app can f
 - [x] **T2 — URL-param gap-fill.** *(PR #2, merged 2026-07-09)* `tool` (land on a section), `root` + `mode` as separate Grimoire params (via `makeSyntheticKey`), `mood` as pre-filter, `notenames`/`firstposition` booleans, Forge `key`+`mode`, scale-degree shorthand progressions (`i,VI,III,VII`) and bare literal chord lists.
 
 ### Session Logging
-- [ ] **T3 — Session capture on Forge save.** Saved progressions carry `savedAt`, root/mode, tuning, and mood tags touched during the visit. Backward-compatible with existing `esplumoir-forge` records.
+- [x] **T3 — Session capture on Forge save.** *(PR #3, merged 2026-07-10)* Saved progressions carry `savedAt`, root/mode, tuning, and mood tags touched during the visit. Backward-compatible with existing `esplumoir-forge` records.
 - [ ] **T4 — Export to Markdown.** `buildForgeMarkdown()` beside `buildForgeTabText()` — chord names, tab block, date/key/tuning metadata — copy button per saved progression, paste-ready for Obsidian.
 - [ ] **T5 — Session log view.** Event log (key selected, mode explored, progression built/saved, card drawn, mood searched) → `esplumoir-session-log`; timestamped per-visit view in the UI.
 
