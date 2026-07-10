@@ -26,7 +26,7 @@ Give Grimoire/Forge/Esoteric Strategies memory between sessions so the app can f
 ## Tasks
 
 ### Quick Wins
-- [ ] **T1 — Voicings for deep-linked progressions.** In `initFromParams()`, generate voicings via `generateFirstPositionVoicing()` instead of empty Maps for `progression` params; apply the `tuning` param to the Grimoire visualizer (`vizTuningId`), not just the Forge.
+- [x] **T1 — Voicings for deep-linked progressions.** *(PR #1, merged 2026-07-09)* In `initFromParams()`, generate voicings via `generateFirstPositionVoicing()` instead of empty Maps for `progression` params; apply the `tuning` param to the Grimoire visualizer (`vizTuningId`), not just the Forge.
 - [ ] **T2 — URL-param gap-fill.** `tool` (land on a section), `root` + `mode` as separate Grimoire params (via `makeSyntheticKey`), `mood` as pre-filter, `notenames`/`firstposition` booleans, Forge `key`+`mode`, scale-degree shorthand progressions (`i,VI,III,VII`) and bare literal chord lists.
 
 ### Session Logging
