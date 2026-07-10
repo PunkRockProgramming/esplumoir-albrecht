@@ -1293,6 +1293,91 @@ function updateForge() {
   }
 }
 
+// ============================================================
+// Progression Audition (WebAudio)
+// ============================================================
+
+const PITCH_OFFSETS = {
+  C: 0, 'C#': 1, Db: 1, D: 2, 'D#': 3, Eb: 3, E: 4, F: 5,
+  'F#': 6, Gb: 6, G: 7, 'G#': 8, Ab: 8, A: 9, 'A#': 10, Bb: 10, B: 11
+}
+const AUDITION_CHORD_SECONDS = 1.2
+const AUDITION_STRUM_STAGGER = 0.03
+
+let auditionCtx = null
+let auditionNodes = []
+let auditionTimers = []
+let auditionActive = false
+
+function pitchToFreq(sci) {
+  const m = /^([A-G][#b]?)(\d)$/.exec(sci)
+  if (!m) return null
+  const midi = (parseInt(m[2]) + 1) * 12 + PITCH_OFFSETS[m[1]]
+  return 440 * Math.pow(2, (midi - 69) / 12)
+}
+
+// voicing Map + tuning → frequencies, lowest string first (strum order)
+function voicingFrequencies(voicing, tuningId) {
+  const tuning = allTunings.find(t => t.id === tuningId) || allTunings[0]
+  const notes = []
+  voicing.forEach((_, key) => {
+    const [s, f] = key.split(',').map(Number)
+    const base = pitchToFreq(tuning.strings[5 - s])  // display index 0 = high string
+    if (base !== null) notes.push({ s, freq: base * Math.pow(2, f / 12) })
+  })
+  return notes.sort((a, b) => b.s - a.s).map(n => n.freq)
+}
+
+function stopAudition() {
+  auditionTimers.forEach(clearTimeout)
+  auditionTimers = []
+  auditionNodes.forEach(n => { try { n.stop() } catch {} })
+  auditionNodes = []
+  auditionActive = false
+  document.querySelectorAll('.chord-chip.playing').forEach(c => c.classList.remove('playing'))
+  const btn = document.getElementById('forge-play')
+  if (btn) btn.textContent = '▶ Play'
+}
+
+function playForgeProgression() {
+  if (auditionActive) { stopAudition(); return }
+  if (!forgeProgression.length) return
+
+  auditionCtx = auditionCtx || new (window.AudioContext || window.webkitAudioContext)()
+  if (auditionCtx.state === 'suspended') auditionCtx.resume()
+
+  auditionActive = true
+  const btn = document.getElementById('forge-play')
+  if (btn) btn.textContent = '■ Stop'
+
+  const t0 = auditionCtx.currentTime + 0.05
+  forgeProgression.forEach((chord, i) => {
+    const start = t0 + i * AUDITION_CHORD_SECONDS
+    voicingFrequencies(chord.voicing, forgeTuningId).forEach((freq, j) => {
+      const osc  = auditionCtx.createOscillator()
+      const gain = auditionCtx.createGain()
+      osc.type = 'triangle'
+      osc.frequency.value = freq
+      const at = start + j * AUDITION_STRUM_STAGGER
+      gain.gain.setValueAtTime(0.0001, at)
+      gain.gain.exponentialRampToValueAtTime(0.14, at + 0.02)
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + AUDITION_CHORD_SECONDS)
+      osc.connect(gain).connect(auditionCtx.destination)
+      osc.start(at)
+      osc.stop(start + AUDITION_CHORD_SECONDS + 0.05)
+      auditionNodes.push(osc)
+    })
+    // Chip highlight in step with the audio clock (empty voicings keep their slot)
+    auditionTimers.push(setTimeout(() => {
+      document.querySelectorAll('.chord-chip').forEach((c, ci) => c.classList.toggle('playing', ci === i))
+    }, Math.max(0, (start - auditionCtx.currentTime) * 1000)))
+  })
+  auditionTimers.push(setTimeout(
+    stopAudition,
+    (t0 - auditionCtx.currentTime + forgeProgression.length * AUDITION_CHORD_SECONDS) * 1000 + 100
+  ))
+}
+
 function positionsToObject(map) {
   const obj = {}
   map.forEach((_, k) => { obj[k] = true })
@@ -1306,11 +1391,14 @@ function objectToPositions(obj) {
 }
 
 function renderForgeProgression() {
+  if (auditionActive) stopAudition()  // the progression changed under the playback
   const row = document.getElementById('forge-progression-row')
   const exportBtn = document.getElementById('forge-export-tab')
   if (exportBtn) exportBtn.disabled = !forgeProgression.length
   const downloadBtn = document.getElementById('forge-download-tab')
   if (downloadBtn) downloadBtn.disabled = !forgeProgression.length
+  const playBtn = document.getElementById('forge-play')
+  if (playBtn) playBtn.disabled = !forgeProgression.length
 
   // Session mode: show "save to wiz" button when there are chords
   const existingSaveBtn = document.getElementById('forge-wiz-save')
@@ -1630,6 +1718,7 @@ function buildForge() {
     renderForgeProgression()
   })
 
+  document.getElementById('forge-play').addEventListener('click', playForgeProgression)
   document.getElementById('forge-export-tab').addEventListener('click', exportForgeTab)
   document.getElementById('forge-download-tab').addEventListener('click', downloadForgeTab)
 

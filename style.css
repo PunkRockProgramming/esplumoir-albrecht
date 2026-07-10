@@ -1279,6 +1279,11 @@ select:focus, textarea:focus { border-color: var(--accent); }
   text-overflow: ellipsis;
 }
 
+.chord-chip.playing {
+  border-color: var(--accent);
+  box-shadow: 0 0 6px rgba(200, 136, 42, 0.35);
+}
+
 /* ============================================================
    Session Log
    ============================================================ */
