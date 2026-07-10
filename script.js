@@ -302,6 +302,76 @@ const FORGE_KEY   = 'esplumoir-forge'
 const SESSION_KEY = 'esplumoir-session'
 
 // ============================================================
+// Session Log
+// ============================================================
+
+const SESSION_LOG_KEY = 'esplumoir-session-log'
+const SESSION_LOG_MAX_VISITS = 50
+let sessionLogReady = false        // stays false during init so load-time selections aren't logged
+let currentVisitStartedAt = null   // visit record is created lazily on the first real event
+
+function loadSessionLog() {
+  try { return JSON.parse(localStorage.getItem(SESSION_LOG_KEY) || '[]') } catch { return [] }
+}
+
+function writeSessionLog(list) {
+  try { localStorage.setItem(SESSION_LOG_KEY, JSON.stringify(list)) } catch {}
+}
+
+function logEvent(type, detail) {
+  if (!sessionLogReady) return
+  const log = loadSessionLog()
+  let visit = currentVisitStartedAt ? log.find(v => v.startedAt === currentVisitStartedAt) : null
+  if (!visit) {
+    currentVisitStartedAt = new Date().toISOString()
+    visit = { startedAt: currentVisitStartedAt, events: [] }
+    log.push(visit)
+    while (log.length > SESSION_LOG_MAX_VISITS) log.shift()
+  }
+  // Collapse consecutive repeats (e.g. re-clicking the same key)
+  const last = visit.events[visit.events.length - 1]
+  if (last && last.type === type && last.detail === detail) return
+  visit.events.push({ at: new Date().toISOString(), type, detail })
+  writeSessionLog(log)
+  if (activeSection === 'session-log') renderSessionLog()
+}
+
+const LOG_TYPE_LABELS = {
+  key: 'key', 'mood-search': 'mood search', 'mood-filter': 'mood filter',
+  tuning: 'tuning', 'chord-added': 'chord', 'progression-saved': 'saved',
+  'strategy-drawn': 'strategy'
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+function renderSessionLog() {
+  const container = document.getElementById('session-log-list')
+  if (!container) return
+  const log = loadSessionLog()
+  if (!log.length) {
+    container.innerHTML = '<span class="forge-prog-empty">nothing logged yet — explore a key, build a progression, draw a card</span>'
+    return
+  }
+  container.innerHTML = ''
+  ;[...log].reverse().forEach(visit => {
+    const div = document.createElement('div')
+    div.className = 'session-visit'
+    const d = new Date(visit.startedAt)
+    const fmtTime = iso => new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    const rows = visit.events.map(e => `
+      <div class="session-event">
+        <span class="session-event-time">${fmtTime(e.at)}</span>
+        <span class="session-event-type">${LOG_TYPE_LABELS[e.type] || e.type}</span>
+        <span class="session-event-detail">${escapeHtml(e.detail)}</span>
+      </div>`).join('')
+    div.innerHTML = `<div class="session-visit-date">${d.toLocaleDateString()} · ${fmtTime(visit.startedAt)}</div>${rows}`
+    container.appendChild(div)
+  })
+}
+
+// ============================================================
 // Data Loading
 // ============================================================
 
@@ -321,6 +391,7 @@ function switchSection(id) {
   activeSection = id
   document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === id))
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.dataset.section === id))
+  if (id === 'session-log') renderSessionLog()
 }
 
 
@@ -508,6 +579,7 @@ function selectKey(keyData) {
 
   // Persist — only card-selected keys have a non-null id
   if (keyData.id) saveSession()
+  logEvent('key', keyData.name)
   updateWizPanel()
   if (wizSessionActive && selectedKey?.name) {
     postToWiz('/song/key', { key: selectedKey.name }).then(() => {
@@ -645,6 +717,7 @@ function buildKeyFilters() {
   buildFilterGroup('key-mood-filters', Array.from(moodSet).sort(), val => {
     activeKeyMoodFilter = val
     sessionMoods.add(val)
+    logEvent('mood-filter', val)
     renderKeys()
     renderMoodKeyButtons(val)
   }, () => {
@@ -742,6 +815,10 @@ function drawCard() {
   // Flip out: add flipped class, swap content mid-flip, flip back
   cardEl.classList.add('flipping')
 
+  // Captured now — the timeout below fires after init finishes, so checking
+  // sessionLogReady inside it would wrongly log the automatic load-time draw
+  const logThisDraw = sessionLogReady
+
   setTimeout(() => {
     const cardText = currentStrategyReversed ? card.reversed : card.text
     textEl.textContent = cardText
@@ -751,6 +828,8 @@ function drawCard() {
     cardEl.classList.remove('flipping')
     cardEl.classList.add('flipped-in')
     setTimeout(() => cardEl.classList.remove('flipped-in'), 400)
+
+    if (logThisDraw) logEvent('strategy-drawn', cardText + (currentStrategyReversed ? ' (reversed)' : ''))
 
     // Session mode: show save link and wire to current card text
     const saveLink = document.getElementById('wiz-save-strategy')
@@ -891,6 +970,7 @@ function showMoodResult(query) {
     return
   }
   sessionMoods.add(query.trim().toLowerCase())
+  logEvent('mood-search', query.trim())
 
   const matchedKeys   = profile.keys.map(id => allKeys.find(k => k.id === id)).filter(Boolean)
   const matchedTones  = profile.tones.map(id => allTones.find(t => t.id === id)).filter(Boolean)
@@ -1196,6 +1276,7 @@ function updateForge() {
           chip.addEventListener('click', () => {
             const voicing = generateFirstPositionVoicing(dc.name, forgeTuningId)
             forgeProgression.push({ name: dc.name, voicing })
+            logEvent('chord-added', dc.name)
             renderForgeProgression()
           })
         }
@@ -1513,6 +1594,7 @@ function buildForge() {
     forgePositions.clear()
     updateForge()
     updateWizPanel()
+    logEvent('tuning', allTunings.find(t => t.id === forgeTuningId)?.name || forgeTuningId)
     if (wizSessionActive) {
       const t = allTunings.find(t => t.id === forgeTuningId)
       if (t) {
@@ -1542,7 +1624,9 @@ function buildForge() {
   document.getElementById('forge-add-chord').addEventListener('click', () => {
     const notes = getForgeNotes()
     if (notes.length < 2) return
-    forgeProgression.push({ name: identifyChord(notes) || '?', voicing: new Map(forgePositions) })
+    const chordName = identifyChord(notes) || '?'
+    forgeProgression.push({ name: chordName, voicing: new Map(forgePositions) })
+    logEvent('chord-added', chordName)
     renderForgeProgression()
   })
 
@@ -1564,6 +1648,7 @@ function buildForge() {
       moods: [...sessionMoods]
     })
     writeSavedProgressions(saved)
+    logEvent('progression-saved', `${name} — ${forgeProgression.map(c => c.name).join(' — ')}`)
     nameInput.value = ''
     renderSavedProgressions()
   })
@@ -1585,7 +1670,8 @@ function buildForge() {
 const TOOL_SECTIONS = {
   grimoire: 'keys', keys: 'keys',
   forge: 'forge',
-  esoteric: 'esoteric', strategies: 'esoteric'
+  esoteric: 'esoteric', strategies: 'esoteric',
+  log: 'session-log', 'session-log': 'session-log'
 }
 
 const ROMAN_DEGREES = { i: 0, ii: 1, iii: 2, iv: 3, v: 4, vi: 5, vii: 6 }
@@ -1811,6 +1897,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateVisualizer()
     updateSuggestions()
     updateWizPanel()
+    logEvent('key', selectedKey.name)
   }
   vizRootSelect.addEventListener('change', onVizRootModeChange)
   vizModeSelect.addEventListener('change', onVizRootModeChange)
@@ -1828,6 +1915,7 @@ document.addEventListener('DOMContentLoaded', () => {
     vizTuningId = vizTuningSelect.value
     updateVisualizer()
     saveSession()
+    logEvent('tuning', allTunings.find(t => t.id === vizTuningId)?.name || vizTuningId)
   })
 
   document.getElementById('viz-show-labels').addEventListener('change', e => {
@@ -1930,9 +2018,20 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.setAttribute('aria-expanded', isNowCollapsed ? 'false' : 'true')
   })
 
+  // Session log clear
+  document.getElementById('session-log-clear')?.addEventListener('click', () => {
+    localStorage.removeItem(SESSION_LOG_KEY)
+    currentVisitStartedAt = null
+    renderSessionLog()
+  })
+
   // Apply wiz deep-link params if present
   initFromParams()
 
   // Detect live wiz session (async — does not block page load)
   detectWizSession()
+
+  // Start logging only after init — load-time selections and the initial
+  // strategy draw aren't user actions
+  sessionLogReady = true
 })
