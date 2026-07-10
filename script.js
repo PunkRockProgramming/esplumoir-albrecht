@@ -1536,7 +1536,7 @@ function initFromParams() {
     if (match) selectKey(match)
   }
 
-  // tuning → pre-select in Forge
+  // tuning → pre-select in Forge and the Grimoire visualizer
   const tuningParam = params.get('tuning')
   if (tuningParam) {
     const match = allTunings.find(
@@ -1547,6 +1547,11 @@ function initFromParams() {
       const forgeSelect = document.getElementById('forge-tuning')
       if (forgeSelect) forgeSelect.value = match.id
       updateForge()
+
+      vizTuningId = match.id
+      const vizSelect = document.getElementById('viz-tuning')
+      if (vizSelect) vizSelect.value = match.id
+      updateVisualizer()
     }
   }
 
@@ -1558,14 +1563,18 @@ function initFromParams() {
     showMoodResult(moodParam)
   }
 
-  // progression → pre-load named chord chips into the Forge (one chip per chord, no voicing)
+  // progression → pre-load chord chips into the Forge with first-position voicings
+  // (runs after the tuning param so voicings match the deep-linked tuning)
   const progressionParams = params.getAll('progression')
   progressionParams.forEach(p => {
     const colonIdx = p.indexOf(':')
     if (colonIdx === -1) return
     const chords = p.slice(colonIdx + 1).split(',').map(c => c.trim())
     chords.forEach(chordName => {
-      if (chordName) forgeProgression.push({ name: chordName, voicing: new Map() })
+      if (chordName) forgeProgression.push({
+        name: chordName,
+        voicing: generateFirstPositionVoicing(chordName, forgeTuningId)
+      })
     })
   })
   if (progressionParams.length) renderForgeProgression()
