@@ -38,6 +38,7 @@
     <button class="nav-tab active" data-section="keys">Grimoire</button>
     <button class="nav-tab" data-section="forge">The Forge</button>
     <button class="nav-tab" data-section="esoteric">Esoteric Strategies</button>
+    <button class="nav-tab" data-section="session-log">Session Log</button>
   </nav>
 
   <!-- ============================================================ -->
@@ -209,6 +210,22 @@
     <div class="card-controls">
       <button id="draw-again" class="primary-btn">Draw Again</button>
       <a id="wiz-save-strategy" class="wiz-save-link" hidden>save to wiz</a>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- Session Log Section                                          -->
+  <!-- ============================================================ -->
+  <section id="session-log" class="section">
+    <div class="section-header">
+      <h2>Session Log</h2>
+      <p class="section-sub">What happened, when — one entry per visit</p>
+    </div>
+
+    <div id="session-log-list" class="session-log-list"></div>
+
+    <div class="session-log-controls">
+      <button id="session-log-clear" class="secondary-btn">Clear log</button>
     </div>
   </section>
 
