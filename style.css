@@ -1404,6 +1404,65 @@ select:focus, textarea:focus { border-color: var(--accent); }
 }
 
 /* ============================================================
+   Draw History
+   ============================================================ */
+.draw-history {
+  max-width: 720px;
+  margin: 32px auto 0;
+}
+
+.draw-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.draw-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.draw-history-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 5px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+}
+
+.draw-history-time {
+  font-family: var(--font-mono);
+  color: var(--muted);
+  flex-shrink: 0;
+  font-size: 0.72rem;
+}
+
+.draw-history-text {
+  color: var(--text);
+  min-width: 0;
+}
+
+.draw-history-reversed {
+  color: var(--accent2);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+
+.draw-history-song {
+  color: var(--accent-dim);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* ============================================================
    Session Log
    ============================================================ */
 .session-log-list {
