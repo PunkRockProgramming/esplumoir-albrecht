@@ -1285,6 +1285,125 @@ select:focus, textarea:focus { border-color: var(--accent); }
 }
 
 /* ============================================================
+   Modal Colors
+   ============================================================ */
+.modal-colors {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.modal-colors-header {
+  margin-bottom: 12px;
+}
+
+.modal-colors-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .modal-colors-body { grid-template-columns: 1fr; }
+}
+
+.modal-colors-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.modal-colors-hint {
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+.parallel-mode-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 3px 0;
+  font-size: 0.82rem;
+}
+
+.parallel-mode-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 3px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  min-width: 170px;
+  text-align: left;
+}
+
+.parallel-mode-btn:hover {
+  border-color: var(--accent-dim);
+}
+
+.parallel-mode-changes {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.parallel-mode-feel {
+  color: var(--muted);
+  min-width: 0;
+}
+
+.modal-colors-chords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.borrowed-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.borrowed-chip:hover {
+  border-color: var(--accent-dim);
+}
+
+.borrowed-chip.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 6px rgba(200, 136, 42, 0.35);
+}
+
+.borrowed-chip-degree {
+  font-family: var(--font-mono);
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.borrowed-chip-name {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.borrowed-chip-source {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+/* ============================================================
    Session Log
    ============================================================ */
 .session-log-list {

@@ -96,19 +96,18 @@ function computeDiatonicChords(root, scaleType) {
 
   return scaleNotes.map((note, i) => {
     const noteIdx = CHROMATIC.indexOf(note)
-    const third = CHROMATIC[(noteIdx + 3) % 12]
-    const fifth = CHROMATIC[(noteIdx + 7) % 12]
 
-    // Find intervals within scale
-    const thirdInterval = scaleNotes.includes(third) ? 3 : 4
-    const fifthIntervalOptions = [6, 7, 8]
-    const fifthInterval = fifthIntervalOptions.find(iv => scaleNotes.includes(CHROMATIC[(noteIdx + iv) % 12])) || 7
+    // Stack scale degrees: third = two steps up, fifth = four steps up.
+    // Probing semitones instead mislabels triads wherever the scale offers
+    // an alternative — IV-of-major grabbed the diatonic tritone (G-B-C#),
+    // harmonic minor's VI grabbed the raised 7th as a minor third (Fm for F).
+    const chordThird = scaleNotes[(i + 2) % scaleNotes.length]
+    const chordFifth = scaleNotes[(i + 4) % scaleNotes.length]
+    const thirdInterval = (CHROMATIC.indexOf(chordThird) - noteIdx + 12) % 12
+    const fifthInterval = (CHROMATIC.indexOf(chordFifth) - noteIdx + 12) % 12
 
     const qualityKey = `${thirdInterval},${fifthInterval}`
     const quality = TRIAD_QUALITIES[qualityKey] || 'major'
-
-    const chordThird = CHROMATIC[(noteIdx + thirdInterval) % 12]
-    const chordFifth = CHROMATIC[(noteIdx + fifthInterval) % 12]
 
     return {
       degree: DEGREE_NAMES[i],
@@ -478,9 +477,16 @@ function updateVisualizer() {
   document.getElementById('viz-key-notes').textContent = selectedKey.notes.join('  ·  ')
   document.getElementById('viz-tuning-label').textContent = tuning ? tuning.name : ''
 
-  // Build degree map — filter to chord notes when a chord tab is active
+  // Build degree map — borrowed-chord preview wins, then active chord tab
   let degreeMap = getScaleDegreeMap(selectedKey.root, selectedKey.mode)
-  if (selectedChordIdx !== null && currentDiatonicChords[selectedChordIdx]) {
+  if (borrowedPreview) {
+    // Chord tones colored by role: root / third / fifth (degree colors 1, 3, 5)
+    degreeMap = new Map()
+    const [r, third, fifth] = borrowedPreview.notes.map(n => normalizeNote(n))
+    degreeMap.set(r, 0)
+    degreeMap.set(third, 2)
+    degreeMap.set(fifth, 4)
+  } else if (selectedChordIdx !== null && currentDiatonicChords[selectedChordIdx]) {
     const chordNoteSet = new Set(
       currentDiatonicChords[selectedChordIdx].notes.map(n => normalizeNote(n))
     )
@@ -520,6 +526,7 @@ function renderChordTabs() {
     container.querySelectorAll('.chord-tab').forEach(b => b.classList.remove('active'))
     btn.classList.add('active')
     selectedChordIdx = idx
+    clearBorrowedPreview()
     updateVisualizer()
   }
 
@@ -551,6 +558,107 @@ function updateSuggestions() {
   }
 }
 
+// ============================================================
+// Modal Colors — parallel modes + borrowed chords
+// ============================================================
+
+const PARALLEL_MODES = [
+  { id: 'major',            label: 'Major',             feel: 'bright, resolved' },
+  { id: 'minor',            label: 'Minor',             feel: 'dark, grounded' },
+  { id: 'dorian',           label: 'Dorian',            feel: 'lifted 6th — hopeful gloom' },
+  { id: 'phrygian',         label: 'Phrygian',          feel: 'flattened 2nd — menace at the root' },
+  { id: 'lydian',           label: 'Lydian',            feel: 'raised 4th — floating, uncanny' },
+  { id: 'mixolydian',       label: 'Mixolydian',        feel: 'softened 7th — worn, road-weary' },
+  { id: 'harmonicMinor',    label: 'Harmonic Minor',    feel: 'raised 7th — ritual tension' },
+  { id: 'phrygianDominant', label: 'Phrygian Dominant', feel: 'major 3rd over phrygian — exotic dread' },
+]
+
+let borrowedPreview = null   // { name, notes } — borrowed chord previewed on the fretboard
+
+function clearBorrowedPreview() {
+  borrowedPreview = null
+  document.querySelectorAll('.borrowed-chip.active').forEach(c => c.classList.remove('active'))
+}
+
+function renderModalColors() {
+  const panel = document.getElementById('modal-colors')
+  if (!panel) return
+  clearBorrowedPreview()
+
+  const intervals = selectedKey ? SCALE_INTERVALS[selectedKey.mode] : null
+  if (!intervals || intervals.length !== 7) {
+    panel.hidden = true
+    return
+  }
+  panel.hidden = false
+  document.getElementById('modal-colors-key').textContent = selectedKey.name
+
+  const root = normalizeNote(selectedKey.root)
+  const currentNotes = intervals.map(iv => CHROMATIC[(CHROMATIC.indexOf(root) + iv) % 12])
+  const currentSet = new Set(currentNotes)
+  const otherModes = PARALLEL_MODES.filter(m => m.id !== selectedKey.mode)
+
+  // Parallel modes — what changes, and a one-click switch
+  const modesEl = document.getElementById('modal-colors-modes')
+  modesEl.innerHTML = ''
+  otherModes.forEach(m => {
+    const mNotes = SCALE_INTERVALS[m.id].map(iv => CHROMATIC[(CHROMATIC.indexOf(root) + iv) % 12])
+    const changes = currentNotes
+      .map((n, i) => n !== mNotes[i] ? `${n}→${mNotes[i]}` : null)
+      .filter(Boolean)
+
+    const row = document.createElement('div')
+    row.className = 'parallel-mode-row'
+    row.innerHTML = `
+      <button class="parallel-mode-btn">${root} ${m.label}</button>
+      <span class="parallel-mode-changes">${changes.join('  ')}</span>
+      <span class="parallel-mode-feel">${m.feel}</span>`
+    row.querySelector('.parallel-mode-btn').addEventListener('click', () => {
+      // Same code path as the free selectors — syncs viz, suggestions, session log
+      const rootSel = document.getElementById('viz-root')
+      const modeSel = document.getElementById('viz-mode')
+      if (rootSel) rootSel.value = root
+      if (modeSel) {
+        modeSel.value = m.id
+        modeSel.dispatchEvent(new Event('change'))
+      }
+    })
+    modesEl.appendChild(row)
+  })
+
+  // Borrowed chords — diatonic in a parallel mode, at least one note outside the key
+  const chordsEl = document.getElementById('modal-colors-chords')
+  chordsEl.innerHTML = ''
+  const seen = new Set(computeDiatonicChords(root, selectedKey.mode).map(c => c.name))
+  const borrowed = []
+  otherModes.forEach(m => {
+    computeDiatonicChords(root, m.id).forEach(dc => {
+      if (seen.has(dc.name)) return
+      if (dc.notes.every(n => currentSet.has(normalizeNote(n)))) return
+      seen.add(dc.name)
+      borrowed.push({ ...dc, source: m.label })
+    })
+  })
+  borrowed.forEach(bc => {
+    const chip = document.createElement('button')
+    chip.className = 'borrowed-chip'
+    chip.innerHTML =
+      `<span class="borrowed-chip-degree">${bc.degree}</span>` +
+      `<span class="borrowed-chip-name">${bc.name}</span>` +
+      `<span class="borrowed-chip-source">${bc.source}</span>`
+    chip.addEventListener('click', () => {
+      const wasActive = chip.classList.contains('active')
+      clearBorrowedPreview()
+      if (!wasActive) {
+        borrowedPreview = { name: bc.name, notes: bc.notes }
+        chip.classList.add('active')
+      }
+      updateVisualizer()
+    })
+    chordsEl.appendChild(chip)
+  })
+}
+
 function saveSession() {
   try {
     localStorage.setItem(SESSION_KEY, JSON.stringify({ keyId: selectedKey?.id || null, tuningId: vizTuningId }))
@@ -574,6 +682,7 @@ function selectKey(keyData) {
     b.classList.toggle('active', b.textContent === keyData.name)
   )
   renderChordTabs()
+  renderModalColors()
   updateVisualizer()
   updateSuggestions()
 
@@ -1983,6 +2092,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.key-card').forEach(c => c.classList.remove('selected'))
     document.querySelectorAll('.mood-key-btn').forEach(b => b.classList.remove('active'))
     renderChordTabs()
+    renderModalColors()
     updateVisualizer()
     updateSuggestions()
     updateWizPanel()
