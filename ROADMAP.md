@@ -6,6 +6,17 @@
 
 ## Shipped
 
+### v9 — Session Logging + Deep-Link Gap-Fill (sprint s9, 2026-07-10)
+- Deep-linked progressions load with real first-position voicings; `tuning` param drives the Grimoire visualizer too (PR #1)
+- URL params: `tool`, `root`+`mode`, `mood` as pre-filter, `notenames`/`firstposition`, degree-shorthand progressions (`i,VI,III,VII`), bare chord lists; documented precedence, `key` wins over mood auto-select (PR #2)
+- Session capture on Forge save — `savedAt`, key, tuning, session moods on every record; Load restores the saved tuning (PR #3)
+- Copy saved progressions as Markdown for Obsidian — metadata bullets + fenced tab block (PR #4)
+- Session Log section — per-visit timestamped activity (keys, moods, chords, saves, draws), new `esplumoir-session-log` store (PR #5)
+- Progression audition — WebAudio playback of the Forge progression from its voicings, chip highlight, play/stop (PR #6)
+- Modal Colors — parallel modes with exact note changes + borrowed chords with fretboard preview; **fixed `computeDiatonicChords` triad stacking** (IV-of-major tritone bug, harmonic minor VI bug) (PR #7)
+- Strategy draw log — every draw timestamped to `esplumoir-draws`, song association via deep-link title, history UI (PR #8)
+- Save session to vault — File System Access API write of the session note; send-to-wiz-song in live session mode (PR #9)
+
 ### v8 — Forge Voicing Generator + Content Depth
 - Forge: diatonic suggestion chips now generate a first-position voicing — `generateFirstPositionVoicing()` finds the lowest fret 0–4 per string that plays a chord tone, tuning-aware, algorithmic (no hardcoded shapes)
 - Grimoire: 7th degree color changed from warm tan (#b88a3a) to steel blue (#6a8a9a) — no longer confused with the amber root
@@ -63,7 +74,10 @@
 
 ### The Forge
 - [ ] Voicing quality — generated shapes include all strings that contain a chord tone; could add a playability scorer that mutes strings unlikely to be fretted in a real shape
-- [ ] Progression playback sketch — strum order hint (text-based, no audio)
+- ~~Progression playback sketch~~ — superseded by real WebAudio audition (v9)
+
+### Esoteric Strategies
+- [ ] Deck growth — content sprint on the workspace roadmap: brainstorm session, mix of Oblique Strategies lineage and cards mined from session notes (decided 2026-07-09)
 
 ---
 
@@ -72,5 +86,5 @@
 - Server / CLI (`song serve`) — dropped in favor of static deployment
 - Lyrics brainstorm section — removed; out of scope
 - MIDI output — too heavy
-- Audio playback in browser — too heavy
+- ~~Audio playback in browser~~ — shipped in v9 as WebAudio audition; turned out to be ~90 lines, no deps
 - Multi-user / cloud sync — personal tool only
