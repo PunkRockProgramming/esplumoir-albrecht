@@ -297,6 +297,7 @@ let forgeTuningId  = 'e-standard'
 let wizSessionActive = false
 let forgeKeyId     = null
 let forgeProgression = []       // [{ name, voicing: Map }]
+let sessionMoods = new Set()    // mood tags/searches touched this visit — attached to Forge saves
 const FORGE_KEY   = 'esplumoir-forge'
 const SESSION_KEY = 'esplumoir-session'
 
@@ -643,6 +644,7 @@ function buildKeyFilters() {
   allKeys.forEach(k => k.moods.forEach(m => moodSet.add(m)))
   buildFilterGroup('key-mood-filters', Array.from(moodSet).sort(), val => {
     activeKeyMoodFilter = val
+    sessionMoods.add(val)
     renderKeys()
     renderMoodKeyButtons(val)
   }, () => {
@@ -888,6 +890,7 @@ function showMoodResult(query) {
     resultPanel.innerHTML = '<span class="error-text">No match — try different words.</span>'
     return
   }
+  sessionMoods.add(query.trim().toLowerCase())
 
   const matchedKeys   = profile.keys.map(id => allKeys.find(k => k.id === id)).filter(Boolean)
   const matchedTones  = profile.tones.map(id => allTones.find(t => t.id === id)).filter(Boolean)
@@ -1348,16 +1351,32 @@ function renderSavedProgressions() {
   saved.forEach((prog, i) => {
     const row = document.createElement('div')
     row.className = 'saved-prog-row'
+
+    // Session metadata — older records won't have these fields
+    const savedTuning = prog.tuning ? allTunings.find(t => t.id === prog.tuning) : null
+    const metaParts = []
+    if (prog.savedAt) metaParts.push(new Date(prog.savedAt).toLocaleDateString())
+    if (prog.key) metaParts.push(prog.key)
+    if (savedTuning) metaParts.push(savedTuning.name)
+    if (prog.moods?.length) metaParts.push(prog.moods.join(', '))
+
     row.innerHTML = `
       <div class="saved-prog-info">
         <span class="saved-prog-name">${prog.name}</span>
         <span class="saved-prog-chords">${prog.chords.map(c => c.name).join(' — ')}</span>
+        ${metaParts.length ? `<span class="saved-prog-meta">${metaParts.join('  ·  ')}</span>` : ''}
       </div>
       <div class="saved-prog-actions">
         <button class="secondary-btn" data-action="load">Load</button>
         <button class="secondary-btn" data-action="delete">Delete</button>
       </div>`
     row.querySelector('[data-action="load"]').addEventListener('click', () => {
+      // Voicing frets are tuning-relative — restore the saved tuning when known
+      if (savedTuning && savedTuning.id !== forgeTuningId) {
+        forgeTuningId = savedTuning.id
+        const forgeSelect = document.getElementById('forge-tuning')
+        if (forgeSelect) forgeSelect.value = savedTuning.id
+      }
       forgeProgression = prog.chords.map(c => ({ name: c.name, voicing: objectToPositions(c.voicing) }))
       renderForgeProgression()
       if (forgeProgression.length) {
@@ -1509,7 +1528,15 @@ function buildForge() {
     const nameInput = document.getElementById('forge-prog-name')
     const name = nameInput.value.trim() || `Progression ${loadSavedProgressions().length + 1}`
     const saved = loadSavedProgressions()
-    saved.push({ name, chords: forgeProgression.map(c => ({ name: c.name, voicing: positionsToObject(c.voicing) })) })
+    const forgeKey = forgeKeyId ? KEYS.find(k => k.id === forgeKeyId) : null
+    saved.push({
+      name,
+      chords: forgeProgression.map(c => ({ name: c.name, voicing: positionsToObject(c.voicing) })),
+      savedAt: new Date().toISOString(),
+      key: forgeKey?.name || selectedKey?.name || null,
+      tuning: forgeTuningId,
+      moods: [...sessionMoods]
+    })
     writeSavedProgressions(saved)
     nameInput.value = ''
     renderSavedProgressions()
