@@ -1525,16 +1525,92 @@ function buildForge() {
 // ============================================================
 
 // ── initFromParams — apply wiz deep-link query params on load ────────────────
+// Param precedence, in processing order: tool → mood/seed → key (wins over
+// root+mode) → notenames/firstposition → tuning → progression. Progressions
+// are parsed last so degree shorthand resolves against the selected key and
+// voicings match the deep-linked tuning.
+const TOOL_SECTIONS = {
+  grimoire: 'keys', keys: 'keys',
+  forge: 'forge',
+  esoteric: 'esoteric', strategies: 'esoteric'
+}
+
+const ROMAN_DEGREES = { i: 0, ii: 1, iii: 2, iv: 3, v: 4, vi: 5, vii: 6 }
+
 function initFromParams() {
   const params = new URLSearchParams(window.location.search)
   if (!params.toString()) return
 
-  // key → pre-select in Grimoire
-  const keyParam = params.get('key')
-  if (keyParam) {
-    const match = allKeys.find(k => k.name.toLowerCase() === keyParam.toLowerCase())
-    if (match) selectKey(match)
+  // tool → land on a section
+  const toolParam = (params.get('tool') || '').toLowerCase()
+  if (TOOL_SECTIONS[toolParam]) switchSection(TOOL_SECTIONS[toolParam])
+
+  // mood → pre-filter when a token matches a known mood tag (clicks the
+  // filter button, same code path as manual); otherwise fall back to mood
+  // search. seed always means search.
+  const moodParam = params.get('mood') || params.get('seed')
+  if (moodParam) {
+    const tokens = moodParam.split(',').map(s => s.trim().toLowerCase()).filter(Boolean)
+    const tagMatch = params.has('mood')
+      ? tokens.find(t => allKeys.some(k => k.moods.includes(t)))
+      : null
+    const filterBtn = tagMatch
+      ? [...document.querySelectorAll('#key-mood-filters .filter-btn')].find(b => b.textContent === tagMatch)
+      : null
+    if (filterBtn) {
+      filterBtn.click()
+    } else {
+      const moodInput = document.getElementById('mood-input')
+      if (moodInput) moodInput.value = moodParam
+      showMoodResult(moodParam)
+    }
   }
+
+  // key (full name, e.g. "E Minor") or root+mode → select the scale view.
+  // key wins if both are present. Runs after mood so an explicit key
+  // overrides the mood auto-select.
+  const keyParam = params.get('key')
+  let resolvedKey = keyParam
+    ? allKeys.find(k => k.name.toLowerCase() === keyParam.toLowerCase()) || null
+    : null
+  const rootParam = params.get('root')
+  const modeParam = params.get('mode')
+  if (!resolvedKey && rootParam && modeParam) {
+    const root = normalizeNote(rootParam[0].toUpperCase() + rootParam.slice(1))
+    const mode = Object.keys(SCALE_INTERVALS).find(m => m.toLowerCase() === modeParam.toLowerCase())
+    if (CHROMATIC.includes(root) && mode) {
+      resolvedKey = allKeys.find(k => normalizeNote(k.root) === root && k.mode === mode)
+        || makeSyntheticKey(root, mode)
+    }
+  }
+  if (resolvedKey) {
+    selectKey(resolvedKey)
+    // Real keys also drive the Forge diatonic suggestions
+    if (resolvedKey.id) {
+      forgeKeyId = resolvedKey.id
+      const forgeKeySelect = document.getElementById('forge-key')
+      if (forgeKeySelect) forgeKeySelect.value = resolvedKey.id
+    }
+  }
+
+  // notenames / firstposition → visualizer toggles ("0"/"false"/"no"/"off" = off)
+  const boolParam = name => {
+    const v = params.get(name)
+    return v === null ? null : !['0', 'false', 'no', 'off'].includes(v.toLowerCase())
+  }
+  const noteNames = boolParam('notenames')
+  if (noteNames !== null) {
+    vizShowLabels = noteNames
+    const cb = document.getElementById('viz-show-labels')
+    if (cb) cb.checked = noteNames
+  }
+  const firstPos = boolParam('firstposition')
+  if (firstPos !== null) {
+    vizFirstPosition = firstPos
+    const cb = document.getElementById('viz-first-position')
+    if (cb) cb.checked = firstPos
+  }
+  if (noteNames !== null || firstPos !== null) updateVisualizer()
 
   // tuning → pre-select in Forge and the Grimoire visualizer
   const tuningParam = params.get('tuning')
@@ -1555,23 +1631,24 @@ function initFromParams() {
     }
   }
 
-  // mood/seed → run mood search (mood takes priority over seed)
-  const moodParam = params.get('mood') || params.get('seed')
-  if (moodParam) {
-    const moodInput = document.getElementById('mood-input')
-    if (moodInput) moodInput.value = moodParam
-    showMoodResult(moodParam)
-  }
-
-  // progression → pre-load chord chips into the Forge with first-position voicings
-  // (runs after the tuning param so voicings match the deep-linked tuning)
+  // progression → chord chips with first-position voicings. Accepts an
+  // optional "name:" prefix, literal chords (Em,C,G,D), or scale-degree
+  // shorthand (i,VI,III,VII) resolved against the selected key's diatonic
+  // chords. Unresolvable degree tokens keep their literal name (empty voicing).
   const progressionParams = params.getAll('progression')
+  const diatonic = selectedKey ? computeDiatonicChords(selectedKey.root, selectedKey.mode) : []
   progressionParams.forEach(p => {
     const colonIdx = p.indexOf(':')
-    if (colonIdx === -1) return
-    const chords = p.slice(colonIdx + 1).split(',').map(c => c.trim())
-    chords.forEach(chordName => {
-      if (chordName) forgeProgression.push({
+    const chords = (colonIdx === -1 ? p : p.slice(colonIdx + 1)).split(',').map(c => c.trim())
+    chords.forEach(token => {
+      if (!token) return
+      let chordName = token
+      const numeral = token.match(/^(vii|vi|v|iv|iii|ii|i)(°|dim|b5)?$/i)
+      if (numeral) {
+        const dc = diatonic[ROMAN_DEGREES[numeral[1].toLowerCase()]]
+        if (dc) chordName = dc.name
+      }
+      forgeProgression.push({
         name: chordName,
         voicing: generateFirstPositionVoicing(chordName, forgeTuningId)
       })
