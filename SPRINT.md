@@ -39,7 +39,7 @@ Give Grimoire/Forge/Esoteric Strategies memory between sessions so the app can f
 - [x] **T7 — Mode/borrowed-chord suggestions.** *(PR #7, merged 2026-07-10 — includes computeDiatonicChords triad-stacking fix)* Parallel-mode comparison off `SCALE_INTERVALS` + `computeDiatonicChords()` — "you're in D minor; here's dorian / a borrowed IV" panel in the Grimoire.
 
 ### Stretch
-- [ ] **T8 — Strategy draw log (+ per-song history).** Every draw appends `{timestamp, cardId, reversed}` to `esplumoir-draws`; small history list in the Esoteric section; song-slug association when `wizSessionActive`. Draw events also feed the T5 session log.
+- [x] **T8 — Strategy draw log (+ per-song history).** *(PR #8, merged 2026-07-10)* Every draw appends `{timestamp, cardId, reversed}` to `esplumoir-draws`; small history list in the Esoteric section; song-slug association when `wizSessionActive`. Draw events also feed the T5 session log.
 - [ ] **T9 — Direct vault write.** "Save session to vault": `postToWiz` path when a :3341 session is live; File System Access API fallback (directory picked once) in static mode. Scope finalized at build time per the note.
 
 ### Close
