@@ -35,7 +35,7 @@ Give Grimoire/Forge/Esoteric Strategies memory between sessions so the app can f
 - [x] **T5 — Session log view.** *(PR #5, merged 2026-07-10)* Event log (key selected, mode explored, progression built/saved, card drawn, mood searched) → `esplumoir-session-log`; timestamped per-visit view in the UI.
 
 ### Features
-- [ ] **T6 — Progression audition (WebAudio).** Play a stored progression in-browser from its voicings; play/stop state; no external deps.
+- [x] **T6 — Progression audition (WebAudio).** *(PR #6, merged 2026-07-10)* Play a stored progression in-browser from its voicings; play/stop state; no external deps.
 - [ ] **T7 — Mode/borrowed-chord suggestions.** Parallel-mode comparison off `SCALE_INTERVALS` + `computeDiatonicChords()` — "you're in D minor; here's dorian / a borrowed IV" panel in the Grimoire.
 
 ### Stretch
