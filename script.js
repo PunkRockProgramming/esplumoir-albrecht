@@ -902,6 +902,53 @@ function buildFilterGroup(containerId, values, onSelect, onAll, labels = {}) {
 // Esoteric Section
 // ============================================================
 
+// ── Draw log — every intentional card draw, timestamped ─────
+const DRAWS_KEY = 'esplumoir-draws'
+const DRAWS_MAX = 200
+let wizSongTitle = null   // set from the title deep-link param — associates draws with a song
+
+function loadDraws() {
+  try { return JSON.parse(localStorage.getItem(DRAWS_KEY) || '[]') } catch { return [] }
+}
+
+function writeDraws(list) {
+  try { localStorage.setItem(DRAWS_KEY, JSON.stringify(list)) } catch {}
+}
+
+function recordDraw(cardId, reversed) {
+  const draws = loadDraws()
+  const record = { at: new Date().toISOString(), cardId, reversed }
+  if (wizSongTitle) record.song = wizSongTitle
+  draws.push(record)
+  while (draws.length > DRAWS_MAX) draws.shift()
+  writeDraws(draws)
+  renderDrawHistory()
+}
+
+function renderDrawHistory() {
+  const container = document.getElementById('draw-history-list')
+  if (!container) return
+  const draws = loadDraws()
+  if (!draws.length) {
+    container.innerHTML = '<span class="forge-prog-empty">no draws recorded yet</span>'
+    return
+  }
+  container.innerHTML = ''
+  ;[...draws].reverse().forEach(d => {
+    const card = allStrategies.find(s => s.id === d.cardId)
+    const text = card ? (d.reversed ? card.reversed : card.text) : `card #${d.cardId}`
+    const when = new Date(d.at)
+    const row = document.createElement('div')
+    row.className = 'draw-history-row'
+    row.innerHTML = `
+      <span class="draw-history-time">${when.toLocaleDateString()} ${when.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+      <span class="draw-history-text">${escapeHtml(text)}</span>
+      ${d.reversed ? '<span class="draw-history-reversed">reversed</span>' : ''}
+      ${d.song ? `<span class="draw-history-song">${escapeHtml(d.song)}</span>` : ''}`
+    container.appendChild(row)
+  })
+}
+
 function drawCard() {
   if (!allStrategies.length) return
 
@@ -938,7 +985,10 @@ function drawCard() {
     cardEl.classList.add('flipped-in')
     setTimeout(() => cardEl.classList.remove('flipped-in'), 400)
 
-    if (logThisDraw) logEvent('strategy-drawn', cardText + (currentStrategyReversed ? ' (reversed)' : ''))
+    if (logThisDraw) {
+      logEvent('strategy-drawn', cardText + (currentStrategyReversed ? ' (reversed)' : ''))
+      recordDraw(card.id, currentStrategyReversed)
+    }
 
     // Session mode: show save link and wire to current card text
     const saveLink = document.getElementById('wiz-save-strategy')
@@ -1995,6 +2045,7 @@ function initFromParams() {
 
   // Song Context banner — only when title + at least one other context field present
   const title = params.get('title')
+  if (title) wizSongTitle = title
   const hasContext = title && (
     params.get('project') || params.get('tempoFeel') ||
     params.get('bpm')     || params.get('instruments')
@@ -2168,6 +2219,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Esoteric
   drawCard()
   document.getElementById('draw-again').addEventListener('click', drawCard)
+  renderDrawHistory()
+  document.getElementById('draw-history-clear')?.addEventListener('click', () => {
+    localStorage.removeItem(DRAWS_KEY)
+    renderDrawHistory()
+  })
 
   // Mood search
   const moodInput = document.getElementById('mood-input')
