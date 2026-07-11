@@ -178,5 +178,125 @@ export const STRATEGIES = [
     text: 'It must be playable by someone who has never played before.',
     reversed: 'It must be unplayable by anyone. Including you.',
     category: 'constraint'
+  },
+  {
+    id: 31,
+    text: 'Let the room do half the work.',
+    reversed: 'The room is lying to you. Isolate the signal.',
+    category: 'process'
+  },
+  {
+    id: 32,
+    text: 'Do not resolve it. Let it keep happening somewhere past the speakers.',
+    reversed: 'Resolve everything. Give it the ending it has earned.',
+    category: 'constraint'
+  },
+  {
+    id: 33,
+    text: 'Start with one physical image. The abstraction will follow.',
+    reversed: 'Start with the abstraction. The image will only narrow it.',
+    category: 'oracle'
+  },
+  {
+    id: 34,
+    text: 'Use an earlier, rougher version.',
+    reversed: 'The roughness was the mistake. You have been refining toward the right answer.',
+    category: 'process'
+  },
+  {
+    id: 35,
+    text: 'Honor the mistake. Build toward it.',
+    reversed: 'Fix the mistake. The song has no room for what you did by accident.',
+    category: 'sabotage'
+  },
+  {
+    id: 36,
+    text: 'Make the quiet part louder than the loud part.',
+    reversed: 'The loud part is there for a reason. Do not touch it.',
+    category: 'inversion'
+  },
+  {
+    id: 37,
+    text: 'Pretend you do not know how this instrument is supposed to sound.',
+    reversed: 'Play it exactly as it was designed to be played. That is the constraint.',
+    category: 'constraint'
+  },
+  {
+    id: 38,
+    text: 'Record it before you are ready.',
+    reversed: 'Wait until you are ready. Note whether that day arrives.',
+    category: 'constraint'
+  },
+  {
+    id: 39,
+    text: 'The demo is the release.',
+    reversed: 'The demo is a rough draft. Take it all the way.',
+    category: 'oracle'
+  },
+  {
+    id: 40,
+    text: 'Play it slower than you think it can go.',
+    reversed: 'Play it faster than it wants to go. See what falls off.',
+    category: 'process'
+  },
+  {
+    id: 41,
+    text: 'Let it drone. Do not rescue it.',
+    reversed: 'Rescue it. Sustained tension is not a virtue.',
+    category: 'constraint'
+  },
+  {
+    id: 42,
+    text: 'The noise is information. Preserve it.',
+    reversed: 'Clean it up. The noise was in the way.',
+    category: 'process'
+  },
+  {
+    id: 43,
+    text: 'End before the natural ending.',
+    reversed: 'Extend past the natural ending. Hear what lives on the other side.',
+    category: 'subtraction'
+  },
+  {
+    id: 44,
+    text: 'The thing you keep almost doing — do it.',
+    reversed: 'The thing you keep almost doing — stop stopping. You already know why you hesitate.',
+    category: 'oracle'
+  },
+  {
+    id: 45,
+    text: 'Something is missing. Add the wrong thing.',
+    reversed: 'Something is missing. Remove something else instead.',
+    category: 'sabotage'
+  },
+  {
+    id: 46,
+    text: 'Borrow a structure from somewhere it does not belong.',
+    reversed: 'The structure it came from was correct all along. Go back to the source.',
+    category: 'inversion'
+  },
+  {
+    id: 47,
+    text: 'Write the song you are afraid to write.',
+    reversed: 'Write the safe song first. See what you learn from it.',
+    category: 'oracle'
+  },
+  {
+    id: 48,
+    text: 'Add dissonance until it becomes necessary.',
+    reversed: 'Remove dissonance until only the essential tension remains.',
+    category: 'subtraction'
+  },
+  {
+    id: 49,
+    text: 'Give the silence a job.',
+    reversed: 'Silence is not a job. Fill it.',
+    category: 'constraint'
+  },
+  {
+    id: 50,
+    text: 'The part that is working — remove it. Build toward its absence.',
+    reversed: 'Keep the part that is working. Stop pulling at what holds.',
+    category: 'sabotage'
   }
 ]
